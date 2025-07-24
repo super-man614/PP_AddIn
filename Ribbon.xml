@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load">
+  <ribbon>
+    <tabs>
+      <tab id="PowerPointToolsTab" label="PowerPoint Tools">
+        <group id="TaskPaneGroup" label="Task Pane">
+          <button id="ToggleTaskPaneButton" 
+                  label="Show Tools" 
+                  size="large"
+                  onAction="ToggleTaskPane_Click"
+                  imageMso="TaskPane"
+                  supertip="Toggle the PowerPoint Tools task pane on or off" />
+        </group>
+        <group id="QuickActionsGroup" label="Quick Actions">
+          <button id="NewPresentationButton"
+                  label="New Presentation"
+                  size="normal"
+                  onAction="NewPresentation_Click"
+                  imageMso="FileNew"
+                  supertip="Create a new PowerPoint presentation" />
+          <button id="ExportPDFButton"
+                  label="Export PDF"
+                  size="normal"
+                  onAction="ExportPDF_Click"
+                  imageMso="ExportPowerPoint"
+                  supertip="Export current presentation to PDF" />
+        </group>
+        <group id="SlideActionsGroup" label="Slide Actions">
+          <button id="AddSlideButton"
+                  label="Add Slide"
+                  size="normal"
+                  onAction="AddSlide_Click"
+                  imageMso="SlideInsertSlides"
+                  supertip="Add a new slide to the presentation" />
+          <button id="DuplicateSlideButton"
+                  label="Duplicate"
+                  size="normal"
+                  onAction="DuplicateSlide_Click"
+                  imageMso="Copy"
+                  supertip="Duplicate the current slide" />
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI> 

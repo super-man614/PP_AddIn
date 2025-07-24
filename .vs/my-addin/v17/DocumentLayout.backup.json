@@ -1,0 +1,86 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Mori\\source\\repos\\my-addin\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{3CD5F9E0-B413-4DAC-B61E-5F8CD3684D4D}|my-addin.csproj|c:\\users\\mori\\source\\repos\\my-addin\\taskpanecontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{3CD5F9E0-B413-4DAC-B61E-5F8CD3684D4D}|my-addin.csproj|solutionrelative:taskpanecontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3CD5F9E0-B413-4DAC-B61E-5F8CD3684D4D}|my-addin.csproj|C:\\Users\\Mori\\source\\repos\\my-addin\\taskpanecontrol.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3CD5F9E0-B413-4DAC-B61E-5F8CD3684D4D}|my-addin.csproj|solutionrelative:taskpanecontrol.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3CD5F9E0-B413-4DAC-B61E-5F8CD3684D4D}|my-addin.csproj|c:\\users\\mori\\source\\repos\\my-addin\\taskpanecontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3CD5F9E0-B413-4DAC-B61E-5F8CD3684D4D}|my-addin.csproj|solutionrelative:taskpanecontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|my-addin||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 141,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TaskPaneControl.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\Mori\\source\\repos\\my-addin\\TaskPaneControl.cs",
+              "RelativeDocumentMoniker": "TaskPaneControl.cs",
+              "ToolTip": "C:\\Users\\Mori\\source\\repos\\my-addin\\TaskPaneControl.cs [Design]",
+              "RelativeToolTip": "TaskPaneControl.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-23T15:16:40.248Z",
+              "IsPinned": true,
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TaskPaneControl.Designer.cs",
+              "DocumentMoniker": "C:\\Users\\Mori\\source\\repos\\my-addin\\TaskPaneControl.Designer.cs",
+              "RelativeDocumentMoniker": "TaskPaneControl.Designer.cs",
+              "ToolTip": "C:\\Users\\Mori\\source\\repos\\my-addin\\TaskPaneControl.Designer.cs",
+              "RelativeToolTip": "TaskPaneControl.Designer.cs",
+              "ViewState": "AgIAANIBAAAAAAAAAAAswOIBAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-23T12:43:48.139Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "TaskPaneControl.cs",
+              "DocumentMoniker": "C:\\Users\\Mori\\source\\repos\\my-addin\\TaskPaneControl.cs",
+              "RelativeDocumentMoniker": "TaskPaneControl.cs",
+              "ToolTip": "C:\\Users\\Mori\\source\\repos\\my-addin\\TaskPaneControl.cs",
+              "RelativeToolTip": "TaskPaneControl.cs",
+              "ViewState": "AgIAAHwAAAAAAAAAAAAEwAAFAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-24T13:23:16.38Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "my-addin",
+              "DocumentMoniker": "C:\\Users\\Mori\\source\\repos\\my-addin\\my-addin.csproj",
+              "RelativeDocumentMoniker": "my-addin.csproj",
+              "ToolTip": "C:\\Users\\Mori\\source\\repos\\my-addin\\my-addin.csproj",
+              "RelativeToolTip": "my-addin.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-07-23T11:51:19.889Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
