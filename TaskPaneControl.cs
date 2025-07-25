@@ -148,6 +148,62 @@ namespace my_addin
                 btnLine.MouseLeave += BtnLine_MouseLeave;
             }
             
+            // Color section button hover events
+            if (btnFillColor != null)
+            {
+                btnFillColor.MouseEnter += BtnFillColor_MouseEnter;
+                btnFillColor.MouseLeave += BtnFillColor_MouseLeave;
+            }
+            if (btnTextColor != null)
+            {
+                btnTextColor.MouseEnter += BtnTextColor_MouseEnter;
+                btnTextColor.MouseLeave += BtnTextColor_MouseLeave;
+            }
+            if (btnOutlineColor != null)
+            {
+                btnOutlineColor.MouseEnter += BtnOutlineColor_MouseEnter;
+                btnOutlineColor.MouseLeave += BtnOutlineColor_MouseLeave;
+            }
+            
+            // Text section button hover events
+            if (btnBold != null)
+            {
+                btnBold.MouseEnter += BtnBold_MouseEnter;
+                btnBold.MouseLeave += BtnBold_MouseLeave;
+            }
+            if (btnItalic != null)
+            {
+                btnItalic.MouseEnter += BtnItalic_MouseEnter;
+                btnItalic.MouseLeave += BtnItalic_MouseLeave;
+            }
+            if (btnUnderline != null)
+            {
+                btnUnderline.MouseEnter += BtnUnderline_MouseEnter;
+                btnUnderline.MouseLeave += BtnUnderline_MouseLeave;
+            }
+            if (btnBullets != null)
+            {
+                btnBullets.MouseEnter += BtnBullets_MouseEnter;
+                btnBullets.MouseLeave += BtnBullets_MouseLeave;
+            }
+            
+            // Navigation section button hover events
+            if (btnZoomIn != null)
+            {
+                btnZoomIn.MouseEnter += BtnNavButton_MouseEnter;
+                btnZoomIn.MouseLeave += BtnNavButton_MouseLeave;
+            }
+            if (btnZoomOut != null)
+            {
+                btnZoomOut.MouseEnter += BtnNavButton_MouseEnter;
+                btnZoomOut.MouseLeave += BtnNavButton_MouseLeave;
+            }
+            if (btnFitToWindow != null)
+            {
+                btnFitToWindow.MouseEnter += BtnNavButton_MouseEnter;
+                btnFitToWindow.MouseLeave += BtnNavButton_MouseLeave;
+            }
+            
             // Load current slides
             this.Load += TaskPaneControl_Load;
         }
@@ -547,6 +603,120 @@ namespace my_addin
         }
 
         private void BtnLine_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+
+        // Color section button hover methods
+        private void BtnFillColor_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+
+        private void BtnFillColor_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+
+        private void BtnTextColor_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+
+        private void BtnTextColor_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+
+        private void BtnOutlineColor_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+
+        private void BtnOutlineColor_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+
+        // Text section button hover methods
+        private void BtnBold_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+
+        private void BtnBold_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+
+        private void BtnItalic_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+
+        private void BtnItalic_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+
+        private void BtnUnderline_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+
+        private void BtnUnderline_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+
+        private void BtnBullets_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+
+        private void BtnBullets_MouseLeave(object sender, EventArgs e)
         {
             if (sender is Button btn)
             {
@@ -1279,5 +1449,21 @@ namespace my_addin
         {
 
         }
+
+        // Navigation View button hover handlers
+        private void BtnNavButton_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+        private void BtnNavButton_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
     }
-} 
+}

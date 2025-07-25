@@ -11,3 +11,16 @@ C:\Users\Mori\source\repos\my-addin\obj\Debug\my-addin.csproj.Up2Date
 C:\Users\Mori\source\repos\my-addin\obj\Debug\my-addin.dll
 C:\Users\Mori\source\repos\my-addin\obj\Debug\my-addin.pdb
 C:\Users\Mori\source\repos\my-addin\obj\Debug\my_addin.TaskPaneControl.resources
+E:\GIT\PP_AddIn\bin\Debug\my-addin.dll
+E:\GIT\PP_AddIn\bin\Debug\my-addin.pdb
+E:\GIT\PP_AddIn\bin\Debug\my-addin.dll.manifest
+E:\GIT\PP_AddIn\bin\Debug\my-addin.vsto
+E:\GIT\PP_AddIn\bin\Debug\Microsoft.Office.Tools.Common.v4.0.Utilities.dll
+E:\GIT\PP_AddIn\obj\Debug\my-addin.csproj.AssemblyReference.cache
+E:\GIT\PP_AddIn\obj\Debug\my_addin.Properties.Resources.resources
+E:\GIT\PP_AddIn\obj\Debug\my_addin.TaskPaneControl.resources
+E:\GIT\PP_AddIn\obj\Debug\my-addin.csproj.GenerateResource.cache
+E:\GIT\PP_AddIn\obj\Debug\my-addin.csproj.CoreCompileInputs.cache
+E:\GIT\PP_AddIn\obj\Debug\my-addin.csproj.Up2Date
+E:\GIT\PP_AddIn\obj\Debug\my-addin.dll
+E:\GIT\PP_AddIn\obj\Debug\my-addin.pdb
