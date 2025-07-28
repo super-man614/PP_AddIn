@@ -104,6 +104,32 @@ namespace my_addin
                 btnTable.MouseLeave += BtnTable_MouseLeave;
             }
             
+            // Matrix table section button hover events
+            if (btnMatrixTable != null)
+            {
+                btnMatrixTable.MouseEnter += BtnMatrixTable_MouseEnter;
+                btnMatrixTable.MouseLeave += BtnMatrixTable_MouseLeave;
+            }
+            
+            // Sticky notes section button hover events
+            if (btnStickyNote != null)
+            {
+                btnStickyNote.MouseEnter += BtnStickyNote_MouseEnter;
+                btnStickyNote.MouseLeave += BtnStickyNote_MouseLeave;
+            }
+            
+            // Citation and standard objects section button hover events
+            if (btnCitation != null)
+            {
+                btnCitation.MouseEnter += BtnCitation_MouseEnter;
+                btnCitation.MouseLeave += BtnCitation_MouseLeave;
+            }
+            if (btnStandardObjects != null)
+            {
+                btnStandardObjects.MouseEnter += BtnStandardObjects_MouseEnter;
+                btnStandardObjects.MouseLeave += BtnStandardObjects_MouseLeave;
+            }
+            
             // Position section button hover events
             if (btnAlignLeft != null)
             {
@@ -124,6 +150,40 @@ namespace my_addin
             {
                 btnDistribute.MouseEnter += BtnDistribute_MouseEnter;
                 btnDistribute.MouseLeave += BtnDistribute_MouseLeave;
+            }
+            
+            // Dimension matching section button hover events
+            if (btnMatchBoth != null)
+            {
+                btnMatchBoth.MouseEnter += BtnMatchBoth_MouseEnter;
+                btnMatchBoth.MouseLeave += BtnMatchBoth_MouseLeave;
+            }
+            if (btnMatchHeight != null)
+            {
+                btnMatchHeight.MouseEnter += BtnMatchHeight_MouseEnter;
+                btnMatchHeight.MouseLeave += BtnMatchHeight_MouseLeave;
+            }
+            if (btnMatchWidth != null)
+            {
+                btnMatchWidth.MouseEnter += BtnMatchWidth_MouseEnter;
+                btnMatchWidth.MouseLeave += BtnMatchWidth_MouseLeave;
+            }
+            
+            // Rotation and swap section button hover events
+            if (btnMakeVertical != null)
+            {
+                btnMakeVertical.MouseEnter += BtnMakeVertical_MouseEnter;
+                btnMakeVertical.MouseLeave += BtnMakeVertical_MouseLeave;
+            }
+            if (btnMakeHorizontal != null)
+            {
+                btnMakeHorizontal.MouseEnter += BtnMakeHorizontal_MouseEnter;
+                btnMakeHorizontal.MouseLeave += BtnMakeHorizontal_MouseLeave;
+            }
+            if (btnSwapLocations != null)
+            {
+                btnSwapLocations.MouseEnter += BtnSwapLocations_MouseEnter;
+                btnSwapLocations.MouseLeave += BtnSwapLocations_MouseLeave;
             }
             
             // Shape section button hover events
@@ -185,6 +245,18 @@ namespace my_addin
             {
                 btnBullets.MouseEnter += BtnBullets_MouseEnter;
                 btnBullets.MouseLeave += BtnBullets_MouseLeave;
+            }
+            
+            // Text wrapping section button hover events
+            if (btnWrapText != null)
+            {
+                btnWrapText.MouseEnter += BtnWrapText_MouseEnter;
+                btnWrapText.MouseLeave += BtnWrapText_MouseLeave;
+            }
+            if (btnNoWrapText != null)
+            {
+                btnNoWrapText.MouseEnter += BtnNoWrapText_MouseEnter;
+                btnNoWrapText.MouseLeave += BtnNoWrapText_MouseLeave;
             }
             
             // Navigation section button hover events
@@ -480,6 +552,69 @@ namespace my_addin
             }
         }
 
+        // Matrix table section button hover methods
+        private void BtnMatrixTable_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+
+        private void BtnMatrixTable_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+
+        // Sticky notes section button hover methods
+        private void BtnStickyNote_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+        private void BtnStickyNote_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+
+        // Citation and standard objects section button hover methods
+        private void BtnCitation_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+        private void BtnCitation_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+        private void BtnStandardObjects_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+        private void BtnStandardObjects_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+
         // Position section button hover methods
         private void BtnAlignLeft_MouseEnter(object sender, EventArgs e)
         {
@@ -538,6 +673,99 @@ namespace my_addin
         }
 
         private void BtnDistribute_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+
+        // Dimension matching section button hover methods
+        private void BtnMatchBoth_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+
+        private void BtnMatchBoth_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+
+        private void BtnMatchHeight_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+
+        private void BtnMatchHeight_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+
+        private void BtnMatchWidth_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+
+        private void BtnMatchWidth_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+
+        // Rotation and swap section button hover methods
+        private void BtnMakeVertical_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+        private void BtnMakeVertical_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+        private void BtnMakeHorizontal_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+        private void BtnMakeHorizontal_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+        private void BtnSwapLocations_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+        private void BtnSwapLocations_MouseLeave(object sender, EventArgs e)
         {
             if (sender is Button btn)
             {
@@ -971,19 +1199,713 @@ namespace my_addin
                 var app = Globals.ThisAddIn.Application;
                 if (app.ActivePresentation != null && app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
                 {
-                    var slide = app.ActiveWindow.Selection.SlideRange[1];
-                    slide.Shapes.AddTable(NumRows: 3, NumColumns: 3);
-                    MessageBox.Show("Table added successfully!", "Table", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Show table dropdown control
+                    var tableDropdown = new TableDropdownControl();
+                    
+                    // Position the dropdown below the table button
+                    var btnLocation = btnTable.PointToScreen(Point.Empty);
+                    tableDropdown.Location = new Point(btnLocation.X, btnLocation.Y + btnTable.Height);
+                    
+                    if (tableDropdown.ShowDialog() == DialogResult.OK)
+                    {
+                        var slide = app.ActiveWindow.Selection.SlideRange[1];
+                        
+                        switch (tableDropdown.ActionType)
+                        {
+                            case "GridSelect":
+                                CreateTableFromGrid(slide, tableDropdown.SelectedRows, tableDropdown.SelectedColumns);
+                                break;
+                            case "InsertTable":
+                                ShowInsertTableDialog(slide);
+                                break;
+                            case "ExcelSpreadsheet":
+                                InsertExcelSpreadsheet(slide);
+                                break;
+                        }
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Please select a slide first, then use Insert > Table.", "Table", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Please select a slide first to insert a table.", "Table", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error inserting table: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void CreateTableFromGrid(PowerPoint.Slide slide, int rows, int columns)
+        {
+            try
+            {
+                // Calculate optimal position and size
+                float slideWidth = slide.Master.Width;
+                float slideHeight = slide.Master.Height;
+                
+                // Table dimensions
+                float tableWidth = slideWidth * 0.8f;
+                float tableHeight = Math.Min(slideHeight * 0.6f, rows * 40f);
+                
+                // Center the table
+                float left = (slideWidth - tableWidth) / 2;
+                float top = (slideHeight - tableHeight) / 2;
+                
+                // Create native PowerPoint table
+                var tableShape = slide.Shapes.AddTable(rows, columns, left, top, tableWidth, tableHeight);
+                var table = tableShape.Table;
+                
+                // Apply basic styling and clear any default header text
+                ApplyBasicStyling(table, false); // No header by default for grid selection
+                ClearTableHeaderText(table);
+                
+                MessageBox.Show($"Table ({rows}x{columns}) created successfully!", "Table", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create table from grid: {ex.Message}");
+            }
+        }
+
+        private void ShowInsertTableDialog(PowerPoint.Slide slide)
+        {
+            try
+            {
+                                 var simpleDialog = new SimpleTableDialog();
+                 if (simpleDialog.ShowDialog() == DialogResult.OK)
+                 {
+                     int rows = simpleDialog.Rows;
+                     int columns = simpleDialog.Columns;
+                     
+                     // Calculate optimal position and size
+                     float slideWidth = slide.Master.Width;
+                     float slideHeight = slide.Master.Height;
+                     
+                     // Table dimensions
+                     float tableWidth = slideWidth * 0.8f;
+                     float tableHeight = Math.Min(slideHeight * 0.6f, rows * 40f);
+                     
+                     // Center the table
+                     float left = (slideWidth - tableWidth) / 2;
+                     float top = (slideHeight - tableHeight) / 2;
+                     
+                     // Create native PowerPoint table
+                     var tableShape = slide.Shapes.AddTable(rows, columns, left, top, tableWidth, tableHeight);
+                     var table = tableShape.Table;
+                     
+                     // Apply basic styling and clear any default header text
+                     ApplyBasicStyling(table, false);
+                     ClearTableHeaderText(table);
+                     
+                     MessageBox.Show($"Table ({rows}x{columns}) created successfully!", "Table", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error showing insert table dialog: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void InsertExcelSpreadsheet(PowerPoint.Slide slide)
+        {
+            try
+            {
+                // Calculate position for Excel object
+                float slideWidth = slide.Master.Width;
+                float slideHeight = slide.Master.Height;
+                
+                float objWidth = slideWidth * 0.7f;
+                float objHeight = slideHeight * 0.5f;
+                float left = (slideWidth - objWidth) / 2;
+                float top = (slideHeight - objHeight) / 2;
+                
+                // Insert Excel spreadsheet as OLE object
+                var excelObject = slide.Shapes.AddOLEObject(
+                    left, top, objWidth, objHeight,
+                    "Excel.Sheet", "", 
+                    Office.MsoTriState.msoFalse, "", 0, "", 
+                    Office.MsoTriState.msoFalse);
+                
+                excelObject.Name = "ExcelSpreadsheet";
+                
+                MessageBox.Show("Excel spreadsheet inserted successfully!\n\nDouble-click the object to edit in Excel.", "Excel Spreadsheet", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error inserting Excel spreadsheet: {ex.Message}\n\nNote: Excel must be installed for this feature to work.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnMatrixTable_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActivePresentation != null && app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                {
+                    // Get user input for rows and columns
+                    var matrixDialog = new MatrixTableDialog();
+                    if (matrixDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        int rows = matrixDialog.Rows;
+                        int columns = matrixDialog.Columns;
+                        bool hasHeader = matrixDialog.HasHeader;
+                        
+                        var slide = app.ActiveWindow.Selection.SlideRange[1];
+                        CreateProfessionalTable(slide, rows, columns, hasHeader);
+                        
+                        string headerText = hasHeader ? " with header" : "";
+                        MessageBox.Show($"Professional table ({rows}x{columns}){headerText} created successfully!\n\nYou can now click on any cell to edit its content.", "Professional Table", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select a slide first to insert matrix table.", "Matrix Table", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error creating matrix table: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CreateProfessionalTable(PowerPoint.Slide slide, int rows, int columns, bool hasHeader)
+        {
+            try
+            {
+                // Calculate optimal position and size
+                float slideWidth = slide.Master.Width;
+                float slideHeight = slide.Master.Height;
+                
+                // Table dimensions (leave margins)
+                float tableWidth = slideWidth * 0.8f; // 80% of slide width
+                float tableHeight = Math.Min(slideHeight * 0.6f, rows * 40f); // Max 60% of height or based on rows
+                
+                // Center the table
+                float left = (slideWidth - tableWidth) / 2;
+                float top = (slideHeight - tableHeight) / 2;
+                
+                // Create native PowerPoint table
+                var tableShape = slide.Shapes.AddTable(rows, columns, left, top, tableWidth, tableHeight);
+                var table = tableShape.Table;
+                
+                // Apply PowerPoint's built-in table style
+                ApplyDefaultTableStyle(table, hasHeader);
+                
+                // Set default content if it's a header table
+                if (hasHeader && rows > 0)
+                {
+                    for (int col = 1; col <= columns; col++)
+                    {
+                        table.Cell(1, col).Shape.TextFrame.TextRange.Text = $"Header {col}";
+                    }
+                }
+                
+                // Focus on the first editable cell
+                int startRow = hasHeader ? 2 : 1;
+                if (rows >= startRow && startRow <= rows)
+                {
+                    table.Cell(startRow, 1).Shape.TextFrame.TextRange.Select();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create professional table: {ex.Message}");
+            }
+        }
+
+        private void ApplyDefaultTableStyle(PowerPoint.Table table, bool hasHeader)
+        {
+            try
+            {
+                // Try to apply a built-in table style using a simpler approach
+                // Just apply basic formatting since advanced styling causes errors
+                ApplyBasicStyling(table, hasHeader);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Table styling failed: {ex.Message}");
+            }
+        }
+
+        private void ApplyBasicStyling(PowerPoint.Table table, bool hasHeader)
+        {
+            try
+            {
+                // Very basic styling that should work universally
+                for (int row = 1; row <= table.Rows.Count; row++)
+                {
+                    for (int col = 1; col <= table.Columns.Count; col++)
+                    {
+                        var shape = table.Cell(row, col).Shape;
+                        
+                        // Only apply the most basic formatting
+                        if (hasHeader && row == 1)
+                        {
+                            shape.TextFrame.TextRange.Font.Bold = Office.MsoTriState.msoTrue;
+                        }
+                        
+                        // Set basic text properties
+                        shape.TextFrame.TextRange.Font.Size = 11;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Basic styling failed: {ex.Message}");
+            }
+        }
+
+        private void BtnStickyNote_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActivePresentation != null && app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                {
+                    // Get user input for sticky note
+                    var stickyDialog = new StickyNoteDialog();
+                    if (stickyDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string noteText = stickyDialog.NoteText;
+                        Color noteColor = stickyDialog.NoteColor;
+                        
+                        var slide = app.ActiveWindow.Selection.SlideRange[1];
+                        CreateStickyNote(slide, noteText, noteColor);
+                        
+                        MessageBox.Show("Sticky note added successfully!\n\nYou can move, resize, or edit the note as needed.", "Sticky Note", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select a slide first to add a sticky note.", "Sticky Note", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error creating sticky note: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CreateStickyNote(PowerPoint.Slide slide, string noteText, Color noteColor)
+        {
+            try
+            {
+                // Sticky note dimensions
+                float noteWidth = 160f;
+                float noteHeight = 120f;
+                
+                // Position in top-right corner with some margin
+                float slideWidth = slide.Master.Width;
+                float left = slideWidth - noteWidth - 50f;
+                float top = 50f;
+                
+                // Create the main sticky note shape (rounded rectangle)
+                var stickyNote = slide.Shapes.AddShape(
+                    Office.MsoAutoShapeType.msoShapeRoundedRectangle,
+                    left, top, noteWidth, noteHeight);
+                
+                // Apply sticky note styling
+                ApplyStickyNoteStyling(stickyNote, noteText, noteColor);
+                
+                // Add a subtle shadow effect to make it look more realistic
+                ApplyStickyNoteShadow(stickyNote);
+                
+                // Name the shape for easy identification
+                stickyNote.Name = $"StickyNote_{DateTime.Now.Ticks}";
+                
+                // Select the sticky note so user can see it
+                stickyNote.Select();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create sticky note: {ex.Message}");
+            }
+        }
+
+        private void ApplyStickyNoteStyling(PowerPoint.Shape stickyNote, string noteText, Color noteColor)
+        {
+            try
+            {
+                // Set the background color
+                stickyNote.Fill.ForeColor.RGB = ColorTranslator.ToOle(noteColor);
+                
+                // Configure the text
+                if (stickyNote.HasTextFrame == Office.MsoTriState.msoTrue)
+                {
+                    var textFrame = stickyNote.TextFrame;
+                    var textRange = textFrame.TextRange;
+                    
+                    // Set the text content
+                    textRange.Text = noteText;
+                    
+                    // Configure text formatting (using basic Font properties)
+                    textRange.Font.Name = "Segoe UI";
+                    textRange.Font.Size = 10;
+                    textRange.Font.Color.RGB = ColorTranslator.ToOle(Color.Black);
+                    
+                    // Set margins for a realistic sticky note look
+                    textFrame.MarginLeft = 10f;
+                    textFrame.MarginRight = 10f;
+                    textFrame.MarginTop = 8f;
+                    textFrame.MarginBottom = 8f;
+                }
+                
+                // Configure border (very subtle)
+                stickyNote.Line.ForeColor.RGB = ColorTranslator.ToOle(Color.FromArgb(200, 200, 200));
+                stickyNote.Line.Weight = 0.5f;
+                
+                // Add a very slight rotation for realistic look
+                stickyNote.Rotation = 2f; // 2 degrees clockwise
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Sticky note styling failed: {ex.Message}");
+            }
+        }
+
+        private void ApplyStickyNoteShadow(PowerPoint.Shape stickyNote)
+        {
+            try
+            {
+                // Add shadow effect for more realistic appearance
+                var shadowFormat = stickyNote.Shadow;
+                shadowFormat.Visible = Office.MsoTriState.msoTrue;
+                shadowFormat.Type = Office.MsoShadowType.msoShadow6; // Use a simple shadow type
+                shadowFormat.ForeColor.RGB = ColorTranslator.ToOle(Color.Gray);
+                shadowFormat.OffsetX = 3f;
+                shadowFormat.OffsetY = 3f;
+            }
+            catch (Exception ex)
+            {
+                // Shadow is optional, don't fail if it doesn't work
+                System.Diagnostics.Debug.WriteLine($"Shadow effect failed: {ex.Message}");
+            }
+        }
+
+        private void BtnCitation_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActivePresentation != null && app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                {
+                    // Simple input dialog for citation text
+                    string citationText = Microsoft.VisualBasic.Interaction.InputBox(
+                        "Enter citation text:",
+                        "Add Citation",
+                        "Source: [Author, Year, Title]");
+                    
+                    if (!string.IsNullOrEmpty(citationText))
+                    {
+                        var slide = app.ActiveWindow.Selection.SlideRange[1];
+                        CreateCitation(slide, citationText);
+                        
+                        MessageBox.Show("Citation added to bottom left!\n\nYou can move, resize, or edit the citation as needed.", "Citation", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select a slide first to add a citation.", "Citation", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error creating citation: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CreateCitation(PowerPoint.Slide slide, string citationText)
+        {
+            try
+            {
+                // Citation dimensions and positioning
+                float citationWidth = 400f;
+                float citationHeight = 30f;
+                
+                // Position in bottom left with margin
+                float left = 20f;
+                float slideHeight = slide.Master.Height;
+                float top = slideHeight - citationHeight - 20f;
+                
+                // Create citation text box
+                var citation = slide.Shapes.AddTextbox(
+                    Office.MsoTextOrientation.msoTextOrientationHorizontal,
+                    left, top, citationWidth, citationHeight);
+                
+                // Apply citation styling
+                ApplyCitationStyling(citation, citationText);
+                
+                // Name the shape for easy identification
+                citation.Name = $"Citation_{DateTime.Now.Ticks}";
+                
+                // Select the citation so user can see it
+                citation.Select();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create citation: {ex.Message}");
+            }
+        }
+
+        private void ApplyCitationStyling(PowerPoint.Shape citation, string citationText)
+        {
+            try
+            {
+                // Configure the text
+                if (citation.HasTextFrame == Office.MsoTriState.msoTrue)
+                {
+                    var textFrame = citation.TextFrame;
+                    var textRange = textFrame.TextRange;
+                    
+                    // Set the citation text
+                    textRange.Text = citationText;
+                    
+                    // Configure citation text formatting
+                    textRange.Font.Name = "Segoe UI";
+                    textRange.Font.Size = 9; // Smaller font for citations
+                    textRange.Font.Italic = Office.MsoTriState.msoTrue; // Italic for academic style
+                    textRange.Font.Color.RGB = ColorTranslator.ToOle(Color.FromArgb(64, 64, 64)); // Dark gray
+                    
+                    // Set minimal margins
+                    textFrame.MarginLeft = 2f;
+                    textFrame.MarginRight = 2f;
+                    textFrame.MarginTop = 2f;
+                    textFrame.MarginBottom = 2f;
+                }
+                
+                // Make the text box transparent (no fill, no border)
+                citation.Fill.Visible = Office.MsoTriState.msoFalse;
+                citation.Line.Visible = Office.MsoTriState.msoFalse;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Citation styling failed: {ex.Message}");
+            }
+        }
+
+        private void BtnStandardObjects_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActivePresentation != null && app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                {
+                    // Show standard objects dialog
+                    var objectsDialog = new StandardObjectsDialog();
+                    if (objectsDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string selectedObject = objectsDialog.SelectedObject;
+                        
+                        if (!string.IsNullOrEmpty(selectedObject))
+                        {
+                            var slide = app.ActiveWindow.Selection.SlideRange[1];
+                            CreateStandardObject(slide, selectedObject);
+                            
+                            MessageBox.Show($"Standard object added successfully!\n\nYou can move, resize, or edit the object as needed.", "Standard Objects", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select a slide first to add a standard object.", "Standard Objects", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error creating standard object: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CreateStandardObject(PowerPoint.Slide slide, string objectType)
+        {
+            try
+            {
+                // Parse the object type (remove emoji and get the actual type)
+                string type = objectType.Substring(objectType.IndexOf(' ') + 1);
+                
+                switch (type)
+                {
+                    case "Title & Subtitle Layout":
+                        CreateTitleSubtitleLayout(slide);
+                        break;
+                    case "Header Text Box":
+                        CreateHeaderTextBox(slide);
+                        break;
+                    case "Content Text Box":
+                        CreateContentTextBox(slide);
+                        break;
+                    case "Callout Box":
+                        CreateCalloutBox(slide, "💡", Color.FromArgb(255, 255, 102), "Important Note");
+                        break;
+                    case "Warning Box":
+                        CreateCalloutBox(slide, "⚠️", Color.FromArgb(255, 182, 193), "Warning");
+                        break;
+                    case "Success Box":
+                        CreateCalloutBox(slide, "✅", Color.FromArgb(144, 238, 144), "Success");
+                        break;
+                    case "Information Box":
+                        CreateCalloutBox(slide, "ℹ️", Color.FromArgb(173, 216, 230), "Information");
+                        break;
+                    case "Date Stamp":
+                        CreateDateStamp(slide);
+                        break;
+                    case "Page Number":
+                        CreatePageNumber(slide);
+                        break;
+                    case "Navigation Arrow":
+                        CreateNavigationArrow(slide);
+                        break;
+                    case "Company Logo Placeholder":
+                        CreateLogoPlaceholder(slide);
+                        break;
+                    default:
+                        CreateGenericTextBox(slide, type);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create standard object: {ex.Message}");
+            }
+        }
+
+        private void CreateTitleSubtitleLayout(PowerPoint.Slide slide)
+        {
+            // Create title text box
+            var title = slide.Shapes.AddTextbox(Office.MsoTextOrientation.msoTextOrientationHorizontal, 50, 80, 600, 80);
+            var titleTextRange = title.TextFrame.TextRange;
+            titleTextRange.Text = "Your Title Here";
+            titleTextRange.Font.Name = "Segoe UI";
+            titleTextRange.Font.Size = 36;
+            titleTextRange.Font.Bold = Office.MsoTriState.msoTrue;
+            titleTextRange.Font.Color.RGB = ColorTranslator.ToOle(Color.FromArgb(68, 114, 196));
+            title.Fill.Visible = Office.MsoTriState.msoFalse;
+            title.Line.Visible = Office.MsoTriState.msoFalse;
+            title.Name = "TitleTextBox";
+
+            // Create subtitle text box
+            var subtitle = slide.Shapes.AddTextbox(Office.MsoTextOrientation.msoTextOrientationHorizontal, 50, 180, 600, 40);
+            var subtitleTextRange = subtitle.TextFrame.TextRange;
+            subtitleTextRange.Text = "Your subtitle or description here";
+            subtitleTextRange.Font.Name = "Segoe UI";
+            subtitleTextRange.Font.Size = 18;
+            subtitleTextRange.Font.Color.RGB = ColorTranslator.ToOle(Color.FromArgb(100, 100, 100));
+            subtitle.Fill.Visible = Office.MsoTriState.msoFalse;
+            subtitle.Line.Visible = Office.MsoTriState.msoFalse;
+            subtitle.Name = "SubtitleTextBox";
+        }
+
+        private void CreateHeaderTextBox(PowerPoint.Slide slide)
+        {
+            var header = slide.Shapes.AddTextbox(Office.MsoTextOrientation.msoTextOrientationHorizontal, 50, 30, 600, 50);
+            var textRange = header.TextFrame.TextRange;
+            textRange.Text = "Header Text";
+            textRange.Font.Name = "Segoe UI";
+            textRange.Font.Size = 24;
+            textRange.Font.Bold = Office.MsoTriState.msoTrue;
+            textRange.Font.Color.RGB = ColorTranslator.ToOle(Color.FromArgb(68, 114, 196));
+            header.Fill.Visible = Office.MsoTriState.msoFalse;
+            header.Line.Visible = Office.MsoTriState.msoFalse;
+            header.Name = "HeaderTextBox";
+        }
+
+        private void CreateContentTextBox(PowerPoint.Slide slide)
+        {
+            var content = slide.Shapes.AddTextbox(Office.MsoTextOrientation.msoTextOrientationHorizontal, 50, 150, 600, 200);
+            var textRange = content.TextFrame.TextRange;
+            textRange.Text = "Your content goes here. You can add multiple lines of text, bullet points, or any other content you need for your presentation.";
+            textRange.Font.Name = "Segoe UI";
+            textRange.Font.Size = 14;
+            textRange.Font.Color.RGB = ColorTranslator.ToOle(Color.Black);
+            content.Fill.Visible = Office.MsoTriState.msoFalse;
+            content.Line.Visible = Office.MsoTriState.msoFalse;
+            content.Name = "ContentTextBox";
+        }
+
+        private void CreateCalloutBox(PowerPoint.Slide slide, string icon, Color bgColor, string defaultText)
+        {
+            var callout = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRoundedRectangle, 100, 200, 400, 80);
+            callout.Fill.ForeColor.RGB = ColorTranslator.ToOle(bgColor);
+            callout.Line.ForeColor.RGB = ColorTranslator.ToOle(Color.FromArgb(150, 150, 150));
+            callout.Line.Weight = 1f;
+            
+            var textRange = callout.TextFrame.TextRange;
+            textRange.Text = $"{icon} {defaultText}: Add your important message here";
+            textRange.Font.Name = "Segoe UI";
+            textRange.Font.Size = 12;
+            textRange.Font.Bold = Office.MsoTriState.msoTrue;
+            textRange.Font.Color.RGB = ColorTranslator.ToOle(Color.Black);
+            
+            callout.TextFrame.MarginLeft = 15f;
+            callout.TextFrame.MarginRight = 15f;
+            callout.TextFrame.MarginTop = 10f;
+            callout.TextFrame.MarginBottom = 10f;
+            
+            callout.Name = $"{defaultText}Box";
+        }
+
+        private void CreateDateStamp(PowerPoint.Slide slide)
+        {
+            var dateStamp = slide.Shapes.AddTextbox(Office.MsoTextOrientation.msoTextOrientationHorizontal, 550, 500, 150, 30);
+            var textRange = dateStamp.TextFrame.TextRange;
+            textRange.Text = DateTime.Now.ToString("MMM dd, yyyy");
+            textRange.Font.Name = "Segoe UI";
+            textRange.Font.Size = 10;
+            textRange.Font.Color.RGB = ColorTranslator.ToOle(Color.FromArgb(100, 100, 100));
+            dateStamp.Fill.Visible = Office.MsoTriState.msoFalse;
+            dateStamp.Line.Visible = Office.MsoTriState.msoFalse;
+            dateStamp.Name = "DateStamp";
+        }
+
+        private void CreatePageNumber(PowerPoint.Slide slide)
+        {
+            var pageNum = slide.Shapes.AddTextbox(Office.MsoTextOrientation.msoTextOrientationHorizontal, 650, 500, 50, 30);
+            var textRange = pageNum.TextFrame.TextRange;
+            textRange.Text = slide.SlideIndex.ToString();
+            textRange.Font.Name = "Segoe UI";
+            textRange.Font.Size = 12;
+            textRange.Font.Color.RGB = ColorTranslator.ToOle(Color.FromArgb(100, 100, 100));
+            pageNum.Fill.Visible = Office.MsoTriState.msoFalse;
+            pageNum.Line.Visible = Office.MsoTriState.msoFalse;
+            pageNum.Name = "PageNumber";
+        }
+
+        private void CreateNavigationArrow(PowerPoint.Slide slide)
+        {
+            var arrow = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRightArrow, 300, 400, 100, 40);
+            arrow.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.FromArgb(68, 114, 196));
+            arrow.Line.Visible = Office.MsoTriState.msoFalse;
+            arrow.Name = "NavigationArrow";
+        }
+
+        private void CreateLogoPlaceholder(PowerPoint.Slide slide)
+        {
+            var logo = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, 600, 30, 80, 80);
+            logo.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.FromArgb(240, 240, 240));
+            logo.Line.ForeColor.RGB = ColorTranslator.ToOle(Color.FromArgb(200, 200, 200));
+            logo.Line.DashStyle = Office.MsoLineDashStyle.msoLineDash;
+            
+            var textRange = logo.TextFrame.TextRange;
+            textRange.Text = "LOGO";
+            textRange.Font.Name = "Segoe UI";
+            textRange.Font.Size = 10;
+            textRange.Font.Color.RGB = ColorTranslator.ToOle(Color.FromArgb(150, 150, 150));
+            
+            logo.Name = "LogoPlaceholder";
+        }
+
+        private void CreateGenericTextBox(PowerPoint.Slide slide, string objectType)
+        {
+            var textBox = slide.Shapes.AddTextbox(Office.MsoTextOrientation.msoTextOrientationHorizontal, 100, 200, 400, 100);
+            var textRange = textBox.TextFrame.TextRange;
+            textRange.Text = $"{objectType}\n\nClick to edit this text box and add your content.";
+            textRange.Font.Name = "Segoe UI";
+            textRange.Font.Size = 12;
+            textRange.Font.Color.RGB = ColorTranslator.ToOle(Color.Black);
+            textBox.Fill.Visible = Office.MsoTriState.msoFalse;
+            textBox.Line.Visible = Office.MsoTriState.msoFalse;
+            textBox.Name = objectType.Replace(" ", "");
         }
 
         #endregion
@@ -1071,6 +1993,220 @@ namespace my_addin
             catch (Exception ex)
             {
                 MessageBox.Show($"Error distributing objects: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnMatchBoth_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    if (shapes.Count >= 2)
+                    {
+                        // Use the last selected shape as reference
+                        var referenceShape = shapes[shapes.Count];
+                        float referenceHeight = referenceShape.Height;
+                        float referenceWidth = referenceShape.Width;
+
+                        // Apply dimensions to all other shapes
+                        for (int i = 1; i < shapes.Count; i++)
+                        {
+                            shapes[i].Height = referenceHeight;
+                            shapes[i].Width = referenceWidth;
+                        }
+
+                        MessageBox.Show($"Matched height and width to the last selected shape!", "Match Dimensions", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select at least two shapes to match dimensions.", "Match Dimensions", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select shapes to match dimensions.", "Match Dimensions", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error matching dimensions: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnMatchHeight_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    if (shapes.Count >= 2)
+                    {
+                        // Use the last selected shape as reference
+                        var referenceShape = shapes[shapes.Count];
+                        float referenceHeight = referenceShape.Height;
+
+                        // Apply height to all other shapes
+                        for (int i = 1; i < shapes.Count; i++)
+                        {
+                            shapes[i].Height = referenceHeight;
+                        }
+
+                        MessageBox.Show($"Matched height to the last selected shape!", "Match Height", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select at least two shapes to match height.", "Match Height", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select shapes to match height.", "Match Height", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error matching height: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnMatchWidth_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    if (shapes.Count >= 2)
+                    {
+                        // Use the last selected shape as reference
+                        var referenceShape = shapes[shapes.Count];
+                        float referenceWidth = referenceShape.Width;
+
+                        // Apply width to all other shapes
+                        for (int i = 1; i < shapes.Count; i++)
+                        {
+                            shapes[i].Width = referenceWidth;
+                        }
+
+                        MessageBox.Show($"Matched width to the last selected shape!", "Match Width", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select at least two shapes to match width.", "Match Width", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select shapes to match width.", "Match Width", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error matching width: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnMakeVertical_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    int count = 0;
+                    
+                    for (int i = 1; i <= shapes.Count; i++)
+                    {
+                        shapes[i].Rotation = 90f;
+                        count++;
+                    }
+                    
+                    MessageBox.Show($"Rotated {count} shape(s) to vertical (90°)!", "Make Vertical", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Please select shapes to rotate vertically.", "Make Vertical", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error rotating shapes: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnMakeHorizontal_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    int count = 0;
+                    
+                    for (int i = 1; i <= shapes.Count; i++)
+                    {
+                        shapes[i].Rotation = 0f;
+                        count++;
+                    }
+                    
+                    MessageBox.Show($"Rotated {count} shape(s) to horizontal (0°)!", "Make Horizontal", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Please select shapes to rotate horizontally.", "Make Horizontal", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error rotating shapes: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnSwapLocations_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    if (shapes.Count == 2)
+                    {
+                        // Get positions of both shapes
+                        float shape1Left = shapes[1].Left;
+                        float shape1Top = shapes[1].Top;
+                        float shape2Left = shapes[2].Left;
+                        float shape2Top = shapes[2].Top;
+
+                        // Swap the positions
+                        shapes[1].Left = shape2Left;
+                        shapes[1].Top = shape2Top;
+                        shapes[2].Left = shape1Left;
+                        shapes[2].Top = shape1Top;
+
+                        MessageBox.Show("Swapped positions of the two selected shapes!", "Swap Locations", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select exactly two shapes to swap their locations.", "Swap Locations", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select two shapes to swap their locations.", "Swap Locations", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error swapping shape locations: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -1374,6 +2510,118 @@ namespace my_addin
 
         #endregion
 
+        #region Text Wrapping Section
+
+        private void BtnWrapText_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+        private void BtnWrapText_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+
+        private void BtnNoWrapText_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 1;
+            }
+        }
+        private void BtnNoWrapText_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+
+        private void BtnWrapText_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    int count = 0;
+                    
+                    for (int i = 1; i <= shapes.Count; i++)
+                    {
+                        if (shapes[i].HasTextFrame == Office.MsoTriState.msoTrue)
+                        {
+                            shapes[i].TextFrame2.WordWrap = Office.MsoTriState.msoTrue;
+                            count++;
+                        }
+                    }
+                    
+                    if (count > 0)
+                    {
+                        MessageBox.Show($"Text wrapping enabled for {count} shape(s)!", "Text Wrap", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("No text shapes found in selection.", "Text Wrap", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select shapes to enable text wrapping.", "Text Wrap", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error enabling text wrap: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnNoWrapText_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    int count = 0;
+                    
+                    for (int i = 1; i <= shapes.Count; i++)
+                    {
+                        if (shapes[i].HasTextFrame == Office.MsoTriState.msoTrue)
+                        {
+                            shapes[i].TextFrame2.WordWrap = Office.MsoTriState.msoFalse;
+                            count++;
+                        }
+                    }
+                    
+                    if (count > 0)
+                    {
+                        MessageBox.Show($"Text wrapping disabled for {count} shape(s)!", "No Text Wrap", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("No text shapes found in selection.", "No Text Wrap", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select shapes to disable text wrapping.", "No Text Wrap", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error disabling text wrap: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        #endregion
+
         #region Navigation & View Section
 
         private void BtnZoomIn_Click(object sender, EventArgs e)
@@ -1463,6 +2711,25 @@ namespace my_addin
             if (sender is Button btn)
             {
                 btn.FlatAppearance.BorderSize = 0;
+            }
+        }
+
+        private void ClearTableHeaderText(PowerPoint.Table table)
+        {
+            try
+            {
+                // Clear the default header text in the first row
+                for (int col = 1; col <= table.Columns.Count; col++)
+                {
+                    var cell = table.Cell(1, col);
+                    cell.Shape.TextFrame.TextRange.Text = "";
+                }
+            }
+            catch (Exception ex)
+            {
+                // If clearing header text fails, just continue without error
+                // This ensures table creation still works even if header clearing fails
+                System.Diagnostics.Debug.WriteLine($"Could not clear header text: {ex.Message}");
             }
         }
     }

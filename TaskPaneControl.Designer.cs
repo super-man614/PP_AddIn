@@ -58,6 +58,10 @@ namespace my_addin
             this.btnChart = new System.Windows.Forms.Button();
             this.btnDiagram = new System.Windows.Forms.Button();
             this.btnTable = new System.Windows.Forms.Button();
+            this.btnMatrixTable = new System.Windows.Forms.Button();
+            this.btnStickyNote = new System.Windows.Forms.Button();
+            this.btnCitation = new System.Windows.Forms.Button();
+            this.btnStandardObjects = new System.Windows.Forms.Button();
             this.divider3 = new System.Windows.Forms.Panel();
             this.positionPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.lblPositionSection = new System.Windows.Forms.Label();
@@ -66,6 +70,12 @@ namespace my_addin
             this.btnAlignCenter = new System.Windows.Forms.Button();
             this.btnAlignRight = new System.Windows.Forms.Button();
             this.btnDistribute = new System.Windows.Forms.Button();
+            this.btnMatchBoth = new System.Windows.Forms.Button();
+            this.btnMatchHeight = new System.Windows.Forms.Button();
+            this.btnMatchWidth = new System.Windows.Forms.Button();
+            this.btnMakeVertical = new System.Windows.Forms.Button();
+            this.btnMakeHorizontal = new System.Windows.Forms.Button();
+            this.btnSwapLocations = new System.Windows.Forms.Button();
             this.divider4 = new System.Windows.Forms.Panel();
             this.sizePanel = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSizeSection = new System.Windows.Forms.Label();
@@ -105,6 +115,8 @@ namespace my_addin
             this.btnItalic = new System.Windows.Forms.Button();
             this.btnUnderline = new System.Windows.Forms.Button();
             this.btnBullets = new System.Windows.Forms.Button();
+            this.btnWrapText = new System.Windows.Forms.Button();
+            this.btnNoWrapText = new System.Windows.Forms.Button();
             this.divider8 = new System.Windows.Forms.Panel();
             this.navigationPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.lblNavigationSection = new System.Windows.Forms.Label();
@@ -541,10 +553,14 @@ namespace my_addin
             this.smartElementsButtonsPanel.Controls.Add(this.btnChart);
             this.smartElementsButtonsPanel.Controls.Add(this.btnDiagram);
             this.smartElementsButtonsPanel.Controls.Add(this.btnTable);
+            this.smartElementsButtonsPanel.Controls.Add(this.btnMatrixTable);
+            this.smartElementsButtonsPanel.Controls.Add(this.btnStickyNote);
+            this.smartElementsButtonsPanel.Controls.Add(this.btnCitation);
+            this.smartElementsButtonsPanel.Controls.Add(this.btnStandardObjects);
             this.smartElementsButtonsPanel.Location = new System.Drawing.Point(0, 13);
             this.smartElementsButtonsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.smartElementsButtonsPanel.Name = "smartElementsButtonsPanel";
-            this.smartElementsButtonsPanel.Size = new System.Drawing.Size(91, 25);
+            this.smartElementsButtonsPanel.Size = new System.Drawing.Size(191, 25);
             this.smartElementsButtonsPanel.TabIndex = 1;
             // 
             // btnChart
@@ -598,6 +614,74 @@ namespace my_addin
             this.btnTable.UseVisualStyleBackColor = false;
             this.btnTable.Click += new System.EventHandler(this.BtnTable_Click);
             // 
+            // btnMatrixTable
+            // 
+            this.btnMatrixTable.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnMatrixTable.FlatAppearance.BorderSize = 0;
+            this.btnMatrixTable.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnMatrixTable.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnMatrixTable.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnMatrixTable.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
+            this.btnMatrixTable.Location = new System.Drawing.Point(75, 0);
+            this.btnMatrixTable.Margin = new System.Windows.Forms.Padding(0);
+            this.btnMatrixTable.Name = "btnMatrixTable";
+            this.btnMatrixTable.Size = new System.Drawing.Size(25, 25);
+            this.btnMatrixTable.TabIndex = 4;
+            this.btnMatrixTable.Text = "🏢";
+            this.btnMatrixTable.UseVisualStyleBackColor = false;
+            this.btnMatrixTable.Click += new System.EventHandler(this.BtnMatrixTable_Click);
+            // 
+            // btnStickyNote
+            // 
+            this.btnStickyNote.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnStickyNote.FlatAppearance.BorderSize = 0;
+            this.btnStickyNote.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnStickyNote.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnStickyNote.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnStickyNote.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
+            this.btnStickyNote.Location = new System.Drawing.Point(100, 0);
+            this.btnStickyNote.Margin = new System.Windows.Forms.Padding(0);
+            this.btnStickyNote.Name = "btnStickyNote";
+            this.btnStickyNote.Size = new System.Drawing.Size(25, 25);
+            this.btnStickyNote.TabIndex = 5;
+            this.btnStickyNote.Text = "📝";
+            this.btnStickyNote.UseVisualStyleBackColor = false;
+            this.btnStickyNote.Click += new System.EventHandler(this.BtnStickyNote_Click);
+            // 
+            // btnCitation
+            // 
+            this.btnCitation.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnCitation.FlatAppearance.BorderSize = 0;
+            this.btnCitation.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnCitation.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnCitation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCitation.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
+            this.btnCitation.Location = new System.Drawing.Point(125, 0);
+            this.btnCitation.Margin = new System.Windows.Forms.Padding(0);
+            this.btnCitation.Name = "btnCitation";
+            this.btnCitation.Size = new System.Drawing.Size(25, 25);
+            this.btnCitation.TabIndex = 6;
+            this.btnCitation.Text = "📑";
+            this.btnCitation.UseVisualStyleBackColor = false;
+            this.btnCitation.Click += new System.EventHandler(this.BtnCitation_Click);
+            // 
+            // btnStandardObjects
+            // 
+            this.btnStandardObjects.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnStandardObjects.FlatAppearance.BorderSize = 0;
+            this.btnStandardObjects.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnStandardObjects.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnStandardObjects.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnStandardObjects.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
+            this.btnStandardObjects.Location = new System.Drawing.Point(150, 0);
+            this.btnStandardObjects.Margin = new System.Windows.Forms.Padding(0);
+            this.btnStandardObjects.Name = "btnStandardObjects";
+            this.btnStandardObjects.Size = new System.Drawing.Size(25, 25);
+            this.btnStandardObjects.TabIndex = 7;
+            this.btnStandardObjects.Text = "🗂️";
+            this.btnStandardObjects.UseVisualStyleBackColor = false;
+            this.btnStandardObjects.Click += new System.EventHandler(this.BtnStandardObjects_Click);
+            // 
             // divider3
             // 
             this.divider3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -644,10 +728,16 @@ namespace my_addin
             this.positionButtonsPanel.Controls.Add(this.btnAlignCenter);
             this.positionButtonsPanel.Controls.Add(this.btnAlignRight);
             this.positionButtonsPanel.Controls.Add(this.btnDistribute);
+            this.positionButtonsPanel.Controls.Add(this.btnMatchBoth);
+            this.positionButtonsPanel.Controls.Add(this.btnMatchHeight);
+            this.positionButtonsPanel.Controls.Add(this.btnMatchWidth);
+            this.positionButtonsPanel.Controls.Add(this.btnMakeVertical);
+            this.positionButtonsPanel.Controls.Add(this.btnMakeHorizontal);
+            this.positionButtonsPanel.Controls.Add(this.btnSwapLocations);
             this.positionButtonsPanel.Location = new System.Drawing.Point(0, 13);
             this.positionButtonsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.positionButtonsPanel.Name = "positionButtonsPanel";
-            this.positionButtonsPanel.Size = new System.Drawing.Size(100, 25);
+            this.positionButtonsPanel.Size = new System.Drawing.Size(250, 25);
             this.positionButtonsPanel.TabIndex = 1;
             // 
             // btnAlignLeft
@@ -717,6 +807,108 @@ namespace my_addin
             this.btnDistribute.Text = "≡";
             this.btnDistribute.UseVisualStyleBackColor = false;
             this.btnDistribute.Click += new System.EventHandler(this.BtnDistribute_Click);
+            // 
+            // btnMatchBoth
+            // 
+            this.btnMatchBoth.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnMatchBoth.FlatAppearance.BorderSize = 0;
+            this.btnMatchBoth.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnMatchBoth.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnMatchBoth.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnMatchBoth.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
+            this.btnMatchBoth.Location = new System.Drawing.Point(100, 0);
+            this.btnMatchBoth.Margin = new System.Windows.Forms.Padding(0);
+            this.btnMatchBoth.Name = "btnMatchBoth";
+            this.btnMatchBoth.Size = new System.Drawing.Size(25, 25);
+            this.btnMatchBoth.TabIndex = 5;
+            this.btnMatchBoth.Text = "📏";
+            this.btnMatchBoth.UseVisualStyleBackColor = false;
+            this.btnMatchBoth.Click += new System.EventHandler(this.BtnMatchBoth_Click);
+            // 
+            // btnMatchHeight
+            // 
+            this.btnMatchHeight.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnMatchHeight.FlatAppearance.BorderSize = 0;
+            this.btnMatchHeight.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnMatchHeight.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnMatchHeight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnMatchHeight.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
+            this.btnMatchHeight.Location = new System.Drawing.Point(125, 0);
+            this.btnMatchHeight.Margin = new System.Windows.Forms.Padding(0);
+            this.btnMatchHeight.Name = "btnMatchHeight";
+            this.btnMatchHeight.Size = new System.Drawing.Size(25, 25);
+            this.btnMatchHeight.TabIndex = 6;
+            this.btnMatchHeight.Text = "↕️";
+            this.btnMatchHeight.UseVisualStyleBackColor = false;
+            this.btnMatchHeight.Click += new System.EventHandler(this.BtnMatchHeight_Click);
+            // 
+            // btnMatchWidth
+            // 
+            this.btnMatchWidth.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnMatchWidth.FlatAppearance.BorderSize = 0;
+            this.btnMatchWidth.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnMatchWidth.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnMatchWidth.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnMatchWidth.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
+            this.btnMatchWidth.Location = new System.Drawing.Point(150, 0);
+            this.btnMatchWidth.Margin = new System.Windows.Forms.Padding(0);
+            this.btnMatchWidth.Name = "btnMatchWidth";
+            this.btnMatchWidth.Size = new System.Drawing.Size(25, 25);
+            this.btnMatchWidth.TabIndex = 7;
+            this.btnMatchWidth.Text = "↔️";
+            this.btnMatchWidth.UseVisualStyleBackColor = false;
+            this.btnMatchWidth.Click += new System.EventHandler(this.BtnMatchWidth_Click);
+            // 
+            // btnMakeVertical
+            // 
+            this.btnMakeVertical.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnMakeVertical.FlatAppearance.BorderSize = 0;
+            this.btnMakeVertical.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnMakeVertical.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnMakeVertical.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnMakeVertical.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
+            this.btnMakeVertical.Location = new System.Drawing.Point(175, 0);
+            this.btnMakeVertical.Margin = new System.Windows.Forms.Padding(0);
+            this.btnMakeVertical.Name = "btnMakeVertical";
+            this.btnMakeVertical.Size = new System.Drawing.Size(25, 25);
+            this.btnMakeVertical.TabIndex = 8;
+            this.btnMakeVertical.Text = "↻";
+            this.btnMakeVertical.UseVisualStyleBackColor = false;
+            this.btnMakeVertical.Click += new System.EventHandler(this.BtnMakeVertical_Click);
+            // 
+            // btnMakeHorizontal
+            // 
+            this.btnMakeHorizontal.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnMakeHorizontal.FlatAppearance.BorderSize = 0;
+            this.btnMakeHorizontal.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnMakeHorizontal.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnMakeHorizontal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnMakeHorizontal.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
+            this.btnMakeHorizontal.Location = new System.Drawing.Point(200, 0);
+            this.btnMakeHorizontal.Margin = new System.Windows.Forms.Padding(0);
+            this.btnMakeHorizontal.Name = "btnMakeHorizontal";
+            this.btnMakeHorizontal.Size = new System.Drawing.Size(25, 25);
+            this.btnMakeHorizontal.TabIndex = 9;
+            this.btnMakeHorizontal.Text = "↺";
+            this.btnMakeHorizontal.UseVisualStyleBackColor = false;
+            this.btnMakeHorizontal.Click += new System.EventHandler(this.BtnMakeHorizontal_Click);
+            // 
+            // btnSwapLocations
+            // 
+            this.btnSwapLocations.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnSwapLocations.FlatAppearance.BorderSize = 0;
+            this.btnSwapLocations.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnSwapLocations.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnSwapLocations.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSwapLocations.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
+            this.btnSwapLocations.Location = new System.Drawing.Point(225, 0);
+            this.btnSwapLocations.Margin = new System.Windows.Forms.Padding(0);
+            this.btnSwapLocations.Name = "btnSwapLocations";
+            this.btnSwapLocations.Size = new System.Drawing.Size(25, 25);
+            this.btnSwapLocations.TabIndex = 10;
+            this.btnSwapLocations.Text = "⇄";
+            this.btnSwapLocations.UseVisualStyleBackColor = false;
+            this.btnSwapLocations.Click += new System.EventHandler(this.BtnSwapLocations_Click);
             // 
             // divider4
             // 
@@ -1165,10 +1357,12 @@ namespace my_addin
             this.textButtonsPanel.Controls.Add(this.btnItalic);
             this.textButtonsPanel.Controls.Add(this.btnUnderline);
             this.textButtonsPanel.Controls.Add(this.btnBullets);
+            this.textButtonsPanel.Controls.Add(this.btnWrapText);
+            this.textButtonsPanel.Controls.Add(this.btnNoWrapText);
             this.textButtonsPanel.Location = new System.Drawing.Point(0, 13);
             this.textButtonsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.textButtonsPanel.Name = "textButtonsPanel";
-            this.textButtonsPanel.Size = new System.Drawing.Size(100, 25);
+            this.textButtonsPanel.Size = new System.Drawing.Size(150, 25);
             this.textButtonsPanel.TabIndex = 1;
             // 
             // btnBold
@@ -1242,6 +1436,40 @@ namespace my_addin
             this.btnBullets.Text = "•";
             this.btnBullets.UseVisualStyleBackColor = false;
             this.btnBullets.Click += new System.EventHandler(this.BtnBullets_Click);
+            // 
+            // btnWrapText
+            // 
+            this.btnWrapText.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnWrapText.FlatAppearance.BorderSize = 0;
+            this.btnWrapText.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnWrapText.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnWrapText.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnWrapText.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.btnWrapText.Location = new System.Drawing.Point(100, 0);
+            this.btnWrapText.Margin = new System.Windows.Forms.Padding(0);
+            this.btnWrapText.Name = "btnWrapText";
+            this.btnWrapText.Size = new System.Drawing.Size(25, 25);
+            this.btnWrapText.TabIndex = 5;
+            this.btnWrapText.Text = "📦";
+            this.btnWrapText.UseVisualStyleBackColor = false;
+            this.btnWrapText.Click += new System.EventHandler(this.BtnWrapText_Click);
+            // 
+            // btnNoWrapText
+            // 
+            this.btnNoWrapText.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnNoWrapText.FlatAppearance.BorderSize = 0;
+            this.btnNoWrapText.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnNoWrapText.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnNoWrapText.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNoWrapText.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.btnNoWrapText.Location = new System.Drawing.Point(125, 0);
+            this.btnNoWrapText.Margin = new System.Windows.Forms.Padding(0);
+            this.btnNoWrapText.Name = "btnNoWrapText";
+            this.btnNoWrapText.Size = new System.Drawing.Size(25, 25);
+            this.btnNoWrapText.TabIndex = 6;
+            this.btnNoWrapText.Text = "📄";
+            this.btnNoWrapText.UseVisualStyleBackColor = false;
+            this.btnNoWrapText.Click += new System.EventHandler(this.BtnNoWrapText_Click);
             // 
             // divider8
             // 
@@ -1504,6 +1732,10 @@ namespace my_addin
         private System.Windows.Forms.Button btnChart;
         private System.Windows.Forms.Button btnDiagram;
         private System.Windows.Forms.Button btnTable;
+        private System.Windows.Forms.Button btnMatrixTable;
+        private System.Windows.Forms.Button btnStickyNote;
+        private System.Windows.Forms.Button btnCitation;
+        private System.Windows.Forms.Button btnStandardObjects;
         
         // Position section
         private System.Windows.Forms.FlowLayoutPanel positionPanel;
@@ -1513,6 +1745,12 @@ namespace my_addin
         private System.Windows.Forms.Button btnAlignCenter;
         private System.Windows.Forms.Button btnAlignRight;
         private System.Windows.Forms.Button btnDistribute;
+        private System.Windows.Forms.Button btnMatchBoth;
+        private System.Windows.Forms.Button btnMatchHeight;
+        private System.Windows.Forms.Button btnMatchWidth;
+        private System.Windows.Forms.Button btnMakeVertical;
+        private System.Windows.Forms.Button btnMakeHorizontal;
+        private System.Windows.Forms.Button btnSwapLocations;
         
         // Size section
         private System.Windows.Forms.FlowLayoutPanel sizePanel;
@@ -1549,6 +1787,8 @@ namespace my_addin
         private System.Windows.Forms.Button btnItalic;
         private System.Windows.Forms.Button btnUnderline;
         private System.Windows.Forms.Button btnBullets;
+        private System.Windows.Forms.Button btnWrapText;
+        private System.Windows.Forms.Button btnNoWrapText;
         
         // Navigation & View section
         private System.Windows.Forms.FlowLayoutPanel navigationPanel;
