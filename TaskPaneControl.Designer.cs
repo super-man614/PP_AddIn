@@ -1444,7 +1444,7 @@ namespace my_addin
             this.btnWrapText.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.btnWrapText.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnWrapText.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnWrapText.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.btnWrapText.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnWrapText.Location = new System.Drawing.Point(100, 0);
             this.btnWrapText.Margin = new System.Windows.Forms.Padding(0);
             this.btnWrapText.Name = "btnWrapText";
@@ -1461,7 +1461,7 @@ namespace my_addin
             this.btnNoWrapText.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.btnNoWrapText.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnNoWrapText.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnNoWrapText.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.btnNoWrapText.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnNoWrapText.Location = new System.Drawing.Point(125, 0);
             this.btnNoWrapText.Margin = new System.Windows.Forms.Padding(0);
             this.btnNoWrapText.Name = "btnNoWrapText";

@@ -128,7 +128,7 @@ namespace my_addin
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new Size(80, 30);
             this.btnOK.TabIndex = 7;
-            this.btnOK.Text = "Create Table";
+            this.btnOK.Text = "Create";
             this.btnOK.UseVisualStyleBackColor = false;
             this.btnOK.Click += new EventHandler(this.BtnOK_Click);
             
