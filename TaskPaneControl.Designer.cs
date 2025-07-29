@@ -178,25 +178,41 @@ namespace my_addin
             | System.Windows.Forms.AnchorStyles.Right)));
             this.sectionsContainer.AutoSize = true;
             this.sectionsContainer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.sectionsContainer.Controls.Add(this.presentationPanel);
-            this.sectionsContainer.Controls.Add(this.divider1);
-            this.sectionsContainer.Controls.Add(this.wizardsPanel);
-            this.sectionsContainer.Controls.Add(this.divider2);
-            this.sectionsContainer.Controls.Add(this.smartElementsPanel);
-            this.sectionsContainer.Controls.Add(this.divider3);
-            this.sectionsContainer.Controls.Add(this.positionPanel);
-            this.sectionsContainer.Controls.Add(this.divider4);
-            this.sectionsContainer.Controls.Add(this.sizePanel);
-            this.sectionsContainer.Controls.Add(this.divider5);
-            this.sectionsContainer.Controls.Add(this.shapePanel);
-            this.sectionsContainer.Controls.Add(this.divider6);
-            this.sectionsContainer.Controls.Add(this.colorPanel);
-            this.sectionsContainer.Controls.Add(this.divider7);
-            this.sectionsContainer.Controls.Add(this.textPanel);
-            this.sectionsContainer.Controls.Add(this.divider8);
-            this.sectionsContainer.Controls.Add(this.navigationPanel);
-            this.sectionsContainer.Controls.Add(this.divider9);
-            this.sectionsContainer.Controls.Add(this.expertToolsPanel);
+            
+            // OPTIMIZED: Use AddRange for better performance - reduces layout calculations
+            this.sectionsContainer.SuspendLayout();
+            try
+            {
+                var controlsToAdd = new System.Windows.Forms.Control[]
+                {
+                    this.presentationPanel,
+                    this.divider1,
+                    this.wizardsPanel,
+                    this.divider2,
+                    this.smartElementsPanel,
+                    this.divider3,
+                    this.positionPanel,
+                    this.divider4,
+                    this.sizePanel,
+                    this.divider5,
+                    this.shapePanel,
+                    this.divider6,
+                    this.colorPanel,
+                    this.divider7,
+                    this.textPanel,
+                    this.divider8,
+                    this.navigationPanel,
+                    this.divider9,
+                    this.expertToolsPanel
+                };
+                
+                this.sectionsContainer.Controls.AddRange(controlsToAdd);
+            }
+            finally
+            {
+                this.sectionsContainer.ResumeLayout(true);
+            }
+            
             this.sectionsContainer.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.sectionsContainer.Location = new System.Drawing.Point(0, 0);
             this.sectionsContainer.Name = "sectionsContainer";
@@ -235,12 +251,17 @@ namespace my_addin
             | System.Windows.Forms.AnchorStyles.Right)));
             this.presentationButtonsPanel.AutoSize = true;
             this.presentationButtonsPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.presentationButtonsPanel.Controls.Add(this.btnNew);
-            this.presentationButtonsPanel.Controls.Add(this.btnOpen);
-            this.presentationButtonsPanel.Controls.Add(this.btnSave);
-            this.presentationButtonsPanel.Controls.Add(this.btnSaveAs);
-            this.presentationButtonsPanel.Controls.Add(this.btnPrint);
-            this.presentationButtonsPanel.Controls.Add(this.btnShare);
+            
+            // OPTIMIZED: Use AddRange for better performance
+            this.presentationButtonsPanel.Controls.AddRange(new System.Windows.Forms.Control[] {
+                this.btnNew,
+                this.btnOpen,
+                this.btnSave,
+                this.btnSaveAs,
+                this.btnPrint,
+                this.btnShare
+            });
+            
             this.presentationButtonsPanel.Location = new System.Drawing.Point(0, 13);
             this.presentationButtonsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.presentationButtonsPanel.Name = "presentationButtonsPanel";
@@ -550,13 +571,15 @@ namespace my_addin
             | System.Windows.Forms.AnchorStyles.Right)));
             this.smartElementsButtonsPanel.AutoSize = true;
             this.smartElementsButtonsPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.smartElementsButtonsPanel.Controls.Add(this.btnChart);
-            this.smartElementsButtonsPanel.Controls.Add(this.btnDiagram);
-            this.smartElementsButtonsPanel.Controls.Add(this.btnTable);
-            this.smartElementsButtonsPanel.Controls.Add(this.btnMatrixTable);
-            this.smartElementsButtonsPanel.Controls.Add(this.btnStickyNote);
-            this.smartElementsButtonsPanel.Controls.Add(this.btnCitation);
-            this.smartElementsButtonsPanel.Controls.Add(this.btnStandardObjects);
+            this.smartElementsButtonsPanel.Controls.AddRange(new System.Windows.Forms.Control[] {
+                this.btnChart,
+                this.btnDiagram,
+                this.btnTable,
+                this.btnMatrixTable,
+                this.btnStickyNote,
+                this.btnCitation,
+                this.btnStandardObjects
+            });
             this.smartElementsButtonsPanel.Location = new System.Drawing.Point(0, 13);
             this.smartElementsButtonsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.smartElementsButtonsPanel.Name = "smartElementsButtonsPanel";
@@ -724,16 +747,18 @@ namespace my_addin
             | System.Windows.Forms.AnchorStyles.Right)));
             this.positionButtonsPanel.AutoSize = true;
             this.positionButtonsPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.positionButtonsPanel.Controls.Add(this.btnAlignLeft);
-            this.positionButtonsPanel.Controls.Add(this.btnAlignCenter);
-            this.positionButtonsPanel.Controls.Add(this.btnAlignRight);
-            this.positionButtonsPanel.Controls.Add(this.btnDistribute);
-            this.positionButtonsPanel.Controls.Add(this.btnMatchBoth);
-            this.positionButtonsPanel.Controls.Add(this.btnMatchHeight);
-            this.positionButtonsPanel.Controls.Add(this.btnMatchWidth);
-            this.positionButtonsPanel.Controls.Add(this.btnMakeVertical);
-            this.positionButtonsPanel.Controls.Add(this.btnMakeHorizontal);
-            this.positionButtonsPanel.Controls.Add(this.btnSwapLocations);
+            this.positionButtonsPanel.Controls.AddRange(new System.Windows.Forms.Control[] {
+                this.btnAlignLeft,
+                this.btnAlignCenter,
+                this.btnAlignRight,
+                this.btnDistribute,
+                this.btnMatchBoth,
+                this.btnMatchHeight,
+                this.btnMatchWidth,
+                this.btnMakeVertical,
+                this.btnMakeHorizontal,
+                this.btnSwapLocations
+            });
             this.positionButtonsPanel.Location = new System.Drawing.Point(0, 13);
             this.positionButtonsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.positionButtonsPanel.Name = "positionButtonsPanel";

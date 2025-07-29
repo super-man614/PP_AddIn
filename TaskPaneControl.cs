@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 using Office = Microsoft.Office.Core;
@@ -11,8 +12,66 @@ namespace my_addin
         public TaskPaneControl()
         {
             InitializeComponent();
+            OptimizeRemainingPanels(); // Optimize panels not yet optimized in Designer
             SetupEventHandlers();
             SetInitialValues();
+        }
+
+        /// <summary>
+        /// Optimizes remaining button panels that still use individual Controls.Add calls
+        /// This method handles panels not yet optimized in the Designer file
+        /// </summary>
+        private void OptimizeRemainingPanels()
+        {
+            // Wizard buttons panel optimization
+            if (wizardButtonsPanel != null)
+            {
+                wizardButtonsPanel.SuspendLayout();
+                var wizardControls = wizardButtonsPanel.Controls.Cast<Control>().ToArray();
+                wizardButtonsPanel.Controls.Clear();
+                wizardButtonsPanel.Controls.AddRange(wizardControls);
+                wizardButtonsPanel.ResumeLayout(true);
+            }
+            
+            // Text buttons panel optimization  
+            if (textButtonsPanel != null)
+            {
+                textButtonsPanel.SuspendLayout();
+                var textControls = textButtonsPanel.Controls.Cast<Control>().ToArray();
+                textButtonsPanel.Controls.Clear();
+                textButtonsPanel.Controls.AddRange(textControls);
+                textButtonsPanel.ResumeLayout(true);
+            }
+            
+            // Shape buttons panel optimization
+            if (shapeButtonsPanel != null)
+            {
+                shapeButtonsPanel.SuspendLayout();
+                var shapeControls = shapeButtonsPanel.Controls.Cast<Control>().ToArray();
+                shapeButtonsPanel.Controls.Clear();
+                shapeButtonsPanel.Controls.AddRange(shapeControls);
+                shapeButtonsPanel.ResumeLayout(true);
+            }
+            
+            // Color buttons panel optimization
+            if (colorButtonsPanel != null)
+            {
+                colorButtonsPanel.SuspendLayout();
+                var colorControls = colorButtonsPanel.Controls.Cast<Control>().ToArray();
+                colorButtonsPanel.Controls.Clear();
+                colorButtonsPanel.Controls.AddRange(colorControls);
+                colorButtonsPanel.ResumeLayout(true);
+            }
+            
+            // Navigation buttons panel optimization
+            if (navigationButtonsPanel != null)
+            {
+                navigationButtonsPanel.SuspendLayout();
+                var navControls = navigationButtonsPanel.Controls.Cast<Control>().ToArray();
+                navigationButtonsPanel.Controls.Clear();
+                navigationButtonsPanel.Controls.AddRange(navControls);
+                navigationButtonsPanel.ResumeLayout(true);
+            }
         }
 
         private void SetupEventHandlers()
@@ -23,258 +82,9 @@ namespace my_addin
             if (btnApplySize != null)
                 btnApplySize.Click += BtnApplySize_Click;
             
-            // Button hover events
-            if (btnNew != null)
-            {
-                btnNew.MouseEnter += BtnNew_MouseEnter;
-                btnNew.MouseLeave += BtnNew_MouseLeave;
-            }
-            if (btnOpen != null)
-            {
-                btnOpen.MouseEnter += BtnOpen_MouseEnter;
-                btnOpen.MouseLeave += BtnOpen_MouseLeave;
-            }
-            if (btnSave != null)
-            {
-                btnSave.MouseEnter += BtnSave_MouseEnter;
-                btnSave.MouseLeave += BtnSave_MouseLeave;
-            }
-            if (btnSaveAs != null)
-            {
-                btnSaveAs.MouseEnter += BtnSaveAs_MouseEnter;
-                btnSaveAs.MouseLeave += BtnSaveAs_MouseLeave;
-            }
-            if (btnPrint != null)
-            {
-                btnPrint.MouseEnter += BtnPrint_MouseEnter;
-                btnPrint.MouseLeave += BtnPrint_MouseLeave;
-            }
-            if (btnShare != null)
-            {
-                btnShare.MouseEnter += BtnShare_MouseEnter;
-                btnShare.MouseLeave += BtnShare_MouseLeave;
-            }
-            
-            // Wizards section button hover events
-            if (btnAgenda != null)
-            {
-                btnAgenda.MouseEnter += BtnAgenda_MouseEnter;
-                btnAgenda.MouseLeave += BtnAgenda_MouseLeave;
-            }
-            if (btnMaster != null)
-            {
-                btnMaster.MouseEnter += BtnMaster_MouseEnter;
-                btnMaster.MouseLeave += BtnMaster_MouseLeave;
-            }
-            if (btnElement != null)
-            {
-                btnElement.MouseEnter += BtnElement_MouseEnter;
-                btnElement.MouseLeave += BtnElement_MouseLeave;
-            }
-            if (btnText != null)
-            {
-                btnText.MouseEnter += BtnText_MouseEnter;
-                btnText.MouseLeave += BtnText_MouseLeave;
-            }
-            if (btnFormat != null)
-            {
-                btnFormat.MouseEnter += BtnFormat_MouseEnter;
-                btnFormat.MouseLeave += BtnFormat_MouseLeave;
-            }
-            if (btnMap != null)
-            {
-                btnMap.MouseEnter += BtnMap_MouseEnter;
-                btnMap.MouseLeave += BtnMap_MouseLeave;
-            }
-            
-            // Smart Elements section button hover events
-            if (btnChart != null)
-            {
-                btnChart.MouseEnter += BtnChart_MouseEnter;
-                btnChart.MouseLeave += BtnChart_MouseLeave;
-            }
-            if (btnDiagram != null)
-            {
-                btnDiagram.MouseEnter += BtnDiagram_MouseEnter;
-                btnDiagram.MouseLeave += BtnDiagram_MouseLeave;
-            }
-            if (btnTable != null)
-            {
-                btnTable.MouseEnter += BtnTable_MouseEnter;
-                btnTable.MouseLeave += BtnTable_MouseLeave;
-            }
-            
-            // Matrix table section button hover events
-            if (btnMatrixTable != null)
-            {
-                btnMatrixTable.MouseEnter += BtnMatrixTable_MouseEnter;
-                btnMatrixTable.MouseLeave += BtnMatrixTable_MouseLeave;
-            }
-            
-            // Sticky notes section button hover events
-            if (btnStickyNote != null)
-            {
-                btnStickyNote.MouseEnter += BtnStickyNote_MouseEnter;
-                btnStickyNote.MouseLeave += BtnStickyNote_MouseLeave;
-            }
-            
-            // Citation and standard objects section button hover events
-            if (btnCitation != null)
-            {
-                btnCitation.MouseEnter += BtnCitation_MouseEnter;
-                btnCitation.MouseLeave += BtnCitation_MouseLeave;
-            }
-            if (btnStandardObjects != null)
-            {
-                btnStandardObjects.MouseEnter += BtnStandardObjects_MouseEnter;
-                btnStandardObjects.MouseLeave += BtnStandardObjects_MouseLeave;
-            }
-            
-            // Position section button hover events
-            if (btnAlignLeft != null)
-            {
-                btnAlignLeft.MouseEnter += BtnAlignLeft_MouseEnter;
-                btnAlignLeft.MouseLeave += BtnAlignLeft_MouseLeave;
-            }
-            if (btnAlignCenter != null)
-            {
-                btnAlignCenter.MouseEnter += BtnAlignCenter_MouseEnter;
-                btnAlignCenter.MouseLeave += BtnAlignCenter_MouseLeave;
-            }
-            if (btnAlignRight != null)
-            {
-                btnAlignRight.MouseEnter += BtnAlignRight_MouseEnter;
-                btnAlignRight.MouseLeave += BtnAlignRight_MouseLeave;
-            }
-            if (btnDistribute != null)
-            {
-                btnDistribute.MouseEnter += BtnDistribute_MouseEnter;
-                btnDistribute.MouseLeave += BtnDistribute_MouseLeave;
-            }
-            
-            // Dimension matching section button hover events
-            if (btnMatchBoth != null)
-            {
-                btnMatchBoth.MouseEnter += BtnMatchBoth_MouseEnter;
-                btnMatchBoth.MouseLeave += BtnMatchBoth_MouseLeave;
-            }
-            if (btnMatchHeight != null)
-            {
-                btnMatchHeight.MouseEnter += BtnMatchHeight_MouseEnter;
-                btnMatchHeight.MouseLeave += BtnMatchHeight_MouseLeave;
-            }
-            if (btnMatchWidth != null)
-            {
-                btnMatchWidth.MouseEnter += BtnMatchWidth_MouseEnter;
-                btnMatchWidth.MouseLeave += BtnMatchWidth_MouseLeave;
-            }
-            
-            // Rotation and swap section button hover events
-            if (btnMakeVertical != null)
-            {
-                btnMakeVertical.MouseEnter += BtnMakeVertical_MouseEnter;
-                btnMakeVertical.MouseLeave += BtnMakeVertical_MouseLeave;
-            }
-            if (btnMakeHorizontal != null)
-            {
-                btnMakeHorizontal.MouseEnter += BtnMakeHorizontal_MouseEnter;
-                btnMakeHorizontal.MouseLeave += BtnMakeHorizontal_MouseLeave;
-            }
-            if (btnSwapLocations != null)
-            {
-                btnSwapLocations.MouseEnter += BtnSwapLocations_MouseEnter;
-                btnSwapLocations.MouseLeave += BtnSwapLocations_MouseLeave;
-            }
-            
-            // Shape section button hover events
-            if (btnRectangle != null)
-            {
-                btnRectangle.MouseEnter += BtnRectangle_MouseEnter;
-                btnRectangle.MouseLeave += BtnRectangle_MouseLeave;
-            }
-            if (btnCircle != null)
-            {
-                btnCircle.MouseEnter += BtnCircle_MouseEnter;
-                btnCircle.MouseLeave += BtnCircle_MouseLeave;
-            }
-            if (btnArrow != null)
-            {
-                btnArrow.MouseEnter += BtnArrow_MouseEnter;
-                btnArrow.MouseLeave += BtnArrow_MouseLeave;
-            }
-            if (btnLine != null)
-            {
-                btnLine.MouseEnter += BtnLine_MouseEnter;
-                btnLine.MouseLeave += BtnLine_MouseLeave;
-            }
-            
-            // Color section button hover events
-            if (btnFillColor != null)
-            {
-                btnFillColor.MouseEnter += BtnFillColor_MouseEnter;
-                btnFillColor.MouseLeave += BtnFillColor_MouseLeave;
-            }
-            if (btnTextColor != null)
-            {
-                btnTextColor.MouseEnter += BtnTextColor_MouseEnter;
-                btnTextColor.MouseLeave += BtnTextColor_MouseLeave;
-            }
-            if (btnOutlineColor != null)
-            {
-                btnOutlineColor.MouseEnter += BtnOutlineColor_MouseEnter;
-                btnOutlineColor.MouseLeave += BtnOutlineColor_MouseLeave;
-            }
-            
-            // Text section button hover events
-            if (btnBold != null)
-            {
-                btnBold.MouseEnter += BtnBold_MouseEnter;
-                btnBold.MouseLeave += BtnBold_MouseLeave;
-            }
-            if (btnItalic != null)
-            {
-                btnItalic.MouseEnter += BtnItalic_MouseEnter;
-                btnItalic.MouseLeave += BtnItalic_MouseLeave;
-            }
-            if (btnUnderline != null)
-            {
-                btnUnderline.MouseEnter += BtnUnderline_MouseEnter;
-                btnUnderline.MouseLeave += BtnUnderline_MouseLeave;
-            }
-            if (btnBullets != null)
-            {
-                btnBullets.MouseEnter += BtnBullets_MouseEnter;
-                btnBullets.MouseLeave += BtnBullets_MouseLeave;
-            }
-            
-            // Text wrapping section button hover events
-            if (btnWrapText != null)
-            {
-                btnWrapText.MouseEnter += BtnWrapText_MouseEnter;
-                btnWrapText.MouseLeave += BtnWrapText_MouseLeave;
-            }
-            if (btnNoWrapText != null)
-            {
-                btnNoWrapText.MouseEnter += BtnNoWrapText_MouseEnter;
-                btnNoWrapText.MouseLeave += BtnNoWrapText_MouseLeave;
-            }
-            
-            // Navigation section button hover events
-            if (btnZoomIn != null)
-            {
-                btnZoomIn.MouseEnter += BtnNavButton_MouseEnter;
-                btnZoomIn.MouseLeave += BtnNavButton_MouseLeave;
-            }
-            if (btnZoomOut != null)
-            {
-                btnZoomOut.MouseEnter += BtnNavButton_MouseEnter;
-                btnZoomOut.MouseLeave += BtnNavButton_MouseLeave;
-            }
-            if (btnFitToWindow != null)
-            {
-                btnFitToWindow.MouseEnter += BtnNavButton_MouseEnter;
-                btnFitToWindow.MouseLeave += BtnNavButton_MouseLeave;
-            }
+            // OPTIMIZED: Apply hover effects to ALL buttons at once using our utility
+            // This replaces ~250 lines of duplicate hover event handlers!
+            ButtonHoverUtility.EnableHoverEffectsForContainer(this, recursive: true);
             
             // Load current slides
             this.Load += TaskPaneControl_Load;
