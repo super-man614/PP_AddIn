@@ -795,11 +795,13 @@ namespace my_addin
             this.btnAlignLeft.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAlignLeft.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnAlignLeft.Location = new System.Drawing.Point(0, 0);
-            this.btnAlignLeft.Margin = new System.Windows.Forms.Padding(0);
+            this.btnAlignLeft.Margin = new System.Windows.Forms.Padding(1);
             this.btnAlignLeft.Name = "btnAlignLeft";
-            this.btnAlignLeft.Size = new System.Drawing.Size(25, 25);
+            this.btnAlignLeft.Size = new System.Drawing.Size(20, 20);
             this.btnAlignLeft.TabIndex = 1;
-            this.btnAlignLeft.Text = "←";
+            this.btnAlignLeft.BackgroundImage = Image.FromFile("icons/position/icons8-align-left-64.png");
+            this.btnAlignLeft.BackgroundImageLayout = ImageLayout.Stretch;
+            // this.btnAlignLeft.Text = "←";
             this.btnAlignLeft.UseVisualStyleBackColor = false;
             this.btnAlignLeft.Click += new System.EventHandler(this.BtnAlignLeft_Click);
             // 
@@ -812,11 +814,13 @@ namespace my_addin
             this.btnAlignCenter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAlignCenter.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnAlignCenter.Location = new System.Drawing.Point(25, 0);
-            this.btnAlignCenter.Margin = new System.Windows.Forms.Padding(0);
+            this.btnAlignCenter.Margin = new System.Windows.Forms.Padding(1);
             this.btnAlignCenter.Name = "btnAlignCenter";
-            this.btnAlignCenter.Size = new System.Drawing.Size(25, 25);
+            this.btnAlignCenter.Size = new System.Drawing.Size(20, 20);
             this.btnAlignCenter.TabIndex = 2;
-            this.btnAlignCenter.Text = "●";
+            this.btnAlignCenter.BackgroundImage = Image.FromFile("icons/position/icons8-align-center-64.png");
+            this.btnAlignCenter.BackgroundImageLayout = ImageLayout.Stretch;
+            // this.btnAlignCenter.Text = "●";
             this.btnAlignCenter.UseVisualStyleBackColor = false;
             this.btnAlignCenter.Click += new System.EventHandler(this.BtnAlignCenter_Click);
             // 
@@ -829,14 +833,16 @@ namespace my_addin
             this.btnAlignRight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAlignRight.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnAlignRight.Location = new System.Drawing.Point(50, 0);
-            this.btnAlignRight.Margin = new System.Windows.Forms.Padding(0);
+            this.btnAlignRight.Margin = new System.Windows.Forms.Padding(1);
             this.btnAlignRight.Name = "btnAlignRight";
-            this.btnAlignRight.Size = new System.Drawing.Size(25, 25);
+            this.btnAlignRight.Size = new System.Drawing.Size(20, 20);
             this.btnAlignRight.TabIndex = 3;
-            this.btnAlignRight.Text = "→";
+            this.btnAlignRight.BackgroundImage = Image.FromFile("icons/position/icons8-align-right-64.png");
+            this.btnAlignRight.BackgroundImageLayout = ImageLayout.Stretch;
+            // this.btnAlignRight.Text = "→";
             this.btnAlignRight.UseVisualStyleBackColor = false;
             this.btnAlignRight.Click += new System.EventHandler(this.BtnAlignRight_Click);
-            // 
+            //  
             // btnDistribute
             // 
             this.btnDistribute.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
@@ -846,11 +852,13 @@ namespace my_addin
             this.btnDistribute.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDistribute.Font = new System.Drawing.Font("Segoe UI", 8F);
             this.btnDistribute.Location = new System.Drawing.Point(75, 0);
-            this.btnDistribute.Margin = new System.Windows.Forms.Padding(0);
+            this.btnDistribute.Margin = new System.Windows.Forms.Padding(1);
             this.btnDistribute.Name = "btnDistribute";
-            this.btnDistribute.Size = new System.Drawing.Size(25, 25);
+            this.btnDistribute.Size = new System.Drawing.Size(20, 20);
             this.btnDistribute.TabIndex = 4;
-            this.btnDistribute.Text = "≡";
+            this.btnDistribute.BackgroundImage = Image.FromFile("icons/position/icons8-align-justify-64.png");
+            this.btnDistribute.BackgroundImageLayout = ImageLayout.Stretch;
+            // this.btnDistribute.Text = "≡";
             this.btnDistribute.UseVisualStyleBackColor = false;
             this.btnDistribute.Click += new System.EventHandler(this.BtnDistribute_Click);
             // 
@@ -863,11 +871,13 @@ namespace my_addin
             this.btnMatchBoth.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMatchBoth.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnMatchBoth.Location = new System.Drawing.Point(100, 0);
-            this.btnMatchBoth.Margin = new System.Windows.Forms.Padding(0);
+            this.btnMatchBoth.Margin = new System.Windows.Forms.Padding(1);
             this.btnMatchBoth.Name = "btnMatchBoth";
-            this.btnMatchBoth.Size = new System.Drawing.Size(25, 25);
+            this.btnMatchBoth.Size = new System.Drawing.Size(20, 20);
             this.btnMatchBoth.TabIndex = 5;
-            this.btnMatchBoth.Text = "📏";
+            this.btnMatchBoth.BackgroundImage = Image.FromFile("icons/position/icons8-bed-size-48.png");
+            this.btnMatchBoth.BackgroundImageLayout = ImageLayout.Stretch;
+            // this.btnMatchBoth.Text = "📏";
             this.btnMatchBoth.UseVisualStyleBackColor = false;
             this.btnMatchBoth.Click += new System.EventHandler(this.BtnMatchBoth_Click);
             // 
@@ -880,11 +890,13 @@ namespace my_addin
             this.btnMatchHeight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMatchHeight.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnMatchHeight.Location = new System.Drawing.Point(125, 0);
-            this.btnMatchHeight.Margin = new System.Windows.Forms.Padding(0);
+            this.btnMatchHeight.Margin = new System.Windows.Forms.Padding(1);
             this.btnMatchHeight.Name = "btnMatchHeight";
-            this.btnMatchHeight.Size = new System.Drawing.Size(25, 25);
+            this.btnMatchHeight.Size = new System.Drawing.Size(20, 20);
             this.btnMatchHeight.TabIndex = 6;
-            this.btnMatchHeight.Text = "↕️";
+            this.btnMatchHeight.BackgroundImage = Image.FromFile("icons/position/icons8-height-48.png");
+            this.btnMatchHeight.BackgroundImageLayout = ImageLayout.Stretch;
+            // this.btnMatchHeight.Text = "↕️";
             this.btnMatchHeight.UseVisualStyleBackColor = false;
             this.btnMatchHeight.Click += new System.EventHandler(this.BtnMatchHeight_Click);
             // 
@@ -897,11 +909,13 @@ namespace my_addin
             this.btnMatchWidth.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMatchWidth.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnMatchWidth.Location = new System.Drawing.Point(150, 0);
-            this.btnMatchWidth.Margin = new System.Windows.Forms.Padding(0);
+            this.btnMatchWidth.Margin = new System.Windows.Forms.Padding(1);
             this.btnMatchWidth.Name = "btnMatchWidth";
-            this.btnMatchWidth.Size = new System.Drawing.Size(25, 25);
+            this.btnMatchWidth.Size = new System.Drawing.Size(20, 20);
             this.btnMatchWidth.TabIndex = 7;
-            this.btnMatchWidth.Text = "↔️";
+            this.btnMatchWidth.BackgroundImage = Image.FromFile("icons/position/icons8-width-48.png");
+            this.btnMatchWidth.BackgroundImageLayout = ImageLayout.Stretch;
+            // this.btnMatchWidth.Text = "↔️";
             this.btnMatchWidth.UseVisualStyleBackColor = false;
             this.btnMatchWidth.Click += new System.EventHandler(this.BtnMatchWidth_Click);
             // 
@@ -916,9 +930,11 @@ namespace my_addin
             this.btnMakeVertical.Location = new System.Drawing.Point(175, 0);
             this.btnMakeVertical.Margin = new System.Windows.Forms.Padding(0);
             this.btnMakeVertical.Name = "btnMakeVertical";
-            this.btnMakeVertical.Size = new System.Drawing.Size(25, 25);
+            this.btnMakeVertical.Size = new System.Drawing.Size(20, 20);
             this.btnMakeVertical.TabIndex = 8;
-            this.btnMakeVertical.Text = "↻";
+            this.btnMakeVertical.BackgroundImage = Image.FromFile("icons/position/icons8-rotate-left-48.png");
+            this.btnMakeVertical.BackgroundImageLayout = ImageLayout.Stretch;
+            // this.btnMakeVertical.Text = "↻";
             this.btnMakeVertical.UseVisualStyleBackColor = false;
             this.btnMakeVertical.Click += new System.EventHandler(this.BtnMakeVertical_Click);
             // 
@@ -931,11 +947,13 @@ namespace my_addin
             this.btnMakeHorizontal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMakeHorizontal.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnMakeHorizontal.Location = new System.Drawing.Point(200, 0);
-            this.btnMakeHorizontal.Margin = new System.Windows.Forms.Padding(0);
+            this.btnMakeHorizontal.Margin = new System.Windows.Forms.Padding(1);
             this.btnMakeHorizontal.Name = "btnMakeHorizontal";
-            this.btnMakeHorizontal.Size = new System.Drawing.Size(25, 25);
+            this.btnMakeHorizontal.Size = new System.Drawing.Size(20, 20);
             this.btnMakeHorizontal.TabIndex = 9;
-            this.btnMakeHorizontal.Text = "↺";
+            this.btnMakeHorizontal.BackgroundImage = Image.FromFile("icons/position/icons8-rotate-right-48.png");
+            this.btnMakeHorizontal.BackgroundImageLayout = ImageLayout.Stretch;
+            // this.btnMakeHorizontal.Text = "↺";
             this.btnMakeHorizontal.UseVisualStyleBackColor = false;
             this.btnMakeHorizontal.Click += new System.EventHandler(this.BtnMakeHorizontal_Click);
             // 
@@ -948,11 +966,13 @@ namespace my_addin
             this.btnSwapLocations.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSwapLocations.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnSwapLocations.Location = new System.Drawing.Point(225, 0);
-            this.btnSwapLocations.Margin = new System.Windows.Forms.Padding(0);
+            this.btnSwapLocations.Margin = new System.Windows.Forms.Padding(1);
             this.btnSwapLocations.Name = "btnSwapLocations";
-            this.btnSwapLocations.Size = new System.Drawing.Size(25, 25);
+            this.btnSwapLocations.Size = new System.Drawing.Size(20, 20);
             this.btnSwapLocations.TabIndex = 10;
-            this.btnSwapLocations.Text = "⇄";
+            this.btnSwapLocations.BackgroundImage = Image.FromFile("icons/position/icons8-swap-50.png");
+            this.btnSwapLocations.BackgroundImageLayout = ImageLayout.Stretch;
+            // this.btnSwapLocations.Text = "⇄";
             this.btnSwapLocations.UseVisualStyleBackColor = false;
             this.btnSwapLocations.Click += new System.EventHandler(this.BtnSwapLocations_Click);
             // 
