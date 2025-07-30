@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "E:\\GIT\\PP_AddIn\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3CD5F9E0-B413-4DAC-B61E-5F8CD3684D4D}|my-addin.csproj|e:\\git\\pp_addin\\taskpanecontrol.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3CD5F9E0-B413-4DAC-B61E-5F8CD3684D4D}|my-addin.csproj|solutionrelative:taskpanecontrol.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{3CD5F9E0-B413-4DAC-B61E-5F8CD3684D4D}|my-addin.csproj|E:\\GIT\\PP_AddIn\\taskpanecontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{3CD5F9E0-B413-4DAC-B61E-5F8CD3684D4D}|my-addin.csproj|solutionrelative:taskpanecontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3CD5F9E0-B413-4DAC-B61E-5F8CD3684D4D}|my-addin.csproj|e:\\git\\pp_addin\\taskpanecontrol.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3CD5F9E0-B413-4DAC-B61E-5F8CD3684D4D}|my-addin.csproj|solutionrelative:taskpanecontrol.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3CD5F9E0-B413-4DAC-B61E-5F8CD3684D4D}|my-addin.csproj|E:\\GIT\\PP_AddIn\\taskpanecontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -18,15 +18,15 @@
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
-      "VerticalTabListWidth": 100,
+      "VerticalTabListWidth": 101,
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "TaskPaneControl.cs [Design]",
               "DocumentMoniker": "E:\\GIT\\PP_AddIn\\TaskPaneControl.cs",
               "RelativeDocumentMoniker": "TaskPaneControl.cs",
@@ -34,21 +34,26 @@
               "RelativeToolTip": "TaskPaneControl.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-07-23T15:16:40.248Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "TaskPaneControl.Designer.cs",
               "DocumentMoniker": "E:\\GIT\\PP_AddIn\\TaskPaneControl.Designer.cs",
               "RelativeDocumentMoniker": "TaskPaneControl.Designer.cs",
               "ToolTip": "E:\\GIT\\PP_AddIn\\TaskPaneControl.Designer.cs",
               "RelativeToolTip": "TaskPaneControl.Designer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-07-23T12:43:48.139Z",
               "IsPinned": true,
               "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{56df62a4-05a3-4e5b-aa1a-99371ccfb997}"
             },
             {
               "$type": "Document",
@@ -58,9 +63,10 @@
               "RelativeDocumentMoniker": "TaskPaneControl.cs",
               "ToolTip": "E:\\GIT\\PP_AddIn\\TaskPaneControl.cs",
               "RelativeToolTip": "TaskPaneControl.cs",
-              "ViewState": "AgIAAKsFAAAAAAAAAAAcwLkFAAAKAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAH4AAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-25T07:36:33.833Z"
+              "WhenOpened": "2025-07-25T07:36:33.833Z",
+              "EditorCaption": ""
             }
           ]
         }

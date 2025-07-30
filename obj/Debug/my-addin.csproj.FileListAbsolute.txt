@@ -24,3 +24,10 @@ E:\GIT\PP_AddIn\obj\Debug\my-addin.csproj.CoreCompileInputs.cache
 E:\GIT\PP_AddIn\obj\Debug\my-addin.csproj.Up2Date
 E:\GIT\PP_AddIn\obj\Debug\my-addin.dll
 E:\GIT\PP_AddIn\obj\Debug\my-addin.pdb
+E:\GIT\PP_AddIn\bin\Debug\icons\icons8-open-file-48.png
+E:\GIT\PP_AddIn\bin\Debug\icons\wizzards\agenda.png
+E:\GIT\PP_AddIn\bin\Debug\icons\wizzards\master.png
+E:\GIT\PP_AddIn\bin\Debug\icons\wizzards\element.png
+E:\GIT\PP_AddIn\bin\Debug\icons\wizzards\text.png
+E:\GIT\PP_AddIn\bin\Debug\icons\wizzards\format.png
+E:\GIT\PP_AddIn\bin\Debug\icons\wizzards\map.png

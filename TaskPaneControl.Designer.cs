@@ -1,4 +1,6 @@
 using System;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace my_addin
 {
@@ -178,41 +180,25 @@ namespace my_addin
             | System.Windows.Forms.AnchorStyles.Right)));
             this.sectionsContainer.AutoSize = true;
             this.sectionsContainer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            
-            // OPTIMIZED: Use AddRange for better performance - reduces layout calculations
-            this.sectionsContainer.SuspendLayout();
-            try
-            {
-                var controlsToAdd = new System.Windows.Forms.Control[]
-                {
-                    this.presentationPanel,
-                    this.divider1,
-                    this.wizardsPanel,
-                    this.divider2,
-                    this.smartElementsPanel,
-                    this.divider3,
-                    this.positionPanel,
-                    this.divider4,
-                    this.sizePanel,
-                    this.divider5,
-                    this.shapePanel,
-                    this.divider6,
-                    this.colorPanel,
-                    this.divider7,
-                    this.textPanel,
-                    this.divider8,
-                    this.navigationPanel,
-                    this.divider9,
-                    this.expertToolsPanel
-                };
-                
-                this.sectionsContainer.Controls.AddRange(controlsToAdd);
-            }
-            finally
-            {
-                this.sectionsContainer.ResumeLayout(true);
-            }
-            
+            this.sectionsContainer.Controls.Add(this.presentationPanel);
+            this.sectionsContainer.Controls.Add(this.divider1);
+            this.sectionsContainer.Controls.Add(this.wizardsPanel);
+            this.sectionsContainer.Controls.Add(this.divider2);
+            this.sectionsContainer.Controls.Add(this.smartElementsPanel);
+            this.sectionsContainer.Controls.Add(this.divider3);
+            this.sectionsContainer.Controls.Add(this.positionPanel);
+            this.sectionsContainer.Controls.Add(this.divider4);
+            this.sectionsContainer.Controls.Add(this.sizePanel);
+            this.sectionsContainer.Controls.Add(this.divider5);
+            this.sectionsContainer.Controls.Add(this.shapePanel);
+            this.sectionsContainer.Controls.Add(this.divider6);
+            this.sectionsContainer.Controls.Add(this.colorPanel);
+            this.sectionsContainer.Controls.Add(this.divider7);
+            this.sectionsContainer.Controls.Add(this.textPanel);
+            this.sectionsContainer.Controls.Add(this.divider8);
+            this.sectionsContainer.Controls.Add(this.navigationPanel);
+            this.sectionsContainer.Controls.Add(this.divider9);
+            this.sectionsContainer.Controls.Add(this.expertToolsPanel);
             this.sectionsContainer.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.sectionsContainer.Location = new System.Drawing.Point(0, 0);
             this.sectionsContainer.Name = "sectionsContainer";
@@ -251,17 +237,12 @@ namespace my_addin
             | System.Windows.Forms.AnchorStyles.Right)));
             this.presentationButtonsPanel.AutoSize = true;
             this.presentationButtonsPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            
-            // OPTIMIZED: Use AddRange for better performance
-            this.presentationButtonsPanel.Controls.AddRange(new System.Windows.Forms.Control[] {
-                this.btnNew,
-                this.btnOpen,
-                this.btnSave,
-                this.btnSaveAs,
-                this.btnPrint,
-                this.btnShare
-            });
-            
+            this.presentationButtonsPanel.Controls.Add(this.btnNew);
+            this.presentationButtonsPanel.Controls.Add(this.btnOpen);
+            this.presentationButtonsPanel.Controls.Add(this.btnSave);
+            this.presentationButtonsPanel.Controls.Add(this.btnSaveAs);
+            this.presentationButtonsPanel.Controls.Add(this.btnPrint);
+            this.presentationButtonsPanel.Controls.Add(this.btnShare);
             this.presentationButtonsPanel.Location = new System.Drawing.Point(0, 13);
             this.presentationButtonsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.presentationButtonsPanel.Name = "presentationButtonsPanel";
@@ -278,11 +259,14 @@ namespace my_addin
             this.btnNew.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnNew.ForeColor = System.Drawing.Color.DarkBlue;
             this.btnNew.Location = new System.Drawing.Point(0, 0);
-            this.btnNew.Margin = new System.Windows.Forms.Padding(0);
+            this.btnNew.Margin = new System.Windows.Forms.Padding(1);
             this.btnNew.Name = "btnNew";
-            this.btnNew.Size = new System.Drawing.Size(25, 25);
             this.btnNew.TabIndex = 1;
-            this.btnNew.Text = "📄";
+            //this.btnNew.Text = "📄";
+            this.btnNew.Size = new System.Drawing.Size(20, 20);
+            this.btnNew.BackColor = Color.Transparent;
+            this.btnNew.BackgroundImage = Image.FromFile("icons/file/icons8-file-50.png");
+            this.btnNew.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnNew.UseVisualStyleBackColor = false;
             this.btnNew.Click += new System.EventHandler(this.BtnNew_Click);
             // 
@@ -295,11 +279,14 @@ namespace my_addin
             this.btnOpen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnOpen.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnOpen.Location = new System.Drawing.Point(25, 0);
-            this.btnOpen.Margin = new System.Windows.Forms.Padding(0);
+            this.btnOpen.Margin = new System.Windows.Forms.Padding(1);
             this.btnOpen.Name = "btnOpen";
-            this.btnOpen.Size = new System.Drawing.Size(25, 25);
             this.btnOpen.TabIndex = 2;
-            this.btnOpen.Text = "📂";
+            this.btnOpen.Size = new System.Drawing.Size(20, 20);
+            this.btnOpen.BackColor = Color.Transparent;
+            this.btnOpen.BackgroundImage = Image.FromFile("icons/file/icons8-open-file-48.png");
+            this.btnOpen.BackgroundImageLayout = ImageLayout.Stretch;
+            //this.btnOpen.Text = "📂";
             this.btnOpen.UseVisualStyleBackColor = false;
             this.btnOpen.Click += new System.EventHandler(this.BtnOpen_Click);
             // 
@@ -313,11 +300,14 @@ namespace my_addin
             this.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSave.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnSave.Location = new System.Drawing.Point(50, 0);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(0);
+            this.btnSave.Margin = new System.Windows.Forms.Padding(1);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(25, 25);
             this.btnSave.TabIndex = 3;
-            this.btnSave.Text = "💾";
+            //this.btnSave.Text = "💾";
+            this.btnSave.Size = new System.Drawing.Size(20, 20);
+            this.btnSave.BackColor = Color.Transparent;
+            this.btnSave.BackgroundImage = Image.FromFile("icons/file/icons8-save-50.png");
+            this.btnSave.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnSave.UseVisualStyleBackColor = false;
             this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
             // 
@@ -331,11 +321,14 @@ namespace my_addin
             this.btnSaveAs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSaveAs.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnSaveAs.Location = new System.Drawing.Point(75, 0);
-            this.btnSaveAs.Margin = new System.Windows.Forms.Padding(0);
+            this.btnSaveAs.Margin = new System.Windows.Forms.Padding(1);
             this.btnSaveAs.Name = "btnSaveAs";
-            this.btnSaveAs.Size = new System.Drawing.Size(25, 25);
+            this.btnSaveAs.Size = new System.Drawing.Size(20, 20);
             this.btnSaveAs.TabIndex = 4;
-            this.btnSaveAs.Text = "📋";
+            this.btnSaveAs.BackColor = Color.Transparent;
+            this.btnSaveAs.BackgroundImage = Image.FromFile("icons/file/icons8-save-as-50.png");
+            this.btnSaveAs.BackgroundImageLayout = ImageLayout.Stretch;
+            //this.btnSaveAs.Text = "📋";
             this.btnSaveAs.UseVisualStyleBackColor = false;
             this.btnSaveAs.Click += new System.EventHandler(this.BtnSaveAs_Click);
             // 
@@ -349,11 +342,14 @@ namespace my_addin
             this.btnPrint.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnPrint.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnPrint.Location = new System.Drawing.Point(100, 0);
-            this.btnPrint.Margin = new System.Windows.Forms.Padding(0);
+            this.btnPrint.Margin = new System.Windows.Forms.Padding(1);
             this.btnPrint.Name = "btnPrint";
-            this.btnPrint.Size = new System.Drawing.Size(25, 25);
+            this.btnPrint.Size = new System.Drawing.Size(20, 20);
             this.btnPrint.TabIndex = 5;
-            this.btnPrint.Text = "🖨";
+            this.btnPrint.BackColor = Color.Transparent;
+            this.btnPrint.BackgroundImage = Image.FromFile("icons/file/icons8-export-50.png");
+            this.btnPrint.BackgroundImageLayout = ImageLayout.Stretch;
+            //this.btnPrint.Text = "🖨";
             this.btnPrint.UseVisualStyleBackColor = false;
             this.btnPrint.Click += new System.EventHandler(this.BtnPrint_Click);
             // 
@@ -367,11 +363,14 @@ namespace my_addin
             this.btnShare.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnShare.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnShare.Location = new System.Drawing.Point(125, 0);
-            this.btnShare.Margin = new System.Windows.Forms.Padding(0);
+            this.btnShare.Margin = new System.Windows.Forms.Padding(1);
             this.btnShare.Name = "btnShare";
-            this.btnShare.Size = new System.Drawing.Size(25, 25);
+            this.btnShare.Size = new System.Drawing.Size(20, 20);
             this.btnShare.TabIndex = 6;
-            this.btnShare.Text = "🤝";
+            this.btnShare.BackColor = Color.Transparent;
+            this.btnShare.BackgroundImage = Image.FromFile("icons/file/icons8-share-48.png");
+            this.btnShare.BackgroundImageLayout = ImageLayout.Stretch;
+            //this.btnShare.Text = "🤝";
             this.btnShare.UseVisualStyleBackColor = false;
             this.btnShare.Click += new System.EventHandler(this.BtnShare_Click);
             // 
@@ -380,7 +379,7 @@ namespace my_addin
             this.divider1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.divider1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(225)))), ((int)(((byte)(225)))));
-            this.divider1.Location = new System.Drawing.Point(3, 47);
+            this.divider1.Location = new System.Drawing.Point(3, 45);
             this.divider1.Name = "divider1";
             this.divider1.Size = new System.Drawing.Size(287, 1);
             this.divider1.TabIndex = 10;
@@ -394,7 +393,7 @@ namespace my_addin
             this.wizardsPanel.Controls.Add(this.wizardButtonsPanel);
             this.wizardsPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.wizardsPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.wizardsPanel.Location = new System.Drawing.Point(3, 54);
+            this.wizardsPanel.Location = new System.Drawing.Point(3, 52);
             this.wizardsPanel.Name = "wizardsPanel";
             this.wizardsPanel.Size = new System.Drawing.Size(287, 38);
             this.wizardsPanel.TabIndex = 1;
@@ -439,9 +438,11 @@ namespace my_addin
             this.btnAgenda.Location = new System.Drawing.Point(0, 0);
             this.btnAgenda.Margin = new System.Windows.Forms.Padding(0);
             this.btnAgenda.Name = "btnAgenda";
-            this.btnAgenda.Size = new System.Drawing.Size(25, 25);
+            this.btnAgenda.Size = new System.Drawing.Size(65, 20);
             this.btnAgenda.TabIndex = 1;
-            this.btnAgenda.Text = "📋";
+            // this.btnAgenda.Text = "📋";
+            this.btnAgenda.BackgroundImage = Image.FromFile("icons/wizzards/agenda.png");
+            this.btnAgenda.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnAgenda.UseVisualStyleBackColor = false;
             this.btnAgenda.Click += new System.EventHandler(this.BtnAgenda_Click);
             // 
@@ -456,9 +457,11 @@ namespace my_addin
             this.btnMaster.Location = new System.Drawing.Point(25, 0);
             this.btnMaster.Margin = new System.Windows.Forms.Padding(0);
             this.btnMaster.Name = "btnMaster";
-            this.btnMaster.Size = new System.Drawing.Size(25, 25);
+            this.btnMaster.Size = new System.Drawing.Size(65, 20);
             this.btnMaster.TabIndex = 2;
-            this.btnMaster.Text = "🎨";
+            // this.btnMaster.Text = "🎨";
+            this.btnMaster.BackgroundImage = Image.FromFile("icons/wizzards/master.png");
+            this.btnMaster.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnMaster.UseVisualStyleBackColor = false;
             this.btnMaster.Click += new System.EventHandler(this.BtnMaster_Click);
             // 
@@ -473,9 +476,11 @@ namespace my_addin
             this.btnElement.Location = new System.Drawing.Point(50, 0);
             this.btnElement.Margin = new System.Windows.Forms.Padding(0);
             this.btnElement.Name = "btnElement";
-            this.btnElement.Size = new System.Drawing.Size(25, 25);
+            this.btnElement.Size = new System.Drawing.Size(65, 20);
             this.btnElement.TabIndex = 3;
-            this.btnElement.Text = "🧩";
+            // this.btnElement.Text = "🧩";
+            this.btnElement.BackgroundImage = Image.FromFile("icons/wizzards/element.png");
+            this.btnElement.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnElement.UseVisualStyleBackColor = false;
             this.btnElement.Click += new System.EventHandler(this.BtnElement_Click);
             // 
@@ -490,9 +495,11 @@ namespace my_addin
             this.btnText.Location = new System.Drawing.Point(75, 0);
             this.btnText.Margin = new System.Windows.Forms.Padding(0);
             this.btnText.Name = "btnText";
-            this.btnText.Size = new System.Drawing.Size(25, 25);
+            this.btnText.Size = new System.Drawing.Size(65, 20);
             this.btnText.TabIndex = 4;
-            this.btnText.Text = "✏️";
+            // this.btnText.Text = "✏️";
+            this.btnText.BackgroundImage = Image.FromFile("icons/wizzards/text.png");
+            this.btnText.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnText.UseVisualStyleBackColor = false;
             this.btnText.Click += new System.EventHandler(this.BtnTextWizard_Click);
             // 
@@ -507,9 +514,11 @@ namespace my_addin
             this.btnFormat.Location = new System.Drawing.Point(100, 0);
             this.btnFormat.Margin = new System.Windows.Forms.Padding(0);
             this.btnFormat.Name = "btnFormat";
-            this.btnFormat.Size = new System.Drawing.Size(25, 25);
+            this.btnFormat.Size = new System.Drawing.Size(65, 20);
             this.btnFormat.TabIndex = 5;
-            this.btnFormat.Text = "🎯";
+            // this.btnFormat.Text = "🎯";
+            this.btnFormat.BackgroundImage = Image.FromFile("icons/wizzards/format.png");
+            this.btnFormat.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnFormat.UseVisualStyleBackColor = false;
             this.btnFormat.Click += new System.EventHandler(this.BtnFormat_Click);
             // 
@@ -524,9 +533,11 @@ namespace my_addin
             this.btnMap.Location = new System.Drawing.Point(125, 0);
             this.btnMap.Margin = new System.Windows.Forms.Padding(0);
             this.btnMap.Name = "btnMap";
-            this.btnMap.Size = new System.Drawing.Size(25, 25);
+            this.btnMap.Size = new System.Drawing.Size(65, 20);
             this.btnMap.TabIndex = 6;
-            this.btnMap.Text = "🗺️";
+            // this.btnMap.Text = "🗺️";
+            this.btnMap.BackgroundImage = Image.FromFile("icons/wizzards/map.png");
+            this.btnMap.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnMap.UseVisualStyleBackColor = false;
             this.btnMap.Click += new System.EventHandler(this.BtnMap_Click);
             // 
@@ -571,15 +582,13 @@ namespace my_addin
             | System.Windows.Forms.AnchorStyles.Right)));
             this.smartElementsButtonsPanel.AutoSize = true;
             this.smartElementsButtonsPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.smartElementsButtonsPanel.Controls.AddRange(new System.Windows.Forms.Control[] {
-                this.btnChart,
-                this.btnDiagram,
-                this.btnTable,
-                this.btnMatrixTable,
-                this.btnStickyNote,
-                this.btnCitation,
-                this.btnStandardObjects
-            });
+            this.smartElementsButtonsPanel.Controls.Add(this.btnChart);
+            this.smartElementsButtonsPanel.Controls.Add(this.btnDiagram);
+            this.smartElementsButtonsPanel.Controls.Add(this.btnTable);
+            this.smartElementsButtonsPanel.Controls.Add(this.btnMatrixTable);
+            this.smartElementsButtonsPanel.Controls.Add(this.btnStickyNote);
+            this.smartElementsButtonsPanel.Controls.Add(this.btnCitation);
+            this.smartElementsButtonsPanel.Controls.Add(this.btnStandardObjects);
             this.smartElementsButtonsPanel.Location = new System.Drawing.Point(0, 13);
             this.smartElementsButtonsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.smartElementsButtonsPanel.Name = "smartElementsButtonsPanel";
@@ -595,11 +604,13 @@ namespace my_addin
             this.btnChart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnChart.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnChart.Location = new System.Drawing.Point(0, 0);
-            this.btnChart.Margin = new System.Windows.Forms.Padding(0);
+            this.btnChart.Margin = new System.Windows.Forms.Padding(1);
             this.btnChart.Name = "btnChart";
-            this.btnChart.Size = new System.Drawing.Size(25, 25);
+            this.btnChart.Size = new System.Drawing.Size(20, 20);
             this.btnChart.TabIndex = 1;
-            this.btnChart.Text = "📊";
+            this.btnChart.BackgroundImage = Image.FromFile("icons/elements/icons8-chart-60.png");
+            this.btnChart.BackgroundImageLayout = ImageLayout.Stretch;
+            // this.btnChart.Text = "📊";
             this.btnChart.UseVisualStyleBackColor = false;
             this.btnChart.Click += new System.EventHandler(this.BtnChart_Click);
             // 
@@ -612,11 +623,13 @@ namespace my_addin
             this.btnDiagram.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDiagram.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnDiagram.Location = new System.Drawing.Point(25, 0);
-            this.btnDiagram.Margin = new System.Windows.Forms.Padding(0);
+            this.btnDiagram.Margin = new System.Windows.Forms.Padding(1);
             this.btnDiagram.Name = "btnDiagram";
-            this.btnDiagram.Size = new System.Drawing.Size(25, 25);
+            this.btnDiagram.Size = new System.Drawing.Size(20, 20);
             this.btnDiagram.TabIndex = 2;
-            this.btnDiagram.Text = "🎨";
+            this.btnDiagram.BackgroundImage = Image.FromFile("icons/elements/icons8-color-palette-48.png");
+            this.btnDiagram.BackgroundImageLayout = ImageLayout.Stretch;
+            // this.btnDiagram.Text = "🎨";
             this.btnDiagram.UseVisualStyleBackColor = false;
             this.btnDiagram.Click += new System.EventHandler(this.BtnDiagram_Click);
             // 
@@ -629,15 +642,17 @@ namespace my_addin
             this.btnTable.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnTable.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnTable.Location = new System.Drawing.Point(50, 0);
-            this.btnTable.Margin = new System.Windows.Forms.Padding(0);
+            this.btnTable.Margin = new System.Windows.Forms.Padding(1);
             this.btnTable.Name = "btnTable";
-            this.btnTable.Size = new System.Drawing.Size(25, 25);
+            this.btnTable.Size = new System.Drawing.Size(20, 20);
             this.btnTable.TabIndex = 3;
-            this.btnTable.Text = "📋";
+            this.btnTable.BackgroundImage = Image.FromFile("icons/elements/icons8-table-50.png");
+            this.btnTable.BackgroundImageLayout = ImageLayout.Stretch;
+            // this.btnTable.Text = "📋";
             this.btnTable.UseVisualStyleBackColor = false;
             this.btnTable.Click += new System.EventHandler(this.BtnTable_Click);
             // 
-            // btnMatrixTable
+            // btnMatrixTable   
             // 
             this.btnMatrixTable.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.btnMatrixTable.FlatAppearance.BorderSize = 0;
@@ -646,11 +661,13 @@ namespace my_addin
             this.btnMatrixTable.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMatrixTable.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnMatrixTable.Location = new System.Drawing.Point(75, 0);
-            this.btnMatrixTable.Margin = new System.Windows.Forms.Padding(0);
+            this.btnMatrixTable.Margin = new System.Windows.Forms.Padding(1);
             this.btnMatrixTable.Name = "btnMatrixTable";
-            this.btnMatrixTable.Size = new System.Drawing.Size(25, 25);
+            this.btnMatrixTable.Size = new System.Drawing.Size(20, 20);
             this.btnMatrixTable.TabIndex = 4;
-            this.btnMatrixTable.Text = "🏢";
+            this.btnMatrixTable.BackgroundImage = Image.FromFile("icons/elements/icons8-matrix-50.png");
+            this.btnMatrixTable.BackgroundImageLayout = ImageLayout.Stretch;
+            // this.btnMatrixTable.Text = "🏢";
             this.btnMatrixTable.UseVisualStyleBackColor = false;
             this.btnMatrixTable.Click += new System.EventHandler(this.BtnMatrixTable_Click);
             // 
@@ -663,11 +680,13 @@ namespace my_addin
             this.btnStickyNote.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStickyNote.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnStickyNote.Location = new System.Drawing.Point(100, 0);
-            this.btnStickyNote.Margin = new System.Windows.Forms.Padding(0);
+            this.btnStickyNote.Margin = new System.Windows.Forms.Padding(1);
             this.btnStickyNote.Name = "btnStickyNote";
-            this.btnStickyNote.Size = new System.Drawing.Size(25, 25);
+            this.btnStickyNote.Size = new System.Drawing.Size(20, 20);
             this.btnStickyNote.TabIndex = 5;
-            this.btnStickyNote.Text = "📝";
+            this.btnStickyNote.BackgroundImage = Image.FromFile("icons/elements/icons8-sticky-notes-50.png");
+            this.btnStickyNote.BackgroundImageLayout = ImageLayout.Stretch;
+            // this.btnStickyNote.Text = "📝";
             this.btnStickyNote.UseVisualStyleBackColor = false;
             this.btnStickyNote.Click += new System.EventHandler(this.BtnStickyNote_Click);
             // 
@@ -680,11 +699,13 @@ namespace my_addin
             this.btnCitation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCitation.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnCitation.Location = new System.Drawing.Point(125, 0);
-            this.btnCitation.Margin = new System.Windows.Forms.Padding(0);
+            this.btnCitation.Margin = new System.Windows.Forms.Padding(1);
             this.btnCitation.Name = "btnCitation";
-            this.btnCitation.Size = new System.Drawing.Size(25, 25);
+            this.btnCitation.Size = new System.Drawing.Size(20, 20);
             this.btnCitation.TabIndex = 6;
-            this.btnCitation.Text = "📑";
+            this.btnCitation.BackgroundImage = Image.FromFile("icons/elements/icons8-get-quote-30.png");
+            this.btnCitation.BackgroundImageLayout = ImageLayout.Stretch;
+            // this.btnCitation.Text = "📑";
             this.btnCitation.UseVisualStyleBackColor = false;
             this.btnCitation.Click += new System.EventHandler(this.BtnCitation_Click);
             // 
@@ -697,11 +718,13 @@ namespace my_addin
             this.btnStandardObjects.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStandardObjects.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnStandardObjects.Location = new System.Drawing.Point(150, 0);
-            this.btnStandardObjects.Margin = new System.Windows.Forms.Padding(0);
+            this.btnStandardObjects.Margin = new System.Windows.Forms.Padding(1);
             this.btnStandardObjects.Name = "btnStandardObjects";
-            this.btnStandardObjects.Size = new System.Drawing.Size(25, 25);
+            this.btnStandardObjects.Size = new System.Drawing.Size(20, 20);
             this.btnStandardObjects.TabIndex = 7;
-            this.btnStandardObjects.Text = "🗂️";
+            this.btnStandardObjects.BackgroundImage = Image.FromFile("icons/elements/icons8-object-50.png");
+            this.btnStandardObjects.BackgroundImageLayout = ImageLayout.Stretch;
+            // this.btnStandardObjects.Text = "🗂️";
             this.btnStandardObjects.UseVisualStyleBackColor = false;
             this.btnStandardObjects.Click += new System.EventHandler(this.BtnStandardObjects_Click);
             // 
@@ -747,18 +770,16 @@ namespace my_addin
             | System.Windows.Forms.AnchorStyles.Right)));
             this.positionButtonsPanel.AutoSize = true;
             this.positionButtonsPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.positionButtonsPanel.Controls.AddRange(new System.Windows.Forms.Control[] {
-                this.btnAlignLeft,
-                this.btnAlignCenter,
-                this.btnAlignRight,
-                this.btnDistribute,
-                this.btnMatchBoth,
-                this.btnMatchHeight,
-                this.btnMatchWidth,
-                this.btnMakeVertical,
-                this.btnMakeHorizontal,
-                this.btnSwapLocations
-            });
+            this.positionButtonsPanel.Controls.Add(this.btnAlignLeft);
+            this.positionButtonsPanel.Controls.Add(this.btnAlignCenter);
+            this.positionButtonsPanel.Controls.Add(this.btnAlignRight);
+            this.positionButtonsPanel.Controls.Add(this.btnDistribute);
+            this.positionButtonsPanel.Controls.Add(this.btnMatchBoth);
+            this.positionButtonsPanel.Controls.Add(this.btnMatchHeight);
+            this.positionButtonsPanel.Controls.Add(this.btnMatchWidth);
+            this.positionButtonsPanel.Controls.Add(this.btnMakeVertical);
+            this.positionButtonsPanel.Controls.Add(this.btnMakeHorizontal);
+            this.positionButtonsPanel.Controls.Add(this.btnSwapLocations);
             this.positionButtonsPanel.Location = new System.Drawing.Point(0, 13);
             this.positionButtonsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.positionButtonsPanel.Name = "positionButtonsPanel";
@@ -1006,9 +1027,7 @@ namespace my_addin
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(281, 27);
             this.flowLayoutPanel1.TabIndex = 2;
-            // 
             // lblSlideSize
-            // 
             this.lblSlideSize.Font = new System.Drawing.Font("Segoe UI", 8F);
             this.lblSlideSize.ForeColor = System.Drawing.Color.Black;
             this.lblSlideSize.Location = new System.Drawing.Point(3, 0);
@@ -1017,9 +1036,7 @@ namespace my_addin
             this.lblSlideSize.TabIndex = 0;
             this.lblSlideSize.Text = "Ratio: ";
             this.lblSlideSize.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // cmbSlideSize
-            // 
             this.cmbSlideSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSlideSize.Font = new System.Drawing.Font("Segoe UI", 8F);
             this.cmbSlideSize.FormattingEnabled = true;
@@ -1036,9 +1053,7 @@ namespace my_addin
             this.cmbSlideSize.Size = new System.Drawing.Size(137, 21);
             this.cmbSlideSize.TabIndex = 1;
             this.cmbSlideSize.SelectedIndexChanged += new System.EventHandler(this.CmbSlideSize_SelectedIndexChanged);
-            // 
             // heightPanel
-            // 
             this.heightPanel.AutoSize = true;
             this.heightPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.heightPanel.Controls.Add(this.flowLayoutPanel2);
@@ -1048,18 +1063,14 @@ namespace my_addin
             this.heightPanel.Name = "heightPanel";
             this.heightPanel.Size = new System.Drawing.Size(287, 66);
             this.heightPanel.TabIndex = 3;
-            // 
             // flowLayoutPanel2
-            // 
             this.flowLayoutPanel2.Controls.Add(this.lblWidth);
             this.flowLayoutPanel2.Controls.Add(this.nudWidth);
             this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(281, 25);
             this.flowLayoutPanel2.TabIndex = 2;
-            // 
             // lblWidth
-            // 
             this.lblWidth.Location = new System.Drawing.Point(3, 0);
             this.lblWidth.Name = "lblWidth";
             this.lblWidth.Size = new System.Drawing.Size(85, 20);
@@ -1067,25 +1078,19 @@ namespace my_addin
             this.lblWidth.Text = "Width: ";
             this.lblWidth.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblWidth.Click += new System.EventHandler(this.lblWidth_Click);
-            // 
             // nudWidth
-            // 
             this.nudWidth.Location = new System.Drawing.Point(94, 3);
             this.nudWidth.Name = "nudWidth";
             this.nudWidth.Size = new System.Drawing.Size(136, 20);
             this.nudWidth.TabIndex = 3;
-            // 
             // flowLayoutPanel3
-            // 
             this.flowLayoutPanel3.Controls.Add(this.lblHeight);
             this.flowLayoutPanel3.Controls.Add(this.nudHeight);
             this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 34);
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
             this.flowLayoutPanel3.Size = new System.Drawing.Size(281, 29);
             this.flowLayoutPanel3.TabIndex = 6;
-            // 
             // lblHeight
-            // 
             this.lblHeight.Location = new System.Drawing.Point(3, 0);
             this.lblHeight.Name = "lblHeight";
             this.lblHeight.Size = new System.Drawing.Size(85, 20);

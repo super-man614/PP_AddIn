@@ -3,6 +3,8 @@
   <ribbon>
     <tabs>
       <tab id="PowerPointToolsTab" label="PowerPoint Tools">
+        
+        <!-- Task Pane Group -->
         <group id="TaskPaneGroup" label="Task Pane">
           <button id="ToggleTaskPaneButton" 
                   label="Show Tools" 
@@ -11,34 +13,340 @@
                   imageMso="TaskPane"
                   supertip="Toggle the PowerPoint Tools task pane on or off" />
         </group>
-        <group id="QuickActionsGroup" label="Quick Actions">
-          <button id="NewPresentationButton"
-                  label="New Presentation"
+        
+        <!-- File Operations Group -->
+        <group id="FileGroup" label="File">
+          <button id="NewButton"
+                  label="New"
                   size="normal"
-                  onAction="NewPresentation_Click"
+                  onAction="New_Click"
                   imageMso="FileNew"
-                  supertip="Create a new PowerPoint presentation" />
-          <button id="ExportPDFButton"
-                  label="Export PDF"
+                  supertip="Create a new presentation" />
+          <button id="OpenButton"
+                  label="Open"
                   size="normal"
-                  onAction="ExportPDF_Click"
-                  imageMso="ExportPowerPoint"
-                  supertip="Export current presentation to PDF" />
+                  onAction="Open_Click"
+                  imageMso="FileOpenDialog"
+                  supertip="Open an existing presentation" />
+          <button id="SaveButton"
+                  label="Save"
+                  size="normal"
+                  onAction="Save_Click"
+                  imageMso="FileSave"
+                  supertip="Save the current presentation" />
+          <button id="SaveAsButton"
+                  label="Save As"
+                  size="normal"
+                  onAction="SaveAs_Click"
+                  imageMso="FileSaveAs"
+                  supertip="Save the presentation with a new name" />
+          <button id="PrintButton"
+                  label="Print"
+                  size="normal"
+                  onAction="Print_Click"
+                  imageMso="FilePrint"
+                  supertip="Print the presentation" />
+          <button id="ShareButton"
+                  label="Share"
+                  size="normal"
+                  onAction="Share_Click"
+                  imageMso="ShareWorkspace"
+                  supertip="Share the presentation" />
         </group>
-        <group id="SlideActionsGroup" label="Slide Actions">
-          <button id="AddSlideButton"
-                  label="Add Slide"
+        
+        <!-- Wizards Group -->
+        <group id="WizardsGroup" label="Wizards">
+          <button id="AgendaButton"
+                  label="Agenda"
                   size="normal"
-                  onAction="AddSlide_Click"
-                  imageMso="SlideInsertSlides"
-                  supertip="Add a new slide to the presentation" />
-          <button id="DuplicateSlideButton"
-                  label="Duplicate"
+                  onAction="Agenda_Click"
+                  imageMso="OutlineDemoteToBodyText"
+                  supertip="Create an agenda slide" />
+          <button id="MasterButton"
+                  label="Master"
                   size="normal"
-                  onAction="DuplicateSlide_Click"
-                  imageMso="Copy"
-                  supertip="Duplicate the current slide" />
+                  onAction="Master_Click"
+                  imageMso="SlideMasterView"
+                  supertip="Access slide master" />
+          <button id="ElementButton"
+                  label="Element"
+                  size="normal"
+                  onAction="Element_Click"
+                  imageMso="DesignTemplate"
+                  supertip="Insert design elements" />
+          <button id="TextWizardButton"
+                  label="Text"
+                  size="normal"
+                  onAction="TextWizard_Click"
+                  imageMso="FontDialog"
+                  supertip="Text formatting wizard" />
+          <button id="FormatButton"
+                  label="Format"
+                  size="normal"
+                  onAction="Format_Click"
+                  imageMso="FormatPainter"
+                  supertip="Format shapes and objects" />
+          <button id="MapButton"
+                  label="Map"
+                  size="normal"
+                  onAction="Map_Click"
+                  imageMso="DiagramTargetDiagram"
+                  supertip="Insert maps and diagrams" />
         </group>
+        
+        <!-- Smart Elements Group -->
+        <group id="SmartElementsGroup" label="Smart Elements">
+          <button id="ChartButton"
+                  label="Chart"
+                  size="normal"
+                  onAction="Chart_Click"
+                  imageMso="ChartInsert"
+                  supertip="Insert charts and graphs" />
+          <button id="DiagramButton"
+                  label="Diagram"
+                  size="normal"
+                  onAction="Diagram_Click"
+                  imageMso="DiagramInsert"
+                  supertip="Insert diagrams and flowcharts" />
+          <button id="TableButton"
+                  label="Table"
+                  size="normal"
+                  onAction="Table_Click"
+                  imageMso="TableInsertDialog"
+                  supertip="Insert tables" />
+          <button id="MatrixTableButton"
+                  label="Matrix Table"
+                  size="normal"
+                  onAction="MatrixTable_Click"
+                  imageMso="TableInsertDialog"
+                  supertip="Insert matrix tables" />
+          <button id="StickyNoteButton"
+                  label="Sticky Note"
+                  size="normal"
+                  onAction="StickyNote_Click"
+                  imageMso="ReviewNewComment"
+                  supertip="Add sticky notes" />
+          <button id="CitationButton"
+                  label="Citation"
+                  size="normal"
+                  onAction="Citation_Click"
+                  imageMso="SourceManager"
+                  supertip="Insert citations" />
+          <button id="StandardObjectsButton"
+                  label="Objects"
+                  size="normal"
+                  onAction="StandardObjects_Click"
+                  imageMso="ObjectsSelect"
+                  supertip="Insert standard objects" />
+        </group>
+        
+        <!-- Position Group -->
+        <group id="PositionGroup" label="Position">
+          <button id="AlignLeftButton"
+                  label="Align Left"
+                  size="normal"
+                  onAction="AlignLeft_Click"
+                  imageMso="ObjectsAlignLeft"
+                  supertip="Align objects to the left" />
+          <button id="AlignCenterButton"
+                  label="Align Center"
+                  size="normal"
+                  onAction="AlignCenter_Click"
+                  imageMso="ObjectsAlignCenterHorizontal"
+                  supertip="Center align objects horizontally" />
+          <button id="AlignRightButton"
+                  label="Align Right"
+                  size="normal"
+                  onAction="AlignRight_Click"
+                  imageMso="ObjectsAlignRight"
+                  supertip="Align objects to the right" />
+          <button id="DistributeButton"
+                  label="Distribute"
+                  size="normal"
+                  onAction="Distribute_Click"
+                  imageMso="ObjectsDistributeHorizontally"
+                  supertip="Distribute objects evenly" />
+          <button id="MatchBothButton"
+                  label="Match Both"
+                  size="normal"
+                  onAction="MatchBoth_Click"
+                  imageMso="ObjectsUngroup"
+                  supertip="Match width and height" />
+          <button id="MatchHeightButton"
+                  label="Match Height"
+                  size="normal"
+                  onAction="MatchHeight_Click"
+                  imageMso="ObjectsAlignMiddle"
+                  supertip="Match object heights" />
+          <button id="MatchWidthButton"
+                  label="Match Width"
+                  size="normal"
+                  onAction="MatchWidth_Click"
+                  imageMso="ObjectsAlignCenterVertical"
+                  supertip="Match object widths" />
+        </group>
+        
+        <!-- Transform Group -->
+        <group id="TransformGroup" label="Transform">
+          <button id="MakeVerticalButton"
+                  label="Make Vertical"
+                  size="normal"
+                  onAction="MakeVertical_Click"
+                  imageMso="RotateRight90"
+                  supertip="Rotate objects to vertical" />
+          <button id="MakeHorizontalButton"
+                  label="Make Horizontal"
+                  size="normal"
+                  onAction="MakeHorizontal_Click"
+                  imageMso="RotateLeft90"
+                  supertip="Rotate objects to horizontal" />
+          <button id="SwapLocationsButton"
+                  label="Swap"
+                  size="normal"
+                  onAction="SwapLocations_Click"
+                  imageMso="ObjectBringToFront"
+                  supertip="Swap object locations" />
+        </group>
+        
+        <!-- Size Group -->
+        <group id="SizeGroup" label="Size">
+          <comboBox id="SlideSizeCombo"
+                    label="Slide Size:"
+                    onAction="SlideSize_Change"
+                    getText="GetSlideSizeText"
+                    getItemCount="GetSlideSizeItemCount"
+                    getItemLabel="GetSlideSizeItemLabel"
+                    supertip="Select slide size" />
+          <button id="ApplySizeButton"
+                  label="Apply Size"
+                  size="normal"
+                  onAction="ApplySize_Click"
+                  imageMso="SlideSize"
+                  supertip="Apply the selected slide size" />
+        </group>
+        
+        <!-- Shapes Group -->
+        <group id="ShapesGroup" label="Shapes">
+          <button id="RectangleButton"
+                  label="Rectangle"
+                  size="normal"
+                  onAction="Rectangle_Click"
+                  imageMso="ShapeRectangle"
+                  supertip="Insert rectangle shape" />
+          <button id="CircleButton"
+                  label="Circle"
+                  size="normal"
+                  onAction="Circle_Click"
+                  imageMso="ShapeOval"
+                  supertip="Insert circle shape" />
+          <button id="ArrowButton"
+                  label="Arrow"
+                  size="normal"
+                  onAction="Arrow_Click"
+                  imageMso="ShapeRightArrow"
+                  supertip="Insert arrow shape" />
+          <button id="LineButton"
+                  label="Line"
+                  size="normal"
+                  onAction="Line_Click"
+                  imageMso="DrawLine"
+                  supertip="Insert line shape" />
+        </group>
+        
+        <!-- Colors Group -->
+        <group id="ColorsGroup" label="Colors">
+          <button id="FillColorButton"
+                  label="Fill Color"
+                  size="normal"
+                  onAction="FillColor_Click"
+                  imageMso="ShapeFillColorPicker"
+                  supertip="Change fill color" />
+          <button id="TextColorButton"
+                  label="Text Color"
+                  size="normal"
+                  onAction="TextColor_Click"
+                  imageMso="FontColorPicker"
+                  supertip="Change text color" />
+          <button id="OutlineColorButton"
+                  label="Outline Color"
+                  size="normal"
+                  onAction="OutlineColor_Click"
+                  imageMso="ShapeOutlineColorPicker"
+                  supertip="Change outline color" />
+        </group>
+        
+        <!-- Text Formatting Group -->
+        <group id="TextGroup" label="Text">
+          <button id="BoldButton"
+                  label="Bold"
+                  size="normal"
+                  onAction="Bold_Click"
+                  imageMso="Bold"
+                  supertip="Make text bold" />
+          <button id="ItalicButton"
+                  label="Italic"
+                  size="normal"
+                  onAction="Italic_Click"
+                  imageMso="Italic"
+                  supertip="Make text italic" />
+          <button id="UnderlineButton"
+                  label="Underline"
+                  size="normal"
+                  onAction="Underline_Click"
+                  imageMso="Underline"
+                  supertip="Underline text" />
+          <button id="BulletsButton"
+                  label="Bullets"
+                  size="normal"
+                  onAction="Bullets_Click"
+                  imageMso="BulletsList"
+                  supertip="Add bullet points" />
+          <button id="WrapTextButton"
+                  label="Wrap Text"
+                  size="normal"
+                  onAction="WrapText_Click"
+                  imageMso="WrapText"
+                  supertip="Wrap text in shape" />
+          <button id="NoWrapTextButton"
+                  label="No Wrap"
+                  size="normal"
+                  onAction="NoWrapText_Click"
+                  imageMso="WrapNone"
+                  supertip="Disable text wrapping" />
+        </group>
+        
+        <!-- Navigation Group -->
+        <group id="NavigationGroup" label="Navigation">
+          <button id="ZoomInButton"
+                  label="Zoom In"
+                  size="normal"
+                  onAction="ZoomIn_Click"
+                  imageMso="ZoomIn"
+                  supertip="Zoom in on the slide" />
+          <button id="ZoomOutButton"
+                  label="Zoom Out"
+                  size="normal"
+                  onAction="ZoomOut_Click"
+                  imageMso="ZoomOut"
+                  supertip="Zoom out on the slide" />
+          <button id="FitToWindowButton"
+                  label="Fit to Window"
+                  size="normal"
+                  onAction="FitToWindow_Click"
+                  imageMso="ZoomFitToWindow"
+                  supertip="Fit slide to window" />
+        </group>
+        
+        <!-- Expert Tools Group -->
+        <group id="ExpertToolsGroup" label="Expert Tools">
+          <button id="FreeWebinarButton"
+                  label="Free Webinar"
+                  size="large"
+                  onAction="FreeWebinar_Click"
+                  imageMso="WebPagePreview"
+                  supertip="Access free webinar resources" />
+        </group>
+        
       </tab>
     </tabs>
   </ribbon>

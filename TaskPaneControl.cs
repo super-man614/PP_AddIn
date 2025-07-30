@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -15,6 +16,8 @@ namespace my_addin
             OptimizeRemainingPanels(); // Optimize panels not yet optimized in Designer
             SetupEventHandlers();
             SetInitialValues();
+            LoadButtonImages(); // Load custom images for buttons
+            SetupTooltips(); // Setup tooltips for all buttons
         }
 
         /// <summary>
@@ -95,6 +98,152 @@ namespace my_addin
             // Set default combo box selection
             if (cmbSlideSize != null && cmbSlideSize.Items.Count > 1)
                 cmbSlideSize.SelectedIndex = 1; // Default to 16:9
+        }
+
+        /// <summary>
+        /// Loads custom images for buttons from the icons directory
+        /// </summary>
+        private void LoadButtonImages()
+        {
+            try
+            {
+                string assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                string assemblyDir = System.IO.Path.GetDirectoryName(assemblyPath);
+                
+                // Load image for btnNew
+                string newIconPath = System.IO.Path.Combine(assemblyDir, "icons", "icons8-open-file-48.png");
+                if (System.IO.File.Exists(newIconPath))
+                {
+                    btnNew.BackgroundImage = Image.FromFile(newIconPath);
+                    btnNew.BackgroundImageLayout = ImageLayout.Stretch;
+                    btnNew.Text = ""; // Clear text to show image
+                }
+
+                // Load wizard button images
+                LoadWizardButtonImages(assemblyDir);
+            }
+            catch (Exception ex)
+            {
+                // Silently fail - buttons will use emoji fallbacks
+                System.Diagnostics.Debug.WriteLine($"Error loading button images: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Loads images for wizard buttons
+        /// </summary>
+        private void LoadWizardButtonImages(string assemblyDir)
+        {
+            try
+            {
+                // Wizard button images
+                var wizardButtons = new Dictionary<Button, string>
+                {
+                    { btnAgenda, "icons/wizzards/agenda.png" },
+                    { btnMaster, "icons/wizzards/master.png" },
+                    { btnElement, "icons/wizzards/element.png" },
+                    { btnText, "icons/wizzards/text.png" },
+                    { btnFormat, "icons/wizzards/format.png" },
+                    { btnMap, "icons/wizzards/map.png" }
+                };
+
+                foreach (var button in wizardButtons)
+                {
+                    string iconPath = System.IO.Path.Combine(assemblyDir, button.Value);
+                    if (System.IO.File.Exists(iconPath))
+                    {
+                        button.Key.BackgroundImage = Image.FromFile(iconPath);
+                        button.Key.BackgroundImageLayout = ImageLayout.Stretch;
+                        button.Key.Text = ""; // Clear text to show image
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading wizard button images: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Sets up tooltips for all buttons
+        /// </summary>
+        private void SetupTooltips()
+        {
+            // Create tooltip control
+            var tooltip = new ToolTip();
+            tooltip.AutoPopDelay = 5000;
+            tooltip.InitialDelay = 1000;
+            tooltip.ReshowDelay = 500;
+            tooltip.ShowAlways = true;
+
+            // Presentation section tooltips
+            tooltip.SetToolTip(btnNew, "New Presentation");
+            tooltip.SetToolTip(btnOpen, "Open Presentation");
+            tooltip.SetToolTip(btnSave, "Save Presentation");
+            tooltip.SetToolTip(btnSaveAs, "Save As");
+            tooltip.SetToolTip(btnPrint, "Print");
+            tooltip.SetToolTip(btnShare, "Share");
+
+            // Wizards section tooltips
+            tooltip.SetToolTip(btnAgenda, "Agenda");
+            tooltip.SetToolTip(btnMaster, "Master");
+            tooltip.SetToolTip(btnElement, "Element");
+            tooltip.SetToolTip(btnText, "Text");
+            tooltip.SetToolTip(btnFormat, "Format");
+            tooltip.SetToolTip(btnMap, "Map");
+
+            // Smart Elements section tooltips
+            tooltip.SetToolTip(btnChart, "Chart");
+            tooltip.SetToolTip(btnDiagram, "Diagram");
+            tooltip.SetToolTip(btnTable, "Table");
+            tooltip.SetToolTip(btnMatrixTable, "Matrix Table");
+            tooltip.SetToolTip(btnStickyNote, "Sticky Note");
+            tooltip.SetToolTip(btnCitation, "Citation");
+            tooltip.SetToolTip(btnStandardObjects, "Standard Objects");
+
+            // Position section tooltips
+            tooltip.SetToolTip(btnAlignLeft, "Align Left");
+            tooltip.SetToolTip(btnAlignCenter, "Align Center");
+            tooltip.SetToolTip(btnAlignRight, "Align Right");
+            tooltip.SetToolTip(btnDistribute, "Distribute");
+            tooltip.SetToolTip(btnMatchBoth, "Match Both");
+            tooltip.SetToolTip(btnMatchHeight, "Match Height");
+            tooltip.SetToolTip(btnMatchWidth, "Match Width");
+
+            // Transform section tooltips
+            tooltip.SetToolTip(btnMakeVertical, "Make Vertical");
+            tooltip.SetToolTip(btnMakeHorizontal, "Make Horizontal");
+            tooltip.SetToolTip(btnSwapLocations, "Swap Locations");
+
+            // Size section tooltips
+            tooltip.SetToolTip(btnApplySize, "Apply Size");
+
+            // Shapes section tooltips
+            tooltip.SetToolTip(btnRectangle, "Rectangle");
+            tooltip.SetToolTip(btnCircle, "Circle");
+            tooltip.SetToolTip(btnArrow, "Arrow");
+            tooltip.SetToolTip(btnLine, "Line");
+
+            // Colors section tooltips
+            tooltip.SetToolTip(btnFillColor, "Fill Color");
+            tooltip.SetToolTip(btnTextColor, "Text Color");
+            tooltip.SetToolTip(btnOutlineColor, "Outline Color");
+
+            // Text section tooltips
+            tooltip.SetToolTip(btnBold, "Bold");
+            tooltip.SetToolTip(btnItalic, "Italic");
+            tooltip.SetToolTip(btnUnderline, "Underline");
+            tooltip.SetToolTip(btnBullets, "Bullets");
+            tooltip.SetToolTip(btnWrapText, "Wrap Text");
+            tooltip.SetToolTip(btnNoWrapText, "No Wrap Text");
+
+            // Navigation section tooltips
+            tooltip.SetToolTip(btnZoomIn, "Zoom In");
+            tooltip.SetToolTip(btnZoomOut, "Zoom Out");
+            tooltip.SetToolTip(btnFitToWindow, "Fit to Window");
+
+            // Expert Tools section tooltips
+            tooltip.SetToolTip(btnFreeWebinar, "Free Webinar");
         }
 
         #region Event Handlers

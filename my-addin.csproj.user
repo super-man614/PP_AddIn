@@ -5,4 +5,8 @@
     <InstallUrlHistory />
     <SupportUrlHistory />
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartProgram>C:\Program Files\Microsoft Office\root\Office16\POWERPNT.EXE</StartProgram>
+    <StartAction>Program</StartAction>
+  </PropertyGroup>
 </Project>
