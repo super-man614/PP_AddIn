@@ -42,7 +42,7 @@ namespace my_addin
             this.btnSave = new System.Windows.Forms.Button();
             this.btnSaveAs = new System.Windows.Forms.Button();
             this.btnPrint = new System.Windows.Forms.Button();
-            this.btnShare = new System.Windows.Forms.Button();
+            //this.btnShare = new System.Windows.Forms.Button();
             this.divider1 = new System.Windows.Forms.Panel();
             this.wizardsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.lblWizardsSection = new System.Windows.Forms.Label();
@@ -98,10 +98,12 @@ namespace my_addin
             this.shapePanel = new System.Windows.Forms.FlowLayoutPanel();
             this.lblShapeSection = new System.Windows.Forms.Label();
             this.shapeButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnRectangle = new System.Windows.Forms.Button();
-            this.btnCircle = new System.Windows.Forms.Button();
-            this.btnArrow = new System.Windows.Forms.Button();
-            this.btnLine = new System.Windows.Forms.Button();
+            this.btnAlignProcessChain = new System.Windows.Forms.Button();
+            this.btnAlignAngles = new System.Windows.Forms.Button();
+            this.btnAlignToProcessArrow = new System.Windows.Forms.Button();
+            this.btnAdjustPentagonHeader = new System.Windows.Forms.Button();
+            this.btnAlignBlockArrows = new System.Windows.Forms.Button();
+            this.btnAlignRoundedRectangleArrows = new System.Windows.Forms.Button();
             this.divider6 = new System.Windows.Forms.Panel();
             this.colorPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.lblColorSection = new System.Windows.Forms.Label();
@@ -242,7 +244,7 @@ namespace my_addin
             this.presentationButtonsPanel.Controls.Add(this.btnSave);
             this.presentationButtonsPanel.Controls.Add(this.btnSaveAs);
             this.presentationButtonsPanel.Controls.Add(this.btnPrint);
-            this.presentationButtonsPanel.Controls.Add(this.btnShare);
+            //this.presentationButtonsPanel.Controls.Add(this.btnShare);
             this.presentationButtonsPanel.Location = new System.Drawing.Point(0, 13);
             this.presentationButtonsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.presentationButtonsPanel.Name = "presentationButtonsPanel";
@@ -355,24 +357,24 @@ namespace my_addin
             // 
             // btnShare
             // 
-            this.btnShare.BackColor = System.Drawing.Color.Transparent;
-            this.btnShare.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.btnShare.FlatAppearance.BorderSize = 0;
-            this.btnShare.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.btnShare.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.btnShare.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnShare.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
-            this.btnShare.Location = new System.Drawing.Point(125, 0);
-            this.btnShare.Margin = new System.Windows.Forms.Padding(1);
-            this.btnShare.Name = "btnShare";
-            this.btnShare.Size = new System.Drawing.Size(20, 20);
-            this.btnShare.TabIndex = 6;
-            this.btnShare.BackColor = Color.Transparent;
-            this.btnShare.BackgroundImage = Image.FromFile("icons/file/icons8-share-48.png");
-            this.btnShare.BackgroundImageLayout = ImageLayout.Stretch;
-            //this.btnShare.Text = "🤝";
-            this.btnShare.UseVisualStyleBackColor = false;
-            this.btnShare.Click += new System.EventHandler(this.BtnShare_Click);
+            //this.btnShare.BackColor = System.Drawing.Color.Transparent;
+            //this.btnShare.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            //this.btnShare.FlatAppearance.BorderSize = 0;
+            //this.btnShare.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            //this.btnShare.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            //this.btnShare.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            //this.btnShare.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
+            //this.btnShare.Location = new System.Drawing.Point(125, 0);
+            //this.btnShare.Margin = new System.Windows.Forms.Padding(1);
+            //this.btnShare.Name = "btnShare";
+            //this.btnShare.Size = new System.Drawing.Size(20, 20);
+            //this.btnShare.TabIndex = 6;
+            //this.btnShare.BackColor = Color.Transparent;
+            //this.btnShare.BackgroundImage = Image.FromFile("icons/file/icons8-share-48.png");
+            //this.btnShare.BackgroundImageLayout = ImageLayout.Stretch;
+            ////this.btnShare.Text = "🤝";
+            //this.btnShare.UseVisualStyleBackColor = false;
+            //this.btnShare.Click += new System.EventHandler(this.BtnShare_Click);
             // 
             // divider1
             // 
@@ -842,9 +844,7 @@ namespace my_addin
             // this.btnAlignRight.Text = "→";
             this.btnAlignRight.UseVisualStyleBackColor = false;
             this.btnAlignRight.Click += new System.EventHandler(this.BtnAlignRight_Click);
-            //  
             // btnDistribute
-            // 
             this.btnDistribute.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.btnDistribute.FlatAppearance.BorderSize = 0;
             this.btnDistribute.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -861,9 +861,7 @@ namespace my_addin
             // this.btnDistribute.Text = "≡";
             this.btnDistribute.UseVisualStyleBackColor = false;
             this.btnDistribute.Click += new System.EventHandler(this.BtnDistribute_Click);
-            // 
             // btnMatchBoth
-            // 
             this.btnMatchBoth.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.btnMatchBoth.FlatAppearance.BorderSize = 0;
             this.btnMatchBoth.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -880,9 +878,7 @@ namespace my_addin
             // this.btnMatchBoth.Text = "📏";
             this.btnMatchBoth.UseVisualStyleBackColor = false;
             this.btnMatchBoth.Click += new System.EventHandler(this.BtnMatchBoth_Click);
-            // 
             // btnMatchHeight
-            // 
             this.btnMatchHeight.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.btnMatchHeight.FlatAppearance.BorderSize = 0;
             this.btnMatchHeight.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -1182,83 +1178,119 @@ namespace my_addin
             | System.Windows.Forms.AnchorStyles.Right)));
             this.shapeButtonsPanel.AutoSize = true;
             this.shapeButtonsPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.shapeButtonsPanel.Controls.Add(this.btnRectangle);
-            this.shapeButtonsPanel.Controls.Add(this.btnCircle);
-            this.shapeButtonsPanel.Controls.Add(this.btnArrow);
-            this.shapeButtonsPanel.Controls.Add(this.btnLine);
+            this.shapeButtonsPanel.Controls.Add(this.btnAlignProcessChain);
+            this.shapeButtonsPanel.Controls.Add(this.btnAlignAngles);
+            this.shapeButtonsPanel.Controls.Add(this.btnAlignToProcessArrow);
+            this.shapeButtonsPanel.Controls.Add(this.btnAdjustPentagonHeader);
+            this.shapeButtonsPanel.Controls.Add(this.btnAlignBlockArrows);
+            this.shapeButtonsPanel.Controls.Add(this.btnAlignRoundedRectangleArrows);
             this.shapeButtonsPanel.Location = new System.Drawing.Point(0, 13);
             this.shapeButtonsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.shapeButtonsPanel.Name = "shapeButtonsPanel";
-            this.shapeButtonsPanel.Size = new System.Drawing.Size(100, 25);
+            this.shapeButtonsPanel.Size = new System.Drawing.Size(150, 25);
             this.shapeButtonsPanel.TabIndex = 1;
             // 
-            // btnRectangle
+            // btnAlignProcessChain
             // 
-            this.btnRectangle.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.btnRectangle.FlatAppearance.BorderSize = 0;
-            this.btnRectangle.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.btnRectangle.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.btnRectangle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRectangle.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
-            this.btnRectangle.Location = new System.Drawing.Point(0, 0);
-            this.btnRectangle.Margin = new System.Windows.Forms.Padding(0);
-            this.btnRectangle.Name = "btnRectangle";
-            this.btnRectangle.Size = new System.Drawing.Size(25, 25);
-            this.btnRectangle.TabIndex = 1;
-            this.btnRectangle.Text = "▭";
-            this.btnRectangle.UseVisualStyleBackColor = false;
-            this.btnRectangle.Click += new System.EventHandler(this.BtnRectangle_Click);
+            this.btnAlignProcessChain.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnAlignProcessChain.FlatAppearance.BorderSize = 0;
+            this.btnAlignProcessChain.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnAlignProcessChain.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnAlignProcessChain.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAlignProcessChain.Font = new System.Drawing.Font("Segoe UI", 7F);
+            this.btnAlignProcessChain.Location = new System.Drawing.Point(0, 0);
+            this.btnAlignProcessChain.Margin = new System.Windows.Forms.Padding(1);
+            this.btnAlignProcessChain.Name = "btnAlignProcessChain";
+            this.btnAlignProcessChain.Size = new System.Drawing.Size(20, 20);
+            this.btnAlignProcessChain.TabIndex = 1;
+            this.btnAlignProcessChain.Text = "🔗";
+            this.btnAlignProcessChain.UseVisualStyleBackColor = false;
+            this.btnAlignProcessChain.Click += new System.EventHandler(this.BtnAlignProcessChain_Click);
             // 
-            // btnCircle
+            // btnAlignAngles
             // 
-            this.btnCircle.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.btnCircle.FlatAppearance.BorderSize = 0;
-            this.btnCircle.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.btnCircle.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.btnCircle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCircle.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
-            this.btnCircle.Location = new System.Drawing.Point(25, 0);
-            this.btnCircle.Margin = new System.Windows.Forms.Padding(0);
-            this.btnCircle.Name = "btnCircle";
-            this.btnCircle.Size = new System.Drawing.Size(25, 25);
-            this.btnCircle.TabIndex = 2;
-            this.btnCircle.Text = "◯";
-            this.btnCircle.UseVisualStyleBackColor = false;
-            this.btnCircle.Click += new System.EventHandler(this.BtnCircle_Click);
+            this.btnAlignAngles.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnAlignAngles.FlatAppearance.BorderSize = 0;
+            this.btnAlignAngles.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnAlignAngles.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnAlignAngles.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAlignAngles.Font = new System.Drawing.Font("Segoe UI", 7F);
+            this.btnAlignAngles.Location = new System.Drawing.Point(25, 0);
+            this.btnAlignAngles.Margin = new System.Windows.Forms.Padding(1);
+            this.btnAlignAngles.Name = "btnAlignAngles";
+            this.btnAlignAngles.Size = new System.Drawing.Size(20, 20);
+            this.btnAlignAngles.TabIndex = 2;
+            this.btnAlignAngles.Text = "📐";
+            this.btnAlignAngles.UseVisualStyleBackColor = false;
+            this.btnAlignAngles.Click += new System.EventHandler(this.BtnAlignAngles_Click);
             // 
-            // btnArrow
+            // btnAlignToProcessArrow
             // 
-            this.btnArrow.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.btnArrow.FlatAppearance.BorderSize = 0;
-            this.btnArrow.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.btnArrow.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.btnArrow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnArrow.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
-            this.btnArrow.Location = new System.Drawing.Point(50, 0);
-            this.btnArrow.Margin = new System.Windows.Forms.Padding(0);
-            this.btnArrow.Name = "btnArrow";
-            this.btnArrow.Size = new System.Drawing.Size(25, 25);
-            this.btnArrow.TabIndex = 3;
-            this.btnArrow.Text = "➔";
-            this.btnArrow.UseVisualStyleBackColor = false;
-            this.btnArrow.Click += new System.EventHandler(this.BtnArrow_Click);
+            this.btnAlignToProcessArrow.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnAlignToProcessArrow.FlatAppearance.BorderSize = 0;
+            this.btnAlignToProcessArrow.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnAlignToProcessArrow.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnAlignToProcessArrow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAlignToProcessArrow.Font = new System.Drawing.Font("Segoe UI", 7F);
+            this.btnAlignToProcessArrow.Location = new System.Drawing.Point(50, 0);
+            this.btnAlignToProcessArrow.Margin = new System.Windows.Forms.Padding(1);
+            this.btnAlignToProcessArrow.Name = "btnAlignToProcessArrow";
+            this.btnAlignToProcessArrow.Size = new System.Drawing.Size(20, 20);
+            this.btnAlignToProcessArrow.TabIndex = 3;
+            this.btnAlignToProcessArrow.Text = "➡️";
+            this.btnAlignToProcessArrow.UseVisualStyleBackColor = false;
+            this.btnAlignToProcessArrow.Click += new System.EventHandler(this.BtnAlignToProcessArrow_Click);
             // 
-            // btnLine
+            // btnAdjustPentagonHeader
             // 
-            this.btnLine.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.btnLine.FlatAppearance.BorderSize = 0;
-            this.btnLine.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.btnLine.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.btnLine.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnLine.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
-            this.btnLine.Location = new System.Drawing.Point(75, 0);
-            this.btnLine.Margin = new System.Windows.Forms.Padding(0);
-            this.btnLine.Name = "btnLine";
-            this.btnLine.Size = new System.Drawing.Size(25, 25);
-            this.btnLine.TabIndex = 4;
-            this.btnLine.Text = "━━━";
-            this.btnLine.UseVisualStyleBackColor = false;
-            this.btnLine.Click += new System.EventHandler(this.BtnLine_Click);
+            this.btnAdjustPentagonHeader.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnAdjustPentagonHeader.FlatAppearance.BorderSize = 0;
+            this.btnAdjustPentagonHeader.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnAdjustPentagonHeader.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnAdjustPentagonHeader.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAdjustPentagonHeader.Font = new System.Drawing.Font("Segoe UI", 7F);
+            this.btnAdjustPentagonHeader.Location = new System.Drawing.Point(75, 0);
+            this.btnAdjustPentagonHeader.Margin = new System.Windows.Forms.Padding(1);
+            this.btnAdjustPentagonHeader.Name = "btnAdjustPentagonHeader";
+            this.btnAdjustPentagonHeader.Size = new System.Drawing.Size(20, 20);
+            this.btnAdjustPentagonHeader.TabIndex = 4;
+            this.btnAdjustPentagonHeader.Text = "🔷";
+            this.btnAdjustPentagonHeader.UseVisualStyleBackColor = false;
+            this.btnAdjustPentagonHeader.Click += new System.EventHandler(this.BtnAdjustPentagonHeader_Click);
+            // 
+            // btnAlignBlockArrows
+            // 
+            this.btnAlignBlockArrows.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnAlignBlockArrows.FlatAppearance.BorderSize = 0;
+            this.btnAlignBlockArrows.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnAlignBlockArrows.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnAlignBlockArrows.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAlignBlockArrows.Font = new System.Drawing.Font("Segoe UI", 7F);
+            this.btnAlignBlockArrows.Location = new System.Drawing.Point(100, 0);
+            this.btnAlignBlockArrows.Margin = new System.Windows.Forms.Padding(1);
+            this.btnAlignBlockArrows.Name = "btnAlignBlockArrows";
+            this.btnAlignBlockArrows.Size = new System.Drawing.Size(20, 20);
+            this.btnAlignBlockArrows.TabIndex = 5;
+            this.btnAlignBlockArrows.Text = "▶️";
+            this.btnAlignBlockArrows.UseVisualStyleBackColor = false;
+            this.btnAlignBlockArrows.Click += new System.EventHandler(this.BtnAlignBlockArrows_Click);
+            // 
+            // btnAlignRoundedRectangleArrows
+            // 
+            this.btnAlignRoundedRectangleArrows.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnAlignRoundedRectangleArrows.FlatAppearance.BorderSize = 0;
+            this.btnAlignRoundedRectangleArrows.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnAlignRoundedRectangleArrows.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnAlignRoundedRectangleArrows.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAlignRoundedRectangleArrows.Font = new System.Drawing.Font("Segoe UI", 7F);
+            this.btnAlignRoundedRectangleArrows.Location = new System.Drawing.Point(125, 0);
+            this.btnAlignRoundedRectangleArrows.Margin = new System.Windows.Forms.Padding(1);
+            this.btnAlignRoundedRectangleArrows.Name = "btnAlignRoundedRectangleArrows";
+            this.btnAlignRoundedRectangleArrows.Size = new System.Drawing.Size(20, 20);
+            this.btnAlignRoundedRectangleArrows.TabIndex = 6;
+            this.btnAlignRoundedRectangleArrows.Text = "🔲";
+            this.btnAlignRoundedRectangleArrows.UseVisualStyleBackColor = false;
+            this.btnAlignRoundedRectangleArrows.Click += new System.EventHandler(this.BtnAlignRoundedRectangleArrows_Click);
             // 
             // divider6
             // 
@@ -1762,7 +1794,7 @@ namespace my_addin
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnSaveAs;
         private System.Windows.Forms.Button btnPrint;
-        private System.Windows.Forms.Button btnShare;
+        //private System.Windows.Forms.Button btnShare;
         
         // Wizards section
         private System.Windows.Forms.FlowLayoutPanel wizardsPanel;
@@ -1816,10 +1848,12 @@ namespace my_addin
         private System.Windows.Forms.FlowLayoutPanel shapePanel;
         private System.Windows.Forms.FlowLayoutPanel shapeButtonsPanel;
         private System.Windows.Forms.Label lblShapeSection;
-        private System.Windows.Forms.Button btnRectangle;
-        private System.Windows.Forms.Button btnCircle;
-        private System.Windows.Forms.Button btnArrow;
-        private System.Windows.Forms.Button btnLine;
+        private System.Windows.Forms.Button btnAlignProcessChain;
+        private System.Windows.Forms.Button btnAlignAngles;
+        private System.Windows.Forms.Button btnAlignToProcessArrow;
+        private System.Windows.Forms.Button btnAdjustPentagonHeader;
+        private System.Windows.Forms.Button btnAlignBlockArrows;
+        private System.Windows.Forms.Button btnAlignRoundedRectangleArrows;
         
         // Color section
         private System.Windows.Forms.FlowLayoutPanel colorPanel;

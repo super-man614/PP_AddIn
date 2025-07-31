@@ -1043,85 +1043,127 @@ namespace my_addin
         #region Shape Operations
 
         /// <summary>
-        /// Insert rectangle shape
+        /// Align process chain
         /// </summary>
-        public void Rectangle_Click(Office.IRibbonControl control)
+        public void AlignProcessChain_Click(Office.IRibbonControl control)
         {
             try
             {
                 var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
                 if (taskPaneControl != null)
                 {
-                    var method = taskPaneControl.GetType().GetMethod("BtnRectangle_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    var method = taskPaneControl.GetType().GetMethod("BtnAlignProcessChain_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                     method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error inserting rectangle: {ex.Message}", "Error", 
+                MessageBox.Show($"Error aligning process chain: {ex.Message}", "Error", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         /// <summary>
-        /// Insert circle shape
+        /// Align angles
         /// </summary>
-        public void Circle_Click(Office.IRibbonControl control)
+        public void AlignAngles_Click(Office.IRibbonControl control)
         {
             try
             {
                 var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
                 if (taskPaneControl != null)
                 {
-                    var method = taskPaneControl.GetType().GetMethod("BtnCircle_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    var method = taskPaneControl.GetType().GetMethod("BtnAlignAngles_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                     method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error inserting circle: {ex.Message}", "Error", 
+                MessageBox.Show($"Error aligning angles: {ex.Message}", "Error", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         /// <summary>
-        /// Insert arrow shape
+        /// Align to process arrow
         /// </summary>
-        public void Arrow_Click(Office.IRibbonControl control)
+        public void AlignToProcessArrow_Click(Office.IRibbonControl control)
         {
             try
             {
                 var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
                 if (taskPaneControl != null)
                 {
-                    var method = taskPaneControl.GetType().GetMethod("BtnArrow_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    var method = taskPaneControl.GetType().GetMethod("BtnAlignToProcessArrow_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                     method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error inserting arrow: {ex.Message}", "Error", 
+                MessageBox.Show($"Error aligning to process arrow: {ex.Message}", "Error", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         /// <summary>
-        /// Insert line shape
+        /// Adjust pentagon header
         /// </summary>
-        public void Line_Click(Office.IRibbonControl control)
+        public void AdjustPentagonHeader_Click(Office.IRibbonControl control)
         {
             try
             {
                 var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
                 if (taskPaneControl != null)
                 {
-                    var method = taskPaneControl.GetType().GetMethod("BtnLine_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    var method = taskPaneControl.GetType().GetMethod("BtnAdjustPentagonHeader_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                     method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error inserting line: {ex.Message}", "Error", 
+                MessageBox.Show($"Error adjusting pentagon header: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Align block arrows
+        /// </summary>
+        public void AlignBlockArrows_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnAlignBlockArrows_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error aligning block arrows: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Align rounded rectangle arrows
+        /// </summary>
+        public void AlignRoundedRectangleArrows_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnAlignRoundedRectangleArrows_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error aligning rounded rectangle arrows: {ex.Message}", "Error", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

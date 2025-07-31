@@ -182,7 +182,7 @@ namespace my_addin
             tooltip.SetToolTip(btnSave, "Save Presentation");
             tooltip.SetToolTip(btnSaveAs, "Save As");
             tooltip.SetToolTip(btnPrint, "Print");
-            tooltip.SetToolTip(btnShare, "Share");
+            //tooltip.SetToolTip(btnShare, "Share");
 
             // Wizards section tooltips
             tooltip.SetToolTip(btnAgenda, "Agenda");
@@ -217,12 +217,6 @@ namespace my_addin
 
             // Size section tooltips
             tooltip.SetToolTip(btnApplySize, "Apply Size");
-
-            // Shapes section tooltips
-            tooltip.SetToolTip(btnRectangle, "Rectangle");
-            tooltip.SetToolTip(btnCircle, "Circle");
-            tooltip.SetToolTip(btnArrow, "Arrow");
-            tooltip.SetToolTip(btnLine, "Line");
 
             // Colors section tooltips
             tooltip.SetToolTip(btnFillColor, "Fill Color");
@@ -732,70 +726,7 @@ namespace my_addin
             }
         }
 
-        // Shape section button hover methods
-        private void BtnRectangle_MouseEnter(object sender, EventArgs e)
-        {
-            if (sender is Button btn)
-            {
-                btn.FlatAppearance.BorderSize = 1;
-            }
-        }
-
-        private void BtnRectangle_MouseLeave(object sender, EventArgs e)
-        {
-            if (sender is Button btn)
-            {
-                btn.FlatAppearance.BorderSize = 0;
-            }
-        }
-
-        private void BtnCircle_MouseEnter(object sender, EventArgs e)
-        {
-            if (sender is Button btn)
-            {
-                btn.FlatAppearance.BorderSize = 1;
-            }
-        }
-
-        private void BtnCircle_MouseLeave(object sender, EventArgs e)
-        {
-            if (sender is Button btn)
-            {
-                btn.FlatAppearance.BorderSize = 0;
-            }
-        }
-
-        private void BtnArrow_MouseEnter(object sender, EventArgs e)
-        {
-            if (sender is Button btn)
-            {
-                btn.FlatAppearance.BorderSize = 1;
-            }
-        }
-
-        private void BtnArrow_MouseLeave(object sender, EventArgs e)
-        {
-            if (sender is Button btn)
-            {
-                btn.FlatAppearance.BorderSize = 0;
-            }
-        }
-
-        private void BtnLine_MouseEnter(object sender, EventArgs e)
-        {
-            if (sender is Button btn)
-            {
-                btn.FlatAppearance.BorderSize = 1;
-            }
-        }
-
-        private void BtnLine_MouseLeave(object sender, EventArgs e)
-        {
-            if (sender is Button btn)
-            {
-                btn.FlatAppearance.BorderSize = 0;
-            }
-        }
+        // Shape section button hover methods - Removed old handlers as they're now handled by ButtonHoverUtility
 
         // Color section button hover methods
         private void BtnFillColor_MouseEnter(object sender, EventArgs e)
@@ -1311,10 +1242,10 @@ namespace my_addin
                         bool hasHeader = matrixDialog.HasHeader;
                         
                         var slide = app.ActiveWindow.Selection.SlideRange[1];
-                        CreateProfessionalTable(slide, rows, columns, hasHeader);
+                        CreateMatrixGrid(slide, rows, columns, hasHeader);
                         
                         string headerText = hasHeader ? " with header" : "";
-                        MessageBox.Show($"Professional table ({rows}x{columns}){headerText} created successfully!\n\nYou can now click on any cell to edit its content.", "Professional Table", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show($"Matrix grid ({rows}x{columns}){headerText} created successfully!\n\nClick on any cell to add your content.", "Matrix Grid", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 else
@@ -1328,7 +1259,7 @@ namespace my_addin
             }
         }
 
-        private void CreateProfessionalTable(PowerPoint.Slide slide, int rows, int columns, bool hasHeader)
+        private void CreateMatrixGrid(PowerPoint.Slide slide, int rows, int columns, bool hasHeader)
         {
             try
             {
@@ -1336,40 +1267,102 @@ namespace my_addin
                 float slideWidth = slide.Master.Width;
                 float slideHeight = slide.Master.Height;
                 
-                // Table dimensions (leave margins)
-                float tableWidth = slideWidth * 0.8f; // 80% of slide width
-                float tableHeight = Math.Min(slideHeight * 0.6f, rows * 40f); // Max 60% of height or based on rows
+                // Grid dimensions (leave margins)
+                float gridWidth = slideWidth * 0.85f; // 85% of slide width
+                float gridHeight = slideHeight * 0.7f; // 70% of slide height
                 
-                // Center the table
-                float left = (slideWidth - tableWidth) / 2;
-                float top = (slideHeight - tableHeight) / 2;
+                // Center the grid
+                float startLeft = (slideWidth - gridWidth) / 2;
+                float startTop = (slideHeight - gridHeight) / 2;
                 
-                // Create native PowerPoint table
-                var tableShape = slide.Shapes.AddTable(rows, columns, left, top, tableWidth, tableHeight);
-                var table = tableShape.Table;
+                // Calculate cell dimensions
+                float cellWidth = gridWidth / columns;
+                float cellHeight = gridHeight / rows;
                 
-                // Apply PowerPoint's built-in table style
-                ApplyDefaultTableStyle(table, hasHeader);
+                // Create individual rectangle shapes for matrix grid
+                var shapes = new System.Collections.Generic.List<PowerPoint.Shape>();
                 
-                // Set default content if it's a header table
-                if (hasHeader && rows > 0)
+                for (int row = 0; row < rows; row++)
                 {
-                    for (int col = 1; col <= columns; col++)
+                    for (int col = 0; col < columns; col++)
                     {
-                        table.Cell(1, col).Shape.TextFrame.TextRange.Text = $"Header {col}";
+                        float left = startLeft + (col * cellWidth);
+                        float top = startTop + (row * cellHeight);
+                        
+                        // Create rectangle
+                        var shape = slide.Shapes.AddShape(
+                            Office.MsoAutoShapeType.msoShapeRectangle, 
+                            left, top, cellWidth, cellHeight);
+                        
+                        // Style the rectangle
+                        StyleMatrixCell(shape, row == 0 && hasHeader);
+                        
+                        // Add placeholder text
+                        if (hasHeader && row == 0)
+                        {
+                            shape.TextFrame.TextRange.Text = $"H{col + 1}";
+                        }
+                        else
+                        {
+                            shape.TextFrame.TextRange.Text = "XXXX";
+                        }
+                        
+                        shapes.Add(shape);
                     }
                 }
                 
-                // Focus on the first editable cell
-                int startRow = hasHeader ? 2 : 1;
-                if (rows >= startRow && startRow <= rows)
+                // Group all shapes together for easier manipulation
+                if (shapes.Count > 1)
                 {
-                    table.Cell(startRow, 1).Shape.TextFrame.TextRange.Select();
+                    var shapeArray = shapes.ToArray();
+                    var groupShape = slide.Shapes.Range(shapeArray.Select(s => s.Name).ToArray()).Group();
+                    groupShape.Name = "MatrixGrid";
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception($"Failed to create professional table: {ex.Message}");
+                throw new Exception($"Failed to create matrix grid: {ex.Message}");
+            }
+        }
+        
+        private void StyleMatrixCell(PowerPoint.Shape shape, bool isHeader)
+        {
+            try
+            {
+                // Basic shape styling
+                shape.Fill.Solid();
+                shape.Line.Visible = Office.MsoTriState.msoTrue;
+                shape.Line.Weight = 1.5f;
+                
+                if (isHeader)
+                {
+                    // Header cell styling
+                    shape.Fill.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(68, 114, 196));
+                    shape.Line.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(45, 85, 145));
+                    shape.TextFrame.TextRange.Font.Color.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.White);
+                    shape.TextFrame.TextRange.Font.Bold = Office.MsoTriState.msoTrue;
+                }
+                else
+                {
+                    // Regular cell styling
+                    shape.Fill.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.White);
+                    shape.Line.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(180, 180, 180));
+                    shape.TextFrame.TextRange.Font.Color.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(64, 64, 64));
+                }
+                
+                // Text formatting
+                shape.TextFrame.TextRange.Font.Name = "Segoe UI";
+                shape.TextFrame.TextRange.Font.Size = 12;
+                shape.TextFrame.TextRange.ParagraphFormat.Alignment = PowerPoint.PpParagraphAlignment.ppAlignCenter;
+                shape.TextFrame.VerticalAnchor = Office.MsoVerticalAnchor.msoAnchorMiddle;
+                shape.TextFrame.MarginLeft = 5;
+                shape.TextFrame.MarginRight = 5;
+                shape.TextFrame.MarginTop = 3;
+                shape.TextFrame.MarginBottom = 3;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Cell styling failed: {ex.Message}");
             }
         }
 
@@ -2219,75 +2212,296 @@ namespace my_addin
 
         #region Shape Section
 
-        private void BtnRectangle_Click(object sender, EventArgs e)
+        private void BtnAlignProcessChain_Click(object sender, EventArgs e)
         {
             try
             {
                 var app = Globals.ThisAddIn.Application;
-                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
                 {
-                    var slide = app.ActiveWindow.Selection.SlideRange[1];
-                    slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, 100, 100, 200, 100);
-                    MessageBox.Show("Rectangle added!", "Shape", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Align selected shapes in a process chain
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    if (shapes.Count > 1)
+                    {
+                        // Sort shapes by X position
+                        var sortedShapes = shapes.Cast<PowerPoint.Shape>().OrderBy(s => s.Left).ToArray();
+                        
+                        // Align them horizontally with equal spacing
+                        float totalWidth = sortedShapes.Sum(s => s.Width);
+                        float spacing = (app.ActiveWindow.Width - totalWidth) / (sortedShapes.Length + 1);
+                        float currentX = spacing;
+                        
+                        foreach (var shape in sortedShapes)
+                        {
+                            shape.Left = currentX;
+                            currentX += shape.Width + spacing;
+                        }
+                        
+                        MessageBox.Show("Process chain aligned!", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select multiple shapes to align in a process chain.", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select shapes to align in a process chain.", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error adding rectangle: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error aligning process chain: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void BtnCircle_Click(object sender, EventArgs e)
+        private void BtnAlignAngles_Click(object sender, EventArgs e)
         {
             try
             {
                 var app = Globals.ThisAddIn.Application;
-                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
                 {
-                    var slide = app.ActiveWindow.Selection.SlideRange[1];
-                    slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeOval, 100, 100, 150, 150);
-                    MessageBox.Show("Circle added!", "Shape", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    if (shapes.Count > 1)
+                    {
+                        // Align shapes at their angles (corners)
+                        var firstShape = shapes[1];
+                        float targetAngle = firstShape.Rotation;
+                        
+                        foreach (PowerPoint.Shape shape in shapes)
+                        {
+                            shape.Rotation = targetAngle;
+                        }
+                        
+                        MessageBox.Show("Shapes aligned at angles!", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select multiple shapes to align at angles.", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select shapes to align at angles.", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error adding circle: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error aligning angles: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void BtnArrow_Click(object sender, EventArgs e)
+        private void BtnAlignToProcessArrow_Click(object sender, EventArgs e)
         {
             try
             {
                 var app = Globals.ThisAddIn.Application;
-                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
                 {
-                    var slide = app.ActiveWindow.Selection.SlideRange[1];
-                    slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRightArrow, 100, 100, 200, 50);
-                    MessageBox.Show("Arrow added!", "Shape", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    if (shapes.Count > 1)
+                    {
+                        // Find the first arrow shape and align other shapes to it
+                        PowerPoint.Shape arrowShape = null;
+                        foreach (PowerPoint.Shape shape in shapes)
+                        {
+                            if (shape.AutoShapeType == Office.MsoAutoShapeType.msoShapeRightArrow ||
+                                shape.AutoShapeType == Office.MsoAutoShapeType.msoShapeLeftArrow ||
+                                shape.AutoShapeType == Office.MsoAutoShapeType.msoShapeUpArrow ||
+                                shape.AutoShapeType == Office.MsoAutoShapeType.msoShapeDownArrow)
+                            {
+                                arrowShape = shape;
+                                break;
+                            }
+                        }
+                        
+                        if (arrowShape != null)
+                        {
+                            // Align other shapes to the arrow's center
+                            foreach (PowerPoint.Shape shape in shapes)
+                            {
+                                if (shape != arrowShape)
+                                {
+                                    shape.Top = arrowShape.Top + (arrowShape.Height - shape.Height) / 2;
+                                }
+                            }
+                            
+                            MessageBox.Show("Shapes aligned to process arrow!", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Please include an arrow shape in your selection.", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select multiple shapes including an arrow.", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select shapes to align to process arrow.", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error adding arrow: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error aligning to process arrow: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void BtnLine_Click(object sender, EventArgs e)
+        private void BtnAdjustPentagonHeader_Click(object sender, EventArgs e)
         {
             try
             {
                 var app = Globals.ThisAddIn.Application;
-                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
                 {
-                    var slide = app.ActiveWindow.Selection.SlideRange[1];
-                    slide.Shapes.AddLine(100, 100, 300, 100);
-                    MessageBox.Show("Line added!", "Shape", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    foreach (PowerPoint.Shape shape in shapes)
+                    {
+                        if (shape.AutoShapeType == Office.MsoAutoShapeType.msoShapePentagon)
+                        {
+                            // Adjust pentagon header properties
+                            shape.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.LightBlue);
+                            shape.Line.ForeColor.RGB = ColorTranslator.ToOle(Color.DarkBlue);
+                            shape.Line.Weight = 2;
+                            
+                            // Add text if not present
+                            if (string.IsNullOrEmpty(shape.TextFrame.TextRange.Text))
+                            {
+                                shape.TextFrame.TextRange.Text = "Header";
+                                shape.TextFrame.TextRange.Font.Size = 14;
+                                shape.TextFrame.TextRange.Font.Bold = Office.MsoTriState.msoTrue;
+                            }
+                        }
+                    }
+                    
+                    MessageBox.Show("Pentagon headers adjusted!", "Shape Adjustment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Please select pentagon shapes to adjust.", "Shape Adjustment", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error adding line: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error adjusting pentagon headers: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnAlignBlockArrows_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    if (shapes.Count > 1)
+                    {
+                        // Find block arrows and align them
+                        var blockArrows = new List<PowerPoint.Shape>();
+                        foreach (PowerPoint.Shape shape in shapes)
+                        {
+                            if (shape.AutoShapeType == Office.MsoAutoShapeType.msoShapeRightArrow ||
+                                shape.AutoShapeType == Office.MsoAutoShapeType.msoShapeLeftArrow ||
+                                shape.AutoShapeType == Office.MsoAutoShapeType.msoShapeUpArrow ||
+                                shape.AutoShapeType == Office.MsoAutoShapeType.msoShapeDownArrow ||
+                                shape.AutoShapeType == Office.MsoAutoShapeType.msoShapeRightArrowCallout ||
+                                shape.AutoShapeType == Office.MsoAutoShapeType.msoShapeLeftArrowCallout)
+                            {
+                                blockArrows.Add(shape);
+                            }
+                        }
+                        
+                        if (blockArrows.Count > 1)
+                        {
+                            // Align block arrows vertically
+                            float centerY = blockArrows.Average(s => s.Top + s.Height / 2);
+                            foreach (var arrow in blockArrows)
+                            {
+                                arrow.Top = centerY - arrow.Height / 2;
+                            }
+                            
+                            MessageBox.Show("Block arrows aligned!", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Please select multiple block arrow shapes.", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select multiple shapes including block arrows.", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select shapes to align block arrows.", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error aligning block arrows: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnAlignRoundedRectangleArrows_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    if (shapes.Count > 1)
+                    {
+                        // Find rounded rectangles and align them
+                        var roundedRects = new List<PowerPoint.Shape>();
+                        foreach (PowerPoint.Shape shape in shapes)
+                        {
+                            if (shape.AutoShapeType == Office.MsoAutoShapeType.msoShapeRoundedRectangle ||
+                                shape.AutoShapeType == Office.MsoAutoShapeType.msoShapeRoundedRectangularCallout)
+                            {
+                                roundedRects.Add(shape);
+                            }
+                        }
+                        
+                        if (roundedRects.Count > 1)
+                        {
+                            // Align rounded rectangles horizontally with equal spacing
+                            var sortedRects = roundedRects.OrderBy(s => s.Left).ToArray();
+                            float totalWidth = sortedRects.Sum(s => s.Width);
+                            float spacing = (app.ActiveWindow.Width - totalWidth) / (sortedRects.Length + 1);
+                            float currentX = spacing;
+                            
+                            foreach (var rect in sortedRects)
+                            {
+                                rect.Left = currentX;
+                                currentX += rect.Width + spacing;
+                            }
+                            
+                            MessageBox.Show("Rounded rectangle arrows aligned!", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Please select multiple rounded rectangle shapes.", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select multiple shapes including rounded rectangles.", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select shapes to align rounded rectangle arrows.", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error aligning rounded rectangle arrows: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
