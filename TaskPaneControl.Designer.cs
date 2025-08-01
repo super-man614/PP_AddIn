@@ -564,7 +564,7 @@ namespace my_addin
             this.smartElementsPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.smartElementsPanel.Location = new System.Drawing.Point(3, 105);
             this.smartElementsPanel.Name = "smartElementsPanel";
-            this.smartElementsPanel.Size = new System.Drawing.Size(287, 38);
+            this.smartElementsPanel.Size = new System.Drawing.Size(287, 58);
             this.smartElementsPanel.TabIndex = 2;
             // 
             // lblSmartElementsSection
@@ -594,7 +594,7 @@ namespace my_addin
             this.smartElementsButtonsPanel.Location = new System.Drawing.Point(0, 13);
             this.smartElementsButtonsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.smartElementsButtonsPanel.Name = "smartElementsButtonsPanel";
-            this.smartElementsButtonsPanel.Size = new System.Drawing.Size(191, 25);
+            this.smartElementsButtonsPanel.Size = new System.Drawing.Size(287, 45);
             this.smartElementsButtonsPanel.TabIndex = 1;
             // 
             // btnChart
@@ -605,8 +605,8 @@ namespace my_addin
             this.btnChart.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnChart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnChart.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
-            this.btnChart.Location = new System.Drawing.Point(0, 0);
-            this.btnChart.Margin = new System.Windows.Forms.Padding(1);
+            this.btnChart.Location = new System.Drawing.Point(5, 5);
+            this.btnChart.Margin = new System.Windows.Forms.Padding(2);
             this.btnChart.Name = "btnChart";
             this.btnChart.Size = new System.Drawing.Size(20, 20);
             this.btnChart.TabIndex = 1;
@@ -624,8 +624,8 @@ namespace my_addin
             this.btnDiagram.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnDiagram.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDiagram.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
-            this.btnDiagram.Location = new System.Drawing.Point(25, 0);
-            this.btnDiagram.Margin = new System.Windows.Forms.Padding(1);
+            this.btnDiagram.Location = new System.Drawing.Point(30, 5);
+            this.btnDiagram.Margin = new System.Windows.Forms.Padding(2);
             this.btnDiagram.Name = "btnDiagram";
             this.btnDiagram.Size = new System.Drawing.Size(20, 20);
             this.btnDiagram.TabIndex = 2;
@@ -643,8 +643,8 @@ namespace my_addin
             this.btnTable.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnTable.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnTable.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
-            this.btnTable.Location = new System.Drawing.Point(50, 0);
-            this.btnTable.Margin = new System.Windows.Forms.Padding(1);
+            this.btnTable.Location = new System.Drawing.Point(55, 5);
+            this.btnTable.Margin = new System.Windows.Forms.Padding(2);
             this.btnTable.Name = "btnTable";
             this.btnTable.Size = new System.Drawing.Size(20, 20);
             this.btnTable.TabIndex = 3;
@@ -662,8 +662,8 @@ namespace my_addin
             this.btnMatrixTable.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnMatrixTable.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMatrixTable.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
-            this.btnMatrixTable.Location = new System.Drawing.Point(75, 0);
-            this.btnMatrixTable.Margin = new System.Windows.Forms.Padding(1);
+            this.btnMatrixTable.Location = new System.Drawing.Point(80, 5);
+            this.btnMatrixTable.Margin = new System.Windows.Forms.Padding(2);
             this.btnMatrixTable.Name = "btnMatrixTable";
             this.btnMatrixTable.Size = new System.Drawing.Size(20, 20);
             this.btnMatrixTable.TabIndex = 4;
@@ -681,8 +681,8 @@ namespace my_addin
             this.btnStickyNote.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnStickyNote.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStickyNote.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
-            this.btnStickyNote.Location = new System.Drawing.Point(100, 0);
-            this.btnStickyNote.Margin = new System.Windows.Forms.Padding(1);
+            this.btnStickyNote.Location = new System.Drawing.Point(5, 30);
+            this.btnStickyNote.Margin = new System.Windows.Forms.Padding(2);
             this.btnStickyNote.Name = "btnStickyNote";
             this.btnStickyNote.Size = new System.Drawing.Size(20, 20);
             this.btnStickyNote.TabIndex = 5;
@@ -700,8 +700,8 @@ namespace my_addin
             this.btnCitation.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnCitation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCitation.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
-            this.btnCitation.Location = new System.Drawing.Point(125, 0);
-            this.btnCitation.Margin = new System.Windows.Forms.Padding(1);
+            this.btnCitation.Location = new System.Drawing.Point(30, 30);
+            this.btnCitation.Margin = new System.Windows.Forms.Padding(2);
             this.btnCitation.Name = "btnCitation";
             this.btnCitation.Size = new System.Drawing.Size(20, 20);
             this.btnCitation.TabIndex = 6;
@@ -719,8 +719,8 @@ namespace my_addin
             this.btnStandardObjects.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnStandardObjects.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStandardObjects.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
-            this.btnStandardObjects.Location = new System.Drawing.Point(150, 0);
-            this.btnStandardObjects.Margin = new System.Windows.Forms.Padding(1);
+            this.btnStandardObjects.Location = new System.Drawing.Point(55, 30);
+            this.btnStandardObjects.Margin = new System.Windows.Forms.Padding(2);
             this.btnStandardObjects.Name = "btnStandardObjects";
             this.btnStandardObjects.Size = new System.Drawing.Size(20, 20);
             this.btnStandardObjects.TabIndex = 7;
@@ -1197,7 +1197,7 @@ namespace my_addin
             this.btnAlignProcessChain.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.btnAlignProcessChain.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnAlignProcessChain.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAlignProcessChain.Font = new System.Drawing.Font("Segoe UI", 7F);
+            this.btnAlignProcessChain.Font = new System.Drawing.Font("Segoe UI Emoji", 7F);
             this.btnAlignProcessChain.Location = new System.Drawing.Point(0, 0);
             this.btnAlignProcessChain.Margin = new System.Windows.Forms.Padding(1);
             this.btnAlignProcessChain.Name = "btnAlignProcessChain";
@@ -1214,7 +1214,7 @@ namespace my_addin
             this.btnAlignAngles.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.btnAlignAngles.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnAlignAngles.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAlignAngles.Font = new System.Drawing.Font("Segoe UI", 7F);
+            this.btnAlignAngles.Font = new System.Drawing.Font("Segoe UI Emoji", 7F);
             this.btnAlignAngles.Location = new System.Drawing.Point(25, 0);
             this.btnAlignAngles.Margin = new System.Windows.Forms.Padding(1);
             this.btnAlignAngles.Name = "btnAlignAngles";
@@ -1231,7 +1231,7 @@ namespace my_addin
             this.btnAlignToProcessArrow.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.btnAlignToProcessArrow.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnAlignToProcessArrow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAlignToProcessArrow.Font = new System.Drawing.Font("Segoe UI", 7F);
+            this.btnAlignToProcessArrow.Font = new System.Drawing.Font("Segoe UI Emoji", 7F);
             this.btnAlignToProcessArrow.Location = new System.Drawing.Point(50, 0);
             this.btnAlignToProcessArrow.Margin = new System.Windows.Forms.Padding(1);
             this.btnAlignToProcessArrow.Name = "btnAlignToProcessArrow";
@@ -1248,7 +1248,7 @@ namespace my_addin
             this.btnAdjustPentagonHeader.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.btnAdjustPentagonHeader.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnAdjustPentagonHeader.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAdjustPentagonHeader.Font = new System.Drawing.Font("Segoe UI", 7F);
+            this.btnAdjustPentagonHeader.Font = new System.Drawing.Font("Segoe UI Emoji", 7F);
             this.btnAdjustPentagonHeader.Location = new System.Drawing.Point(75, 0);
             this.btnAdjustPentagonHeader.Margin = new System.Windows.Forms.Padding(1);
             this.btnAdjustPentagonHeader.Name = "btnAdjustPentagonHeader";
@@ -1265,7 +1265,7 @@ namespace my_addin
             this.btnAlignBlockArrows.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.btnAlignBlockArrows.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnAlignBlockArrows.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAlignBlockArrows.Font = new System.Drawing.Font("Segoe UI", 7F);
+            this.btnAlignBlockArrows.Font = new System.Drawing.Font("Segoe UI Emoji", 7F);
             this.btnAlignBlockArrows.Location = new System.Drawing.Point(100, 0);
             this.btnAlignBlockArrows.Margin = new System.Windows.Forms.Padding(1);
             this.btnAlignBlockArrows.Name = "btnAlignBlockArrows";
@@ -1282,7 +1282,7 @@ namespace my_addin
             this.btnAlignRoundedRectangleArrows.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.btnAlignRoundedRectangleArrows.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnAlignRoundedRectangleArrows.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAlignRoundedRectangleArrows.Font = new System.Drawing.Font("Segoe UI", 7F);
+            this.btnAlignRoundedRectangleArrows.Font = new System.Drawing.Font("Segoe UI Emoji", 7F);
             this.btnAlignRoundedRectangleArrows.Location = new System.Drawing.Point(125, 0);
             this.btnAlignRoundedRectangleArrows.Margin = new System.Windows.Forms.Padding(1);
             this.btnAlignRoundedRectangleArrows.Name = "btnAlignRoundedRectangleArrows";
@@ -1325,9 +1325,7 @@ namespace my_addin
             this.lblColorSection.Size = new System.Drawing.Size(100, 13);
             this.lblColorSection.TabIndex = 0;
             this.lblColorSection.Text = "Color";
-            // 
             // colorButtonsPanel
-            // 
             this.colorButtonsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.colorButtonsPanel.AutoSize = true;
@@ -1340,9 +1338,7 @@ namespace my_addin
             this.colorButtonsPanel.Name = "colorButtonsPanel";
             this.colorButtonsPanel.Size = new System.Drawing.Size(106, 25);
             this.colorButtonsPanel.TabIndex = 1;
-            // 
             // btnFillColor
-            // 
             this.btnFillColor.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.btnFillColor.FlatAppearance.BorderSize = 0;
             this.btnFillColor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -1352,14 +1348,12 @@ namespace my_addin
             this.btnFillColor.Location = new System.Drawing.Point(0, 0);
             this.btnFillColor.Margin = new System.Windows.Forms.Padding(0);
             this.btnFillColor.Name = "btnFillColor";
-            this.btnFillColor.Size = new System.Drawing.Size(25, 25);
+            this.btnFillColor.Size = new System.Drawing.Size(20, 20);
             this.btnFillColor.TabIndex = 1;
             this.btnFillColor.Text = "🎨";
             this.btnFillColor.UseVisualStyleBackColor = false;
             this.btnFillColor.Click += new System.EventHandler(this.BtnFillColor_Click);
-            // 
             // btnTextColor
-            // 
             this.btnTextColor.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.btnTextColor.FlatAppearance.BorderSize = 0;
             this.btnTextColor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -1367,17 +1361,14 @@ namespace my_addin
             this.btnTextColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnTextColor.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
             this.btnTextColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-            this.btnTextColor.Location = new System.Drawing.Point(25, 0);
             this.btnTextColor.Margin = new System.Windows.Forms.Padding(0);
             this.btnTextColor.Name = "btnTextColor";
-            this.btnTextColor.Size = new System.Drawing.Size(25, 25);
+            this.btnTextColor.Size = new System.Drawing.Size(20, 20);
             this.btnTextColor.TabIndex = 2;
             this.btnTextColor.Text = "A";
             this.btnTextColor.UseVisualStyleBackColor = false;
             this.btnTextColor.Click += new System.EventHandler(this.BtnTextColor_Click);
-            // 
             // btnOutlineColor
-            // 
             this.btnOutlineColor.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.btnOutlineColor.FlatAppearance.BorderSize = 0;
             this.btnOutlineColor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -1388,14 +1379,12 @@ namespace my_addin
             this.btnOutlineColor.Location = new System.Drawing.Point(50, 0);
             this.btnOutlineColor.Margin = new System.Windows.Forms.Padding(0);
             this.btnOutlineColor.Name = "btnOutlineColor";
-            this.btnOutlineColor.Size = new System.Drawing.Size(25, 25);
+            this.btnOutlineColor.Size = new System.Drawing.Size(20, 20);
             this.btnOutlineColor.TabIndex = 3;
             this.btnOutlineColor.Text = "◯";
             this.btnOutlineColor.UseVisualStyleBackColor = false;
             this.btnOutlineColor.Click += new System.EventHandler(this.BtnOutlineColor_Click);
-            // 
             // divider7
-            // 
             this.divider7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.divider7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(225)))), ((int)(((byte)(225)))));
@@ -1403,9 +1392,7 @@ namespace my_addin
             this.divider7.Name = "divider7";
             this.divider7.Size = new System.Drawing.Size(287, 1);
             this.divider7.TabIndex = 16;
-            // 
             // textPanel
-            // 
             this.textPanel.AutoSize = true;
             this.textPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.textPanel.BackColor = System.Drawing.Color.White;
@@ -1417,9 +1404,7 @@ namespace my_addin
             this.textPanel.Name = "textPanel";
             this.textPanel.Size = new System.Drawing.Size(287, 38);
             this.textPanel.TabIndex = 7;
-            // 
             // lblTextSection
-            // 
             this.lblTextSection.AutoSize = true;
             this.lblTextSection.Font = new System.Drawing.Font("Segoe UI", 8F);
             this.lblTextSection.ForeColor = System.Drawing.Color.Gray;
@@ -1428,9 +1413,7 @@ namespace my_addin
             this.lblTextSection.Size = new System.Drawing.Size(26, 13);
             this.lblTextSection.TabIndex = 0;
             this.lblTextSection.Text = "Text";
-            // 
             // textButtonsPanel
-            // 
             this.textButtonsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textButtonsPanel.AutoSize = true;
@@ -1446,9 +1429,7 @@ namespace my_addin
             this.textButtonsPanel.Name = "textButtonsPanel";
             this.textButtonsPanel.Size = new System.Drawing.Size(150, 25);
             this.textButtonsPanel.TabIndex = 1;
-            // 
             // btnBold
-            // 
             this.btnBold.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.btnBold.FlatAppearance.BorderSize = 0;
             this.btnBold.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -1459,7 +1440,7 @@ namespace my_addin
             this.btnBold.Location = new System.Drawing.Point(0, 0);
             this.btnBold.Margin = new System.Windows.Forms.Padding(0);
             this.btnBold.Name = "btnBold";
-            this.btnBold.Size = new System.Drawing.Size(25, 25);
+            this.btnBold.Size = new System.Drawing.Size(20, 20);
             this.btnBold.TabIndex = 1;
             this.btnBold.Text = "B";
             this.btnBold.UseVisualStyleBackColor = false;
@@ -1477,7 +1458,7 @@ namespace my_addin
             this.btnItalic.Location = new System.Drawing.Point(25, 0);
             this.btnItalic.Margin = new System.Windows.Forms.Padding(0);
             this.btnItalic.Name = "btnItalic";
-            this.btnItalic.Size = new System.Drawing.Size(25, 25);
+            this.btnItalic.Size = new System.Drawing.Size(20, 20);
             this.btnItalic.TabIndex = 2;
             this.btnItalic.Text = "I";
             this.btnItalic.UseVisualStyleBackColor = false;
@@ -1495,7 +1476,7 @@ namespace my_addin
             this.btnUnderline.Location = new System.Drawing.Point(50, 0);
             this.btnUnderline.Margin = new System.Windows.Forms.Padding(0);
             this.btnUnderline.Name = "btnUnderline";
-            this.btnUnderline.Size = new System.Drawing.Size(25, 25);
+            this.btnUnderline.Size = new System.Drawing.Size(20, 20);
             this.btnUnderline.TabIndex = 3;
             this.btnUnderline.Text = "U";
             this.btnUnderline.UseVisualStyleBackColor = false;
@@ -1513,7 +1494,7 @@ namespace my_addin
             this.btnBullets.Location = new System.Drawing.Point(75, 0);
             this.btnBullets.Margin = new System.Windows.Forms.Padding(0);
             this.btnBullets.Name = "btnBullets";
-            this.btnBullets.Size = new System.Drawing.Size(25, 25);
+            this.btnBullets.Size = new System.Drawing.Size(20, 20);
             this.btnBullets.TabIndex = 4;
             this.btnBullets.Text = "•";
             this.btnBullets.UseVisualStyleBackColor = false;
@@ -1530,7 +1511,7 @@ namespace my_addin
             this.btnWrapText.Location = new System.Drawing.Point(100, 0);
             this.btnWrapText.Margin = new System.Windows.Forms.Padding(0);
             this.btnWrapText.Name = "btnWrapText";
-            this.btnWrapText.Size = new System.Drawing.Size(25, 25);
+            this.btnWrapText.Size = new System.Drawing.Size(20, 20);
             this.btnWrapText.TabIndex = 5;
             this.btnWrapText.Text = "📦";
             this.btnWrapText.UseVisualStyleBackColor = false;
@@ -1547,7 +1528,7 @@ namespace my_addin
             this.btnNoWrapText.Location = new System.Drawing.Point(125, 0);
             this.btnNoWrapText.Margin = new System.Windows.Forms.Padding(0);
             this.btnNoWrapText.Name = "btnNoWrapText";
-            this.btnNoWrapText.Size = new System.Drawing.Size(25, 25);
+            this.btnNoWrapText.Size = new System.Drawing.Size(20, 20);
             this.btnNoWrapText.TabIndex = 6;
             this.btnNoWrapText.Text = "📄";
             this.btnNoWrapText.UseVisualStyleBackColor = false;
@@ -1615,7 +1596,7 @@ namespace my_addin
             this.btnZoomIn.Location = new System.Drawing.Point(0, 0);
             this.btnZoomIn.Margin = new System.Windows.Forms.Padding(0);
             this.btnZoomIn.Name = "btnZoomIn";
-            this.btnZoomIn.Size = new System.Drawing.Size(25, 25);
+            this.btnZoomIn.Size = new System.Drawing.Size(20, 20);
             this.btnZoomIn.TabIndex = 1;
             this.btnZoomIn.Text = "➕";
             this.btnZoomIn.UseVisualStyleBackColor = false;
@@ -1633,7 +1614,7 @@ namespace my_addin
             this.btnZoomOut.Location = new System.Drawing.Point(25, 0);
             this.btnZoomOut.Margin = new System.Windows.Forms.Padding(0);
             this.btnZoomOut.Name = "btnZoomOut";
-            this.btnZoomOut.Size = new System.Drawing.Size(25, 25);
+            this.btnZoomOut.Size = new System.Drawing.Size(20, 20);
             this.btnZoomOut.TabIndex = 2;
             this.btnZoomOut.Text = "➖";
             this.btnZoomOut.UseVisualStyleBackColor = false;
@@ -1651,7 +1632,7 @@ namespace my_addin
             this.btnFitToWindow.Location = new System.Drawing.Point(50, 0);
             this.btnFitToWindow.Margin = new System.Windows.Forms.Padding(0);
             this.btnFitToWindow.Name = "btnFitToWindow";
-            this.btnFitToWindow.Size = new System.Drawing.Size(25, 25);
+            this.btnFitToWindow.Size = new System.Drawing.Size(20, 20);
             this.btnFitToWindow.TabIndex = 3;
             this.btnFitToWindow.Text = "⛶";
             this.btnFitToWindow.UseVisualStyleBackColor = false;

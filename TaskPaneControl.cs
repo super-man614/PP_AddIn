@@ -210,6 +210,14 @@ namespace my_addin
             tooltip.SetToolTip(btnMatchHeight, "Match Height");
             tooltip.SetToolTip(btnMatchWidth, "Match Width");
 
+            // Shape section tooltips
+            tooltip.SetToolTip(btnAlignProcessChain, "Align Process Chain");
+            tooltip.SetToolTip(btnAlignAngles, "Align Angles");
+            tooltip.SetToolTip(btnAlignToProcessArrow, "Align to Process Arrow");
+            tooltip.SetToolTip(btnAdjustPentagonHeader, "Adjust Pentagon Header");
+            tooltip.SetToolTip(btnAlignBlockArrows, "Align Block Arrows");
+            tooltip.SetToolTip(btnAlignRoundedRectangleArrows, "Align Rounded Rectangle Arrows");
+
             // Transform section tooltips
             tooltip.SetToolTip(btnMakeVertical, "Make Vertical");
             tooltip.SetToolTip(btnMakeHorizontal, "Make Horizontal");
@@ -1242,10 +1250,9 @@ namespace my_addin
                         bool hasHeader = matrixDialog.HasHeader;
                         
                         var slide = app.ActiveWindow.Selection.SlideRange[1];
-                        CreateMatrixGrid(slide, rows, columns, hasHeader);
+                        CreateMatrixTable(slide, rows, columns, hasHeader);
                         
-                        string headerText = hasHeader ? " with header" : "";
-                        MessageBox.Show($"Matrix grid ({rows}x{columns}){headerText} created successfully!\n\nClick on any cell to add your content.", "Matrix Grid", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show($"✅ Matrix table ({rows}x{columns}) created successfully!\n\n🎯 Matrix tables are perfect for:\n• Decision-making matrices\n• Feature comparisons\n• Structured analysis\n• SWOT analysis\n\n💡 All cells are filled with 'XXXX' placeholder text.\n✏️ Click on any cell to replace with your content.\n🎨 Clean uniform design with transparent cells and gray borders.", "Matrix Table Created", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 else
@@ -1259,7 +1266,48 @@ namespace my_addin
             }
         }
 
-        private void CreateMatrixGrid(PowerPoint.Slide slide, int rows, int columns, bool hasHeader)
+        private void CreateMatrixTable(PowerPoint.Slide slide, int rows, int columns, bool hasHeader)
+        {
+            try
+            {
+                // Calculate optimal position and size for matrix
+                float slideWidth = slide.Master.Width;
+                float slideHeight = slide.Master.Height;
+                
+                // Matrix dimensions (make it more square and centered)
+                float tableSize = Math.Min(slideWidth * 0.75f, slideHeight * 0.7f);
+                float tableWidth = tableSize;
+                float tableHeight = tableSize;
+                
+                // Center the matrix table
+                float left = (slideWidth - tableWidth) / 2;
+                float top = (slideHeight - tableHeight) / 2;
+                
+                // Create native PowerPoint table
+                var tableShape = slide.Shapes.AddTable(rows, columns, left, top, tableWidth, tableHeight);
+                var table = tableShape.Table;
+                
+                                        // Apply uniform styling (ignoring header setting for consistent appearance)
+                        ApplyMatrixTableStyle(table, false);
+                
+                // Set default matrix content
+                SetMatrixDefaultContent(table, hasHeader);
+                
+                // Focus on the first editable cell
+                int startRow = hasHeader ? 2 : 1;
+                int startCol = hasHeader ? 2 : 1;
+                if (rows >= startRow && columns >= startCol)
+                {
+                    table.Cell(startRow, startCol).Shape.TextFrame.TextRange.Select();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create matrix table: {ex.Message}");
+            }
+        }
+
+        private void CreateProfessionalTable(PowerPoint.Slide slide, int rows, int columns, bool hasHeader)
         {
             try
             {
@@ -1267,102 +1315,40 @@ namespace my_addin
                 float slideWidth = slide.Master.Width;
                 float slideHeight = slide.Master.Height;
                 
-                // Grid dimensions (leave margins)
-                float gridWidth = slideWidth * 0.85f; // 85% of slide width
-                float gridHeight = slideHeight * 0.7f; // 70% of slide height
+                // Table dimensions (leave margins)
+                float tableWidth = slideWidth * 0.8f; // 80% of slide width
+                float tableHeight = Math.Min(slideHeight * 0.6f, rows * 40f); // Max 60% of height or based on rows
                 
-                // Center the grid
-                float startLeft = (slideWidth - gridWidth) / 2;
-                float startTop = (slideHeight - gridHeight) / 2;
+                // Center the table
+                float left = (slideWidth - tableWidth) / 2;
+                float top = (slideHeight - tableHeight) / 2;
                 
-                // Calculate cell dimensions
-                float cellWidth = gridWidth / columns;
-                float cellHeight = gridHeight / rows;
+                // Create native PowerPoint table
+                var tableShape = slide.Shapes.AddTable(rows, columns, left, top, tableWidth, tableHeight);
+                var table = tableShape.Table;
                 
-                // Create individual rectangle shapes for matrix grid
-                var shapes = new System.Collections.Generic.List<PowerPoint.Shape>();
+                // Apply PowerPoint's built-in table style
+                ApplyDefaultTableStyle(table, hasHeader);
                 
-                for (int row = 0; row < rows; row++)
+                // Set default content if it's a header table
+                if (hasHeader && rows > 0)
                 {
-                    for (int col = 0; col < columns; col++)
+                    for (int col = 1; col <= columns; col++)
                     {
-                        float left = startLeft + (col * cellWidth);
-                        float top = startTop + (row * cellHeight);
-                        
-                        // Create rectangle
-                        var shape = slide.Shapes.AddShape(
-                            Office.MsoAutoShapeType.msoShapeRectangle, 
-                            left, top, cellWidth, cellHeight);
-                        
-                        // Style the rectangle
-                        StyleMatrixCell(shape, row == 0 && hasHeader);
-                        
-                        // Add placeholder text
-                        if (hasHeader && row == 0)
-                        {
-                            shape.TextFrame.TextRange.Text = $"H{col + 1}";
-                        }
-                        else
-                        {
-                            shape.TextFrame.TextRange.Text = "XXXX";
-                        }
-                        
-                        shapes.Add(shape);
+                        table.Cell(1, col).Shape.TextFrame.TextRange.Text = $"Header {col}";
                     }
                 }
                 
-                // Group all shapes together for easier manipulation
-                if (shapes.Count > 1)
+                // Focus on the first editable cell
+                int startRow = hasHeader ? 2 : 1;
+                if (rows >= startRow && startRow <= rows)
                 {
-                    var shapeArray = shapes.ToArray();
-                    var groupShape = slide.Shapes.Range(shapeArray.Select(s => s.Name).ToArray()).Group();
-                    groupShape.Name = "MatrixGrid";
+                    table.Cell(startRow, 1).Shape.TextFrame.TextRange.Select();
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception($"Failed to create matrix grid: {ex.Message}");
-            }
-        }
-        
-        private void StyleMatrixCell(PowerPoint.Shape shape, bool isHeader)
-        {
-            try
-            {
-                // Basic shape styling
-                shape.Fill.Solid();
-                shape.Line.Visible = Office.MsoTriState.msoTrue;
-                shape.Line.Weight = 1.5f;
-                
-                if (isHeader)
-                {
-                    // Header cell styling
-                    shape.Fill.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(68, 114, 196));
-                    shape.Line.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(45, 85, 145));
-                    shape.TextFrame.TextRange.Font.Color.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.White);
-                    shape.TextFrame.TextRange.Font.Bold = Office.MsoTriState.msoTrue;
-                }
-                else
-                {
-                    // Regular cell styling
-                    shape.Fill.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.White);
-                    shape.Line.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(180, 180, 180));
-                    shape.TextFrame.TextRange.Font.Color.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(64, 64, 64));
-                }
-                
-                // Text formatting
-                shape.TextFrame.TextRange.Font.Name = "Segoe UI";
-                shape.TextFrame.TextRange.Font.Size = 12;
-                shape.TextFrame.TextRange.ParagraphFormat.Alignment = PowerPoint.PpParagraphAlignment.ppAlignCenter;
-                shape.TextFrame.VerticalAnchor = Office.MsoVerticalAnchor.msoAnchorMiddle;
-                shape.TextFrame.MarginLeft = 5;
-                shape.TextFrame.MarginRight = 5;
-                shape.TextFrame.MarginTop = 3;
-                shape.TextFrame.MarginBottom = 3;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Cell styling failed: {ex.Message}");
+                throw new Exception($"Failed to create professional table: {ex.Message}");
             }
         }
 
@@ -1370,13 +1356,161 @@ namespace my_addin
         {
             try
             {
-                // Try to apply a built-in table style using a simpler approach
-                // Just apply basic formatting since advanced styling causes errors
-                ApplyBasicStyling(table, hasHeader);
+                // Apply enhanced styling for regular tables
+                ApplyEnhancedBasicStyling(table, hasHeader);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Table styling failed: {ex.Message}");
+                // Fallback to basic styling
+                ApplyBasicStyling(table, hasHeader);
+            }
+        }
+
+        private void ApplyMatrixTableStyle(PowerPoint.Table table, bool hasHeader)
+        {
+            try
+            {
+                // Apply uniform styling to match the image - all cells identical
+                for (int row = 1; row <= table.Rows.Count; row++)
+                {
+                    for (int col = 1; col <= table.Columns.Count; col++)
+                    {
+                        var cell = table.Cell(row, col);
+                        var shape = cell.Shape;
+                        
+                        // Set uniform cell height for square appearance
+                        table.Rows[row].Height = Math.Max(50f, table.Rows[row].Height);
+                        
+                        // No background color - transparent cells
+                        shape.Fill.Visible = Office.MsoTriState.msoFalse;
+                        
+                        // Uniform text styling for all cells - dark gray text
+                        shape.TextFrame.TextRange.Font.Color.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(64, 64, 64));
+                        shape.TextFrame.TextRange.Font.Bold = Office.MsoTriState.msoFalse;
+                        shape.TextFrame.TextRange.Font.Size = 11;
+                        
+                        // Center alignment for all cells
+                        shape.TextFrame.TextRange.ParagraphFormat.Alignment = PowerPoint.PpParagraphAlignment.ppAlignCenter;
+                        shape.TextFrame.VerticalAnchor = Office.MsoVerticalAnchor.msoAnchorMiddle;
+                        
+                        // Uniform borders for all cells - dark gray borders
+                        shape.Line.Visible = Office.MsoTriState.msoTrue;
+                        shape.Line.Weight = 1.0f;
+                        shape.Line.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(64, 64, 64));
+                        shape.Line.DashStyle = Office.MsoLineDashStyle.msoLineSolid;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Matrix styling failed: {ex.Message}");
+                // Fallback to uniform styling
+                ApplyUniformMatrixStyling(table);
+            }
+        }
+
+        private void SetMatrixDefaultContent(PowerPoint.Table table, bool hasHeader)
+        {
+            try
+            {
+                // Fill ALL cells with "XXXX" regardless of header setting
+                // This matches the uniform XXXX pattern shown in the image
+                for (int row = 1; row <= table.Rows.Count; row++)
+                {
+                    for (int col = 1; col <= table.Columns.Count; col++)
+                    {
+                        table.Cell(row, col).Shape.TextFrame.TextRange.Text = "XXXX";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Setting matrix content failed: {ex.Message}");
+            }
+        }
+
+        private void ApplyUniformMatrixStyling(PowerPoint.Table table)
+        {
+            try
+            {
+                // Simple uniform styling that matches the image exactly
+                for (int row = 1; row <= table.Rows.Count; row++)
+                {
+                    for (int col = 1; col <= table.Columns.Count; col++)
+                    {
+                        var cell = table.Cell(row, col);
+                        var shape = cell.Shape;
+                        
+                        // No background color - transparent cells
+                        shape.Fill.Visible = Office.MsoTriState.msoFalse;
+                        
+                        // Dark gray text
+                        shape.TextFrame.TextRange.Font.Color.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(64, 64, 64));
+                        shape.TextFrame.TextRange.Font.Size = 11;
+                        
+                        // Center alignment
+                        shape.TextFrame.TextRange.ParagraphFormat.Alignment = PowerPoint.PpParagraphAlignment.ppAlignCenter;
+                        
+                        // Dark gray borders
+                        shape.Line.Visible = Office.MsoTriState.msoTrue;
+                        shape.Line.Weight = 1f;
+                        shape.Line.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(64, 64, 64));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Uniform matrix styling failed: {ex.Message}");
+            }
+        }
+
+        private void ApplyEnhancedBasicStyling(PowerPoint.Table table, bool hasHeader)
+        {
+            try
+            {
+                // Enhanced basic styling with background colors
+                for (int row = 1; row <= table.Rows.Count; row++)
+                {
+                    for (int col = 1; col <= table.Columns.Count; col++)
+                    {
+                        var cell = table.Cell(row, col);
+                        var shape = cell.Shape;
+                        
+                        // Ensure fill is visible
+                        shape.Fill.Visible = Office.MsoTriState.msoTrue;
+                        shape.Fill.Solid();
+                        
+                        if (hasHeader && (row == 1 || col == 1))
+                        {
+                            // Header styling
+                            shape.Fill.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(79, 129, 189));
+                            shape.TextFrame.TextRange.Font.Color.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.White);
+                            shape.TextFrame.TextRange.Font.Bold = Office.MsoTriState.msoTrue;
+                        }
+                        else
+                        {
+                            // Data cell styling
+                            shape.Fill.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.White);
+                            shape.TextFrame.TextRange.Font.Color.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Black);
+                        }
+                        
+                        // Basic borders
+                        shape.Line.Visible = Office.MsoTriState.msoTrue;
+                        shape.Line.Weight = 1f;
+                        shape.Line.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Gray);
+                        
+                        // Set basic text properties
+                        shape.TextFrame.TextRange.Font.Size = 11;
+                        shape.TextFrame.TextRange.ParagraphFormat.Alignment = PowerPoint.PpParagraphAlignment.ppAlignCenter;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Enhanced basic styling failed: {ex.Message}");
+                // Ultimate fallback
+                ApplyBasicStyling(table, hasHeader);
             }
         }
 
