@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36310.24 d17.14
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33801.447
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "my-addin", "my-addin.csproj", "{3CD5F9E0-B413-4DAC-B61E-5F8CD3684D4D}"
 EndProject
@@ -23,4 +23,3 @@ Global
 		SolutionGuid = {E372CF4A-6C3D-43CC-A4FF-F5207E90B409}
 	EndGlobalSection
 EndGlobal
- 

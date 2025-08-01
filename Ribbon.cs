@@ -836,6 +836,346 @@ namespace my_addin
 
         #endregion
 
+        #region Advanced Position Operations
+
+        /// <summary>
+        /// Align objects to the top
+        /// </summary>
+        public void AlignTop_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnAlignTop_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error aligning top: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Align objects to the bottom
+        /// </summary>
+        public void AlignBottom_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnAlignBottom_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error aligning bottom: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Align objects to the middle
+        /// </summary>
+        public void AlignMiddle_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnAlignMiddle_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error aligning middle: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Dock objects to the left
+        /// </summary>
+        public void DockLeft_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnDockLeft_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error docking left: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Dock objects to the right
+        /// </summary>
+        public void DockRight_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnDockRight_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error docking right: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Dock objects to the top
+        /// </summary>
+        public void DockTop_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnDockTop_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error docking top: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Dock objects to the bottom
+        /// </summary>
+        public void DockBottom_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnDockBottom_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error docking bottom: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Distribute objects horizontally
+        /// </summary>
+        public void DistributeHorizontal_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnDistributeHorizontal_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error distributing horizontal: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Distribute objects vertically
+        /// </summary>
+        public void DistributeVertical_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnDistributeVertical_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error distributing vertical: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Align in Golden Canon
+        /// </summary>
+        public void GoldenCanon_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnGoldenCanon_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error aligning golden canon: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Align in Matrix
+        /// </summary>
+        public void AlignMatrix_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnAlignMatrix_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error aligning matrix: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Slice or multiply shape
+        /// </summary>
+        public void SliceShape_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnSliceShape_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error slicing shape: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Duplicate objects to the right
+        /// </summary>
+        public void DuplicateRight_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnDuplicateRight_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error duplicating right: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Center on top left corner
+        /// </summary>
+        public void CenterTopLeft_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnCenterTopLeft_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error centering top left: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Save position and size
+        /// </summary>
+        public void SavePosition_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnSavePosition_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving position: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Apply saved position and size
+        /// </summary>
+        public void ApplyPosition_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
+                if (taskPaneControl != null)
+                {
+                    var method = taskPaneControl.GetType().GetMethod("BtnApplyPosition_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error applying position: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        #endregion
+
         #region Transform Operations
 
         /// <summary>

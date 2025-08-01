@@ -1,218 +1,131 @@
-# PowerPoint Add-in Task Pane Implementation Guide
+# PowerPoint Add-In Implementation Guide
 
-## Overview
+This guide documents the comprehensive functionality implemented in the PowerPoint Add-In.
 
-You now have a complete PowerPoint add-in with a professional task pane that includes:
+## Position Section - Comprehensive Alignment & Positioning Tools
 
-- **Size Tab**: Change slide dimensions with presets (4:3, 16:9, 16:10) or custom sizes
-- **Wizards Tab**: Guided workflows for templates, content, design, animations, and transitions
-- **Presentation Tab**: Presentation management including new presentations, PDF export, and slide operations
+The Position Section provides advanced object positioning capabilities that go far beyond PowerPoint's standard alignment tools. All functions support the "Master Object" concept where the last selected object serves as the reference point.
 
-## Project Structure
+### 🎯 Basic Alignment Functions
 
-```
-my-addin/
-├── TaskPaneControl.cs      # Main UI control with tabbed interface
-├── CustomTaskPane.cs       # Task pane wrapper and management
-├── Ribbon.cs              # Custom ribbon with buttons
-├── Ribbon.xml             # Ribbon UI definition
-├── ThisAddIn.cs           # Main add-in class
-├── ThisAddIn.Designer.cs  # Auto-generated designer code
-└── my-addin.csproj        # Project file with all references
-```
+#### **Standard Alignment**
+- **Align Left** (←): Align objects to left edge
+- **Align Center** (↔): Align objects to horizontal center  
+- **Align Right** (→): Align objects to right edge
+- **Align Top** (↑): Align objects to top edge
+- **Align Bottom** (↓): Align objects to bottom edge
+- **Align Middle** (↕): Align objects to vertical middle
 
-## Features Implemented
+**Master Object Logic:**
+- Multiple objects: Align to the **last selected object** (master)
+- Single object OR **Ctrl pressed**: Align to slide edges
+- Hold **Ctrl** to force alignment to slide boundaries
 
-### 1. Task Pane UI (TaskPaneControl.cs)
-- **Professional Windows Forms interface** with tabbed layout
-- **Size Management**: 
-  - Preset slide sizes (Standard 4:3, Widescreen 16:9, 16:10)
-  - Custom width/height controls
-  - Apply/Reset functionality
-- **Wizards**: 
-  - Template Wizard
-  - Content Wizard  
-  - Design Wizard
-  - Animation Wizard
-  - Transition Wizard
-- **Presentation Tools**:
-  - Create new presentations
-  - Save as template (.potx)
-  - Export to PDF
-  - Add/Delete/Duplicate slides
-  - Real-time slide list
+### 🔗 Docking Functions
 
-### 2. Custom Ribbon (Ribbon.cs + Ribbon.xml)
-- **"PowerPoint Tools" tab** in the ribbon
-- **Task Pane toggle button** 
-- **Quick Action buttons** for common operations
-- **Slide Action buttons** for slide management
+Advanced positioning that moves objects to "touch" edges rather than just align them.
 
-### 3. Professional Architecture
-- **Separation of concerns** with dedicated classes
-- **Error handling** throughout the application
-- **Memory management** with proper disposal
-- **Event-driven design** for responsive UI
+- **Dock Left**: Move objects to touch the left side of master object (or slide edge with Ctrl)
+- **Dock Right**: Move objects to touch the right side of master object (or slide edge with Ctrl) 
+- **Dock Top**: Move objects to touch the top of master object (or slide top with Ctrl)
+- **Dock Bottom**: Move objects to touch the bottom of master object (or slide bottom with Ctrl)
 
-## How to Build and Run
+**Use Cases:**
+- Creating connected layouts where objects touch each other
+- Positioning objects at precise slide boundaries
+- Building flowcharts and process diagrams
 
-1. **Open in Visual Studio 2022**
-   ```
-   File → Open → Project/Solution → Select my-addin.sln
-   ```
+### 📐 Enhanced Distribution
 
-2. **Build the project**
-   ```
-   Build → Build Solution (Ctrl+Shift+B)
-   ```
+- **Distribute** (≡): General distribution
+- **Distribute Horizontal** (⇔): Horizontal distribution with Ctrl support
+- **Distribute Vertical** (⇕): Vertical distribution with Ctrl support
 
-3. **Debug/Run**
-   ```
-   Debug → Start Debugging (F5)
-   ```
-   - This will launch PowerPoint with your add-in loaded
-   - Look for the "PowerPoint Tools" tab in the ribbon
+**Distribution Modes:**
+- **Standard**: Keep outer objects in place, distribute middle objects evenly
+- **Ctrl Mode**: Distribute across entire slide width/height
 
-## Using the Add-in
+### 📏 Size Matching
 
-### Accessing the Task Pane
-1. **Via Ribbon**: Click "Show Tools" in the "PowerPoint Tools" tab
-2. **Via Menu**: The task pane will dock to the right side of PowerPoint
+- **Match Both**: Match both width and height to master object
+- **Match Height**: Match height only to master object
+- **Match Width**: Match width only to master object
 
-### Size Tab Features
-- **Select preset sizes** from dropdown
-- **Enter custom dimensions** in inches
-- **Apply changes** to current presentation
-- **Reset** to default 16:9 widescreen
+### 🔄 Transform Operations
 
-### Wizards Tab Features
-- **Browse available wizards** in the list
-- **Read descriptions** for each wizard
-- **Launch selected wizard** (currently shows demo messages)
+- **Make Vertical**: Rotate objects to 90° (vertical orientation)
+- **Make Horizontal**: Rotate objects to 0° (horizontal orientation)  
+- **Swap Locations**: Exchange positions of exactly two selected objects
 
-### Presentation Tab Features
-- **Create new presentations** quickly
-- **Export current presentation** to PDF
-- **Save current presentation** as template
-- **Manage slides**: Add, delete, duplicate
-- **View slide list** for current presentation
+### ✨ Advanced Positioning Functions
 
-## Extending the Add-in
+#### **Golden Canon Alignment**
+Implements the Golden Canon ratio for professional layout design.
+- Creates 1:2 margin ratio (bottom margin twice the top margin)
+- Master object should be taller than objects being positioned
+- Perfect for typographic and design layouts
 
-### Adding New Features to Task Pane
+#### **Matrix Alignment**
+Arrange objects in a precise grid pattern.
+- Specify rows × columns (e.g., "3x2" for 3 rows, 2 columns)
+- Objects filled row-wise from top to bottom
+- Maintains selection order when placing objects
+- Automatically calculates grid boundaries from selected objects
 
-1. **Add new tab**:
-```csharp
-private void CreateNewFeatureTab()
-{
-    var newTabPage = new TabPage("New Feature");
-    // Add controls here
-    mainTabControl.TabPages.Add(newTabPage);
-}
-```
+#### **Slice or Multiply Shape**
+Transform a single shape into a grid of smaller shapes.
+- Format: "rows x columns" (e.g., "2x3" creates 6 shapes)
+- Optional spacing: "2x3 10" adds 10pt spacing between shapes
+- Original shape becomes top-left piece
+- Perfect for creating grids, tiles, or modular layouts
 
-2. **Add new controls**:
-```csharp
-var newButton = new Button();
-newButton.Text = "New Action";
-newButton.Click += NewAction_Click;
-tabPage.Controls.Add(newButton);
-```
+#### **Duplicate Right**
+Quick duplication with automatic positioning.
+- Duplicates all selected objects to the right
+- Adds 10pt spacing automatically
+- Maintains vertical alignment
 
-### Adding New Ribbon Buttons
+#### **Center on Top Left Corner**
+Precision positioning using master object's corner as reference.
+- Centers objects on the top-left corner of master object
+- Useful for creating layered designs or alignment markers
 
-1. **Update Ribbon.xml**:
-```xml
-<button id="NewFeatureButton"
-        label="New Feature"
-        size="normal"
-        onAction="NewFeature_Click"
-        imageMso="SomeIcon" />
-```
+### 💾 Position Memory System
 
-2. **Add handler in Ribbon.cs**:
-```csharp
-public void NewFeature_Click(Office.IRibbonControl control)
-{
-    // Implementation here
-}
-```
+#### **Save Position and Size**
+- Captures exact position (Left, Top) and dimensions (Width, Height) of selected objects
+- Stores multiple objects in selection order
+- Data persists during the PowerPoint session
 
-### Implementing Wizard Functionality
+#### **Apply Position and Size**  
+- Applies saved positions and sizes to currently selected objects
+- Matches objects in selection order
+- Perfect for:
+  - Creating object templates
+  - Maintaining consistent layouts across slides
+  - Copying precise positioning between different objects
 
-The wizard framework is ready - you can implement actual wizards:
+### 🎮 Usage Tips
 
-```csharp
-private void BtnTemplateWizard_Click(object sender, EventArgs e)
-{
-    switch (lstWizardOptions.SelectedIndex)
-    {
-        case 0: // Template Wizard
-            var templateForm = new TemplateWizardForm();
-            templateForm.ShowDialog();
-            break;
-        // Add other wizards
-    }
-}
-```
+1. **Master Object**: Always select the reference object **last** when working with multiple objects
+2. **Ctrl Key**: Use Ctrl to force operations relative to slide boundaries instead of master object
+3. **Selection Order**: For matrix alignment and position memory, selection order matters
+4. **Error Handling**: All functions include comprehensive error checking and user feedback
 
-## Advanced Customization
+### 🔧 Technical Implementation
 
-### Custom Themes and Styling
-- Modify colors in `TaskPaneControl.cs`
-- Update button styles and fonts
-- Add custom icons and images
+**Key Features:**
+- Full support for PowerPoint's native alignment commands where applicable
+- Custom algorithms for advanced positioning (Golden Canon, Matrix, Slicing)
+- Robust error handling with informative user messages
+- Memory system for position/size templates
+- Ctrl key modifier support for alternate behaviors
+- Tooltips with detailed usage instructions
 
-### PowerPoint Automation
-All PowerPoint operations use the Office Interop:
-```csharp
-var app = Globals.ThisAddIn.Application;
-var presentation = app.ActivePresentation;
-var slide = presentation.Slides.Add(1, PowerPoint.PpSlideLayout.ppLayoutBlank);
-```
+**Compatibility:**
+- Works with all PowerPoint shape types
+- Supports single and multiple object selections
+- Handles edge cases (single objects, slide boundaries, etc.)
+- Maintains PowerPoint's undo/redo functionality
 
-### Error Handling Pattern
-Follow the established pattern:
-```csharp
-try
-{
-    // PowerPoint operations
-    MessageBox.Show("Success!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-}
-catch (Exception ex)
-{
-    MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-}
-```
-
-## Deployment
-
-1. **For Development**: Debug mode (F5) installs locally
-2. **For Distribution**: 
-   - Build in Release mode
-   - Use ClickOnce deployment or create installer
-   - Sign the add-in for security
-
-## Troubleshooting
-
-### Common Issues
-1. **Task pane not showing**: Check ribbon button click events
-2. **PowerPoint not launching**: Verify Office references in project
-3. **Build errors**: Ensure all files are included in project
-
-### Debugging Tips
-- Use Debug.WriteLine() for console output
-- Set breakpoints in event handlers
-- Check Visual Studio Output window for errors
-
-## Next Steps
-
-You now have a solid foundation that's much easier to work with than JavaScript. You can:
-
-1. **Implement actual wizard logic** instead of demo messages
-2. **Add more PowerPoint automation features**
-3. **Create custom dialogs and forms**
-4. **Add data persistence and settings**
-5. **Integrate with external APIs or databases**
-
-The Windows Forms approach gives you complete control over the UI with Visual Studio's designer tools, making it much easier to create professional-looking interfaces compared to web-based add-ins. 
+This comprehensive position system transforms PowerPoint into a precision design tool capable of professional-grade object positioning and layout management. 

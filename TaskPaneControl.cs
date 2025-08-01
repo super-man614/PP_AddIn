@@ -202,13 +202,29 @@ namespace my_addin
             tooltip.SetToolTip(btnStandardObjects, "Standard Objects");
 
             // Position section tooltips
-            tooltip.SetToolTip(btnAlignLeft, "Align Left");
-            tooltip.SetToolTip(btnAlignCenter, "Align Center");
-            tooltip.SetToolTip(btnAlignRight, "Align Right");
-            tooltip.SetToolTip(btnDistribute, "Distribute");
-            tooltip.SetToolTip(btnMatchBoth, "Match Both");
-            tooltip.SetToolTip(btnMatchHeight, "Match Height");
-            tooltip.SetToolTip(btnMatchWidth, "Match Width");
+            tooltip.SetToolTip(btnAlignLeft, "Align Left\nAlign objects to left edge (Ctrl: to slide edge)");
+            tooltip.SetToolTip(btnAlignCenter, "Align Center\nAlign objects to center (Ctrl: to slide center)");
+            tooltip.SetToolTip(btnAlignRight, "Align Right\nAlign objects to right edge (Ctrl: to slide edge)");
+            tooltip.SetToolTip(btnAlignTop, "Align Top\nAlign objects to top edge (Ctrl: to slide top)");
+            tooltip.SetToolTip(btnAlignBottom, "Align Bottom\nAlign objects to bottom edge (Ctrl: to slide bottom)");
+            tooltip.SetToolTip(btnAlignMiddle, "Align Middle\nAlign objects to vertical middle (Ctrl: to slide middle)");
+            tooltip.SetToolTip(btnDockLeft, "Dock Left\nMove objects to touch left edge (Ctrl: to slide edge)");
+            tooltip.SetToolTip(btnDockRight, "Dock Right\nMove objects to touch right edge (Ctrl: to slide edge)");
+            tooltip.SetToolTip(btnDockTop, "Dock Top\nMove objects to touch top edge (Ctrl: to slide top)");
+            tooltip.SetToolTip(btnDockBottom, "Dock Bottom\nMove objects to touch bottom edge (Ctrl: to slide bottom)");
+            tooltip.SetToolTip(btnDistribute, "Distribute\nDistribute objects evenly");
+            tooltip.SetToolTip(btnDistributeHorizontal, "Distribute Horizontal\nDistribute horizontally (Ctrl: across slide)");
+            tooltip.SetToolTip(btnDistributeVertical, "Distribute Vertical\nDistribute vertically (Ctrl: across slide)");
+            tooltip.SetToolTip(btnMatchBoth, "Match Both\nMatch width and height to master object");
+            tooltip.SetToolTip(btnMatchHeight, "Match Height\nMatch height to master object");
+            tooltip.SetToolTip(btnMatchWidth, "Match Width\nMatch width to master object");
+            tooltip.SetToolTip(btnGoldenCanon, "Golden Canon\nAlign in golden ratio (1:2 margin ratio)");
+            tooltip.SetToolTip(btnAlignMatrix, "Align Matrix\nArrange objects in matrix grid");
+            tooltip.SetToolTip(btnSliceShape, "Slice Shape\nSlice or multiply shape into grid");
+            tooltip.SetToolTip(btnDuplicateRight, "Duplicate Right\nDuplicate objects to the right");
+            tooltip.SetToolTip(btnCenterTopLeft, "Center on Top Left\nCenter objects on master's top-left corner");
+            tooltip.SetToolTip(btnSavePosition, "Save Position\nSave position and size of selected objects");
+            tooltip.SetToolTip(btnApplyPosition, "Apply Position\nApply saved position and size to selected objects");
 
             // Shape section tooltips
             tooltip.SetToolTip(btnAlignProcessChain, "Align Process Chain");
@@ -3039,5 +3055,786 @@ namespace my_addin
                 System.Diagnostics.Debug.WriteLine($"Could not clear header text: {ex.Message}");
             }
         }
+
+        #region Advanced Position Section - Extended Functionality
+
+        // Basic Alignment Functions (missing ones)
+        private void BtnAlignTop_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                bool useCtrlKey = Control.ModifierKeys.HasFlag(Keys.Control);
+                
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    
+                    if (useCtrlKey || shapes.Count == 1)
+                    {
+                        // Align to slide top edge
+                        shapes.Align(Office.MsoAlignCmd.msoAlignTops, Office.MsoTriState.msoTrue);
+                        MessageBox.Show("Objects aligned to the top edge of the slide!", "Align Top", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        // Align to master object (last selected)
+                        shapes.Align(Office.MsoAlignCmd.msoAlignTops, Office.MsoTriState.msoFalse);
+                        MessageBox.Show("Objects aligned to the top edge of the master object!", "Align Top", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select objects to align.", "Align Top", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error aligning objects to top: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnAlignBottom_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                bool useCtrlKey = Control.ModifierKeys.HasFlag(Keys.Control);
+                
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    
+                    if (useCtrlKey || shapes.Count == 1)
+                    {
+                        // Align to slide bottom edge
+                        shapes.Align(Office.MsoAlignCmd.msoAlignBottoms, Office.MsoTriState.msoTrue);
+                        MessageBox.Show("Objects aligned to the bottom edge of the slide!", "Align Bottom", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        // Align to master object (last selected)
+                        shapes.Align(Office.MsoAlignCmd.msoAlignBottoms, Office.MsoTriState.msoFalse);
+                        MessageBox.Show("Objects aligned to the bottom edge of the master object!", "Align Bottom", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select objects to align.", "Align Bottom", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error aligning objects to bottom: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnAlignMiddle_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                bool useCtrlKey = Control.ModifierKeys.HasFlag(Keys.Control);
+                
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    
+                    if (useCtrlKey || shapes.Count == 1)
+                    {
+                        // Align to slide middle
+                        shapes.Align(Office.MsoAlignCmd.msoAlignMiddles, Office.MsoTriState.msoTrue);
+                        MessageBox.Show("Objects aligned to the middle of the slide!", "Align Middle", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        // Align to master object (last selected)
+                        shapes.Align(Office.MsoAlignCmd.msoAlignMiddles, Office.MsoTriState.msoFalse);
+                        MessageBox.Show("Objects aligned to the middle of the master object!", "Align Middle", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select objects to align.", "Align Middle", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error aligning objects to middle: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Docking Functions
+        private void BtnDockLeft_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                bool useCtrlKey = Control.ModifierKeys.HasFlag(Keys.Control);
+                
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    
+                    if (useCtrlKey || shapes.Count == 1)
+                    {
+                        // Move to left edge of slide
+                        foreach (PowerPoint.Shape shape in shapes)
+                        {
+                            shape.Left = 0;
+                        }
+                        MessageBox.Show("Objects moved to the left edge of the slide!", "Dock Left", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        // Move to touch master object (last selected) on left
+                        var master = shapes[shapes.Count];
+                        float masterLeftEdge = master.Left;
+                        
+                        for (int i = 1; i < shapes.Count; i++)
+                        {
+                            shapes[i].Left = masterLeftEdge - shapes[i].Width;
+                        }
+                        MessageBox.Show("Objects moved to touch the master object on the left!", "Dock Left", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select objects to dock.", "Dock Left", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error docking objects left: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnDockRight_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                bool useCtrlKey = Control.ModifierKeys.HasFlag(Keys.Control);
+                
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    
+                    if (useCtrlKey || shapes.Count == 1)
+                    {
+                        // Move to right edge of slide
+                        float slideWidth = app.ActivePresentation.PageSetup.SlideWidth;
+                        
+                        foreach (PowerPoint.Shape shape in shapes)
+                        {
+                            shape.Left = slideWidth - shape.Width;
+                        }
+                        MessageBox.Show("Objects moved to the right edge of the slide!", "Dock Right", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        // Move to touch master object (last selected) on right
+                        var master = shapes[shapes.Count];
+                        float masterRightEdge = master.Left + master.Width;
+                        
+                        for (int i = 1; i < shapes.Count; i++)
+                        {
+                            shapes[i].Left = masterRightEdge;
+                        }
+                        MessageBox.Show("Objects moved to touch the master object on the right!", "Dock Right", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select objects to dock.", "Dock Right", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error docking objects right: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnDockTop_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                bool useCtrlKey = Control.ModifierKeys.HasFlag(Keys.Control);
+                
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    
+                    if (useCtrlKey || shapes.Count == 1)
+                    {
+                        // Move to top edge of slide
+                        foreach (PowerPoint.Shape shape in shapes)
+                        {
+                            shape.Top = 0;
+                        }
+                        MessageBox.Show("Objects moved to the top edge of the slide!", "Dock Top", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        // Move to touch master object (last selected) on top
+                        var master = shapes[shapes.Count];
+                        float masterTopEdge = master.Top;
+                        
+                        for (int i = 1; i < shapes.Count; i++)
+                        {
+                            shapes[i].Top = masterTopEdge - shapes[i].Height;
+                        }
+                        MessageBox.Show("Objects moved to touch the master object at the top!", "Dock Top", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select objects to dock.", "Dock Top", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error docking objects top: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnDockBottom_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                bool useCtrlKey = Control.ModifierKeys.HasFlag(Keys.Control);
+                
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    
+                    if (useCtrlKey || shapes.Count == 1)
+                    {
+                        // Move to bottom edge of slide
+                        float slideHeight = app.ActivePresentation.PageSetup.SlideHeight;
+                        
+                        foreach (PowerPoint.Shape shape in shapes)
+                        {
+                            shape.Top = slideHeight - shape.Height;
+                        }
+                        MessageBox.Show("Objects moved to the bottom edge of the slide!", "Dock Bottom", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        // Move to touch master object (last selected) on bottom
+                        var master = shapes[shapes.Count];
+                        float masterBottomEdge = master.Top + master.Height;
+                        
+                        for (int i = 1; i < shapes.Count; i++)
+                        {
+                            shapes[i].Top = masterBottomEdge;
+                        }
+                        MessageBox.Show("Objects moved to touch the master object at the bottom!", "Dock Bottom", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select objects to dock.", "Dock Bottom", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error docking objects bottom: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Enhanced Distribution Functions
+        private void BtnDistributeHorizontal_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                bool useCtrlKey = Control.ModifierKeys.HasFlag(Keys.Control);
+                
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    
+                    if (shapes.Count >= 3)
+                    {
+                        if (useCtrlKey)
+                        {
+                            // Distribute across entire slide width
+                            float slideWidth = app.ActivePresentation.PageSetup.SlideWidth;
+                            var sortedShapes = shapes.Cast<PowerPoint.Shape>().OrderBy(s => s.Left).ToArray();
+                            
+                            float spacing = slideWidth / (sortedShapes.Length + 1);
+                            for (int i = 0; i < sortedShapes.Length; i++)
+                            {
+                                sortedShapes[i].Left = spacing * (i + 1) - sortedShapes[i].Width / 2;
+                            }
+                            MessageBox.Show("Objects distributed horizontally across the entire slide!", "Distribute Horizontal", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            // Standard distribution (keeping leftmost and rightmost in place)
+                            shapes.Distribute(Office.MsoDistributeCmd.msoDistributeHorizontally, Office.MsoTriState.msoFalse);
+                            MessageBox.Show("Objects distributed horizontally evenly!", "Distribute Horizontal", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select at least 3 objects to distribute horizontally.", "Distribute Horizontal", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select objects to distribute.", "Distribute Horizontal", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error distributing objects horizontally: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnDistributeVertical_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                bool useCtrlKey = Control.ModifierKeys.HasFlag(Keys.Control);
+                
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    
+                    if (shapes.Count >= 3)
+                    {
+                        if (useCtrlKey)
+                        {
+                            // Distribute across entire slide height
+                            float slideHeight = app.ActivePresentation.PageSetup.SlideHeight;
+                            var sortedShapes = shapes.Cast<PowerPoint.Shape>().OrderBy(s => s.Top).ToArray();
+                            
+                            float spacing = slideHeight / (sortedShapes.Length + 1);
+                            for (int i = 0; i < sortedShapes.Length; i++)
+                            {
+                                sortedShapes[i].Top = spacing * (i + 1) - sortedShapes[i].Height / 2;
+                            }
+                            MessageBox.Show("Objects distributed vertically across the entire slide!", "Distribute Vertical", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            // Standard distribution (keeping topmost and bottommost in place)
+                            shapes.Distribute(Office.MsoDistributeCmd.msoDistributeVertically, Office.MsoTriState.msoFalse);
+                            MessageBox.Show("Objects distributed vertically evenly!", "Distribute Vertical", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select at least 3 objects to distribute vertically.", "Distribute Vertical", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select objects to distribute.", "Distribute Vertical", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error distributing objects vertically: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Advanced Positioning Functions
+        private void BtnGoldenCanon_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    
+                    if (shapes.Count >= 2)
+                    {
+                        var master = shapes[shapes.Count]; // Last selected
+                        
+                        // Golden ratio: margin at bottom is twice the margin at top
+                        float masterTop = master.Top;
+                        float masterBottom = master.Top + master.Height;
+                        float availableHeight = masterBottom - masterTop;
+                        
+                        for (int i = 1; i < shapes.Count; i++)
+                        {
+                            var shape = shapes[i];
+                            
+                            // Calculate golden canon positioning
+                            float topMargin = availableHeight / 3;
+                            float bottomMargin = topMargin * 2;
+                            
+                            // Position object in the golden canon ratio
+                            shape.Top = masterTop + topMargin;
+                            
+                            // Ensure it fits within the constraints
+                            if (shape.Top + shape.Height > masterBottom - bottomMargin)
+                            {
+                                shape.Top = masterBottom - bottomMargin - shape.Height;
+                            }
+                        }
+                        
+                        MessageBox.Show($"Objects aligned in Golden Canon relative to master!\n\nThe golden canon creates a 1:2 ratio where the bottom margin is twice the top margin.", "Golden Canon", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select at least 2 objects (master should be higher than objects to be aligned).", "Golden Canon", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select objects to align in Golden Canon.", "Golden Canon", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error aligning in Golden Canon: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnAlignMatrix_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    
+                    if (shapes.Count >= 2)
+                    {
+                        // Get user input for matrix dimensions
+                        string input = Microsoft.VisualBasic.Interaction.InputBox(
+                            "Enter matrix dimensions (rows x columns):\nExample: 3x2 for 3 rows and 2 columns",
+                            "Matrix Alignment",
+                            "2x3");
+                        
+                        if (!string.IsNullOrEmpty(input))
+                        {
+                            var parts = input.ToLower().Split('x');
+                            if (parts.Length == 2 && int.TryParse(parts[0], out int rows) && int.TryParse(parts[1], out int columns))
+                            {
+                                AlignInMatrix(shapes, rows, columns);
+                                MessageBox.Show($"Objects aligned in {rows}x{columns} matrix!\n\nObjects are filled row-wise from top to bottom in selection order.", "Matrix Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Invalid format. Please use format like '3x2' for 3 rows and 2 columns.", "Matrix Alignment", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select at least 2 objects to arrange in matrix.", "Matrix Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select objects to align in matrix.", "Matrix Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error aligning in matrix: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void AlignInMatrix(PowerPoint.ShapeRange shapes, int rows, int columns)
+        {
+            // Calculate grid bounds based on selected shapes
+            var shapesList = shapes.Cast<PowerPoint.Shape>().ToList();
+            
+            float minLeft = shapesList.Min(s => s.Left);
+            float maxRight = shapesList.Max(s => s.Left + s.Width);
+            float minTop = shapesList.Min(s => s.Top);
+            float maxBottom = shapesList.Max(s => s.Top + s.Height);
+            
+            float totalWidth = maxRight - minLeft;
+            float totalHeight = maxBottom - minTop;
+            
+            float cellWidth = totalWidth / columns;
+            float cellHeight = totalHeight / rows;
+            
+            // Place objects in matrix (row-wise, top to bottom)
+            for (int i = 0; i < Math.Min(shapes.Count, rows * columns); i++)
+            {
+                int row = i / columns;
+                int col = i % columns;
+                
+                var shape = shapes[i + 1]; // PowerPoint uses 1-based indexing
+                
+                // Calculate cell center position
+                float cellCenterX = minLeft + (col * cellWidth) + (cellWidth / 2);
+                float cellCenterY = minTop + (row * cellHeight) + (cellHeight / 2);
+                
+                // Position shape at cell center
+                shape.Left = cellCenterX - (shape.Width / 2);
+                shape.Top = cellCenterY - (shape.Height / 2);
+            }
+        }
+
+        private void BtnSliceShape_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    
+                    if (shapes.Count == 1)
+                    {
+                        string input = Microsoft.VisualBasic.Interaction.InputBox(
+                            "Enter slice/multiply options:\nFormat: 'rows x columns' for slicing\nExample: '2x3' creates 6 shapes in 2 rows and 3 columns\nOptional spacing: '2x3 10' adds 10pt spacing",
+                            "Slice or Multiply Shape",
+                            "2x2");
+                        
+                        if (!string.IsNullOrEmpty(input))
+                        {
+                            var parts = input.Split(' ');
+                            var dimensions = parts[0].Split('x');
+                            
+                            if (dimensions.Length == 2 && int.TryParse(dimensions[0], out int rows) && int.TryParse(dimensions[1], out int columns))
+                            {
+                                float spacing = 0;
+                                if (parts.Length > 1 && float.TryParse(parts[1], out spacing))
+                                {
+                                    // Spacing provided
+                                }
+                                
+                                SliceOrMultiplyShape(shapes[1], rows, columns, spacing);
+                                MessageBox.Show($"Shape sliced into {rows}x{columns} = {rows * columns} shapes!\n\nSpacing: {spacing}pt between shapes.", "Slice Shape", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Invalid format. Use format like '2x3' or '2x3 10' (with spacing).", "Slice Shape", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select exactly one shape to slice/multiply.", "Slice Shape", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select a shape to slice/multiply.", "Slice Shape", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error slicing shape: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void SliceOrMultiplyShape(PowerPoint.Shape originalShape, int rows, int columns, float spacing)
+        {
+            var slide = originalShape.Parent as PowerPoint.Slide;
+            
+            // Calculate individual shape dimensions
+            float originalWidth = originalShape.Width;
+            float originalHeight = originalShape.Height;
+            float originalLeft = originalShape.Left;
+            float originalTop = originalShape.Top;
+            
+            float shapeWidth = (originalWidth - spacing * (columns - 1)) / columns;
+            float shapeHeight = (originalHeight - spacing * (rows - 1)) / rows;
+            
+            // Create the grid of shapes
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < columns; col++)
+                {
+                    if (row == 0 && col == 0)
+                    {
+                        // Resize the original shape
+                        originalShape.Width = shapeWidth;
+                        originalShape.Height = shapeHeight;
+                        continue;
+                    }
+                    
+                    // Duplicate the original shape
+                    var newShape = originalShape.Duplicate()[1];
+                    
+                    // Position the new shape
+                    newShape.Left = originalLeft + col * (shapeWidth + spacing);
+                    newShape.Top = originalTop + row * (shapeHeight + spacing);
+                    newShape.Width = shapeWidth;
+                    newShape.Height = shapeHeight;
+                }
+            }
+        }
+
+        private void BtnDuplicateRight_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    
+                    foreach (PowerPoint.Shape shape in shapes)
+                    {
+                        var duplicate = shape.Duplicate()[1];
+                        duplicate.Left = shape.Left + shape.Width + 10; // 10pt spacing
+                        duplicate.Top = shape.Top;
+                    }
+                    
+                    MessageBox.Show($"Duplicated {shapes.Count} object(s) to the right!", "Duplicate Right", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Please select objects to duplicate.", "Duplicate Right", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error duplicating objects: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnCenterTopLeft_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    
+                    if (shapes.Count >= 2)
+                    {
+                        var master = shapes[shapes.Count]; // Last selected
+                        float masterTopLeftX = master.Left;
+                        float masterTopLeftY = master.Top;
+                        
+                        for (int i = 1; i < shapes.Count; i++)
+                        {
+                            var shape = shapes[i];
+                            
+                            // Center shape on master's top-left corner
+                            shape.Left = masterTopLeftX - (shape.Width / 2);
+                            shape.Top = masterTopLeftY - (shape.Height / 2);
+                        }
+                        
+                        MessageBox.Show("Objects centered on the top-left corner of the master object!", "Center on Top Left", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select at least 2 objects (master is the last selected).", "Center on Top Left", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select objects to center.", "Center on Top Left", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error centering objects: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Save/Apply Position and Size Functions
+        private struct SavedPosition
+        {
+            public float Left;
+            public float Top;
+            public float Width;
+            public float Height;
+        }
+
+        private List<SavedPosition> savedPositions = new List<SavedPosition>();
+
+        private void BtnSavePosition_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    
+                    savedPositions.Clear();
+                    
+                    foreach (PowerPoint.Shape shape in shapes)
+                    {
+                        savedPositions.Add(new SavedPosition
+                        {
+                            Left = shape.Left,
+                            Top = shape.Top,
+                            Width = shape.Width,
+                            Height = shape.Height
+                        });
+                    }
+                    
+                    MessageBox.Show($"Saved position and size of {shapes.Count} object(s)!\n\nUse 'Apply Position and Size' to apply these to other objects.", "Save Position", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Please select objects whose position and size you want to save.", "Save Position", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving positions: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnApplyPosition_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                
+                if (savedPositions.Count == 0)
+                {
+                    MessageBox.Show("No saved positions found. Please use 'Save Position and Size' first.", "Apply Position", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                
+                if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    
+                    for (int i = 0; i < Math.Min(shapes.Count, savedPositions.Count); i++)
+                    {
+                        var shape = shapes[i + 1]; // PowerPoint uses 1-based indexing
+                        var savedPos = savedPositions[i];
+                        
+                        shape.Left = savedPos.Left;
+                        shape.Top = savedPos.Top;
+                        shape.Width = savedPos.Width;
+                        shape.Height = savedPos.Height;
+                    }
+                    
+                    MessageBox.Show($"Applied saved position and size to {Math.Min(shapes.Count, savedPositions.Count)} object(s)!\n\nPositions and sizes are applied in the order of selection.", "Apply Position", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Please select objects to apply the saved position and size to.", "Apply Position", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error applying positions: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        #endregion
     }
 }
