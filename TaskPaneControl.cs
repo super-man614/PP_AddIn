@@ -95,9 +95,14 @@ namespace my_addin
 
         private void SetInitialValues()
         {
-            // Set default combo box selection
-            if (cmbSlideSize != null && cmbSlideSize.Items.Count > 1)
-                cmbSlideSize.SelectedIndex = 1; // Default to 16:9
+            // Populate slide size combo box with smart presets
+            if (cmbSlideSize != null)
+            {
+                cmbSlideSize.Items.Clear();
+                cmbSlideSize.Items.AddRange(sizePresets.Keys.ToArray());
+                cmbSlideSize.Items.Add("Custom");
+                cmbSlideSize.SelectedIndex = 1; // Default to 16:9 Widescreen
+            }
         }
 
         /// <summary>
@@ -121,6 +126,12 @@ namespace my_addin
 
                 // Load wizard button images
                 LoadWizardButtonImages(assemblyDir);
+
+                // Load shape button images - all use the same enlarge icon
+                LoadShapeButtonImages(assemblyDir);
+
+                // Load text button images - all use the same enlarge icon  
+                LoadTextButtonImages(assemblyDir);
             }
             catch (Exception ex)
             {
@@ -161,6 +172,86 @@ namespace my_addin
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error loading wizard button images: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Loads images for shape alignment buttons
+        /// </summary>
+        private void LoadShapeButtonImages(string assemblyDir)
+        {
+            try
+            {
+                string iconPath = System.IO.Path.Combine(assemblyDir, "icons", "position", "icons8-enlarge-50.png");
+                if (System.IO.File.Exists(iconPath))
+                {
+                    var enlargeImage = Image.FromFile(iconPath);
+                    
+                    // Apply the same icon to all shape buttons
+                    var shapeButtons = new Button[] 
+                    { 
+                        btnAlignProcessChain,
+                        btnAlignAngles,
+                        btnAlignToProcessArrow,
+                        btnAdjustPentagonHeader,
+                        btnAlignBlockArrows,
+                        btnAlignRoundedRectangleRadius
+                    };
+
+                    foreach (var button in shapeButtons)
+                    {
+                        if (button != null)
+                        {
+                            button.BackgroundImage = enlargeImage;
+                            button.BackgroundImageLayout = ImageLayout.Stretch;
+                            button.Text = ""; // Clear text to show image
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading shape button images: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Loads images for text formatting buttons  
+        /// </summary>
+        private void LoadTextButtonImages(string assemblyDir)
+        {
+            try
+            {
+                string iconPath = System.IO.Path.Combine(assemblyDir, "icons", "position", "icons8-enlarge-50.png");
+                if (System.IO.File.Exists(iconPath))
+                {
+                    var enlargeImage = Image.FromFile(iconPath);
+                    
+                    // Apply the same icon to all text buttons
+                    var textButtons = new Button[] 
+                    { 
+                        btnBold,
+                        btnItalic,
+                        btnUnderline,
+                        btnBullets,
+                        btnWrapText,
+                        btnNoWrapText
+                    };
+
+                    foreach (var button in textButtons)
+                    {
+                        if (button != null)
+                        {
+                            button.BackgroundImage = enlargeImage;
+                            button.BackgroundImageLayout = ImageLayout.Stretch;
+                            button.Text = ""; // Clear text to show image
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading text button images: {ex.Message}");
             }
         }
 
@@ -232,7 +323,7 @@ namespace my_addin
             tooltip.SetToolTip(btnAlignToProcessArrow, "Align to Process Arrow");
             tooltip.SetToolTip(btnAdjustPentagonHeader, "Adjust Pentagon Header");
             tooltip.SetToolTip(btnAlignBlockArrows, "Align Block Arrows");
-            tooltip.SetToolTip(btnAlignRoundedRectangleArrows, "Align Rounded Rectangle Arrows");
+            tooltip.SetToolTip(btnAlignRoundedRectangleRadius, "Align Rounded Rectangle Radius");
 
             // Transform section tooltips
             tooltip.SetToolTip(btnMakeVertical, "Make Vertical");
@@ -240,7 +331,7 @@ namespace my_addin
             tooltip.SetToolTip(btnSwapLocations, "Swap Locations");
 
             // Size section tooltips
-            tooltip.SetToolTip(btnApplySize, "Apply Size");
+            tooltip.SetToolTip(btnApplySize, "Apply size with intelligent content scaling");
 
             // Colors section tooltips
             tooltip.SetToolTip(btnFillColor, "Fill Color");
@@ -268,7 +359,17 @@ namespace my_addin
 
         private void TaskPaneControl_Load(object sender, EventArgs e)
         {
-            // Initialize the interface
+            // Initialize the interface and load current slide size with delay
+            // Use timer to allow PowerPoint to fully load before accessing presentation
+            var timer = new System.Windows.Forms.Timer();
+            timer.Interval = 1000; // 1 second delay
+            timer.Tick += (s, args) =>
+            {
+                timer.Stop();
+                timer.Dispose();
+                LoadCurrentSlideSize();
+            };
+            timer.Start();
         }
 
         #region Presentation Section
@@ -2316,22 +2417,44 @@ namespace my_addin
 
         #region Size Section
 
+        // Smart size presets for different use cases
+        private readonly Dictionary<string, (decimal width, decimal height)> sizePresets = new Dictionary<string, (decimal, decimal)>
+        {
+            { "4:3 Standard", (10m, 7.5m) },
+            { "16:9 Widescreen", (13.3m, 7.5m) },
+            { "16:10 Widescreen", (12.8m, 8m) },
+            { "A4 Portrait", (8.27m, 11.69m) },
+            { "A4 Landscape", (11.69m, 8.27m) },
+            { "Letter Portrait", (8.5m, 11m) },
+            { "Letter Landscape", (11m, 8.5m) },
+            { "A3 Portrait", (11.69m, 16.54m) },
+            { "A3 Landscape", (16.54m, 11.69m) },
+            { "Banner", (8m, 1m) },
+            { "Social Media", (1.91m, 1m) },
+            { "Instagram Post", (1m, 1m) },
+            { "Instagram Story", (1m, 1.78m) },
+            { "YouTube Thumbnail", (1.78m, 1m) },
+            { "LinkedIn Post", (1.91m, 1m) },
+            { "Twitter Post", (1.91m, 1m) },
+            { "Facebook Post", (1.91m, 1m) }
+        };
+
         private void CmbSlideSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (nudWidth != null && nudHeight != null)
+            if (nudWidth != null && nudHeight != null && cmbSlideSize.SelectedItem != null)
             {
-                switch (cmbSlideSize.SelectedIndex)
-            {
-                case 0: // Standard 4:3
-                    nudWidth.Value = 10m;
-                    nudHeight.Value = 7.5m;
-                    break;
-                case 1: // Widescreen 16:9
-                        nudWidth.Value = 13.3m;
-                    nudHeight.Value = 7.5m;
-                    break;
-                    case 2: // Custom - don't change values
-                    break;
+                string selectedSize = cmbSlideSize.SelectedItem.ToString();
+                if (sizePresets.ContainsKey(selectedSize))
+                {
+                    var (width, height) = sizePresets[selectedSize];
+                    nudWidth.Value = width;
+                    nudHeight.Value = height;
+                    
+                    // Auto-apply if it's a preset (not custom)
+                    if (selectedSize != "Custom")
+                    {
+                        ApplySlideSizeWithSmartScaling(width, height, selectedSize);
+                    }
                 }
             }
         }
@@ -2341,20 +2464,468 @@ namespace my_addin
             try
             {
                 var app = Globals.ThisAddIn.Application;
-                if (app.ActivePresentation != null && nudWidth != null && nudHeight != null)
+                if (app != null && app.ActivePresentation != null && nudWidth != null && nudHeight != null)
                 {
-                    app.ActivePresentation.PageSetup.SlideWidth = (float)nudWidth.Value * 72; // Convert inches to points
-                    app.ActivePresentation.PageSetup.SlideHeight = (float)nudHeight.Value * 72;
-                    MessageBox.Show("Slide size applied successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    decimal width = nudWidth.Value;
+                    decimal height = nudHeight.Value;
+                    string sizeName = cmbSlideSize.SelectedItem?.ToString() ?? "Custom";
+                    
+                    ApplySlideSizeWithSmartScaling(width, height, sizeName);
+                }
+                else if (app == null)
+                {
+                    MessageBox.Show("PowerPoint is not available. Please ensure PowerPoint is running.", "PowerPoint Not Available", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
-                    MessageBox.Show("Please open a presentation first.", "No Presentation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please open or create a presentation first.", "No Active Presentation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error applying slide size: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Applies slide size with intelligent content scaling
+        /// </summary>
+        private void ApplySlideSizeWithSmartScaling(decimal width, decimal height, string sizeName)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app == null)
+                {
+                    MessageBox.Show("PowerPoint application is not available.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                var presentation = app.ActivePresentation;
+                if (presentation == null)
+                {
+                    MessageBox.Show("No active presentation found. Please open or create a presentation first.", "No Presentation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                
+                // Store current dimensions for scaling calculations
+                float oldWidth = presentation.PageSetup.SlideWidth;
+                float oldHeight = presentation.PageSetup.SlideHeight;
+                
+                // Apply new size
+                presentation.PageSetup.SlideWidth = (float)width * 72; // Convert inches to points
+                presentation.PageSetup.SlideHeight = (float)height * 72;
+                
+                // Calculate scaling factors
+                float scaleX = presentation.PageSetup.SlideWidth / oldWidth;
+                float scaleY = presentation.PageSetup.SlideHeight / oldHeight;
+                
+                // Smart scaling of content on all slides
+                ScaleContentIntelligently(presentation, scaleX, scaleY);
+                
+                // Update current slide size display
+                UpdateCurrentSizeDisplay();
+                
+                MessageBox.Show($"Slide size changed to {sizeName} ({width}\" × {height}\")!\nContent has been intelligently scaled.", 
+                    "Smart Size Applied", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error applying smart slide size: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Intelligently scales content when slide size changes
+        /// </summary>
+        private void ScaleContentIntelligently(PowerPoint.Presentation presentation, float scaleX, float scaleY)
+        {
+            try
+            {
+                // Use the smaller scale factor to maintain aspect ratios
+                float scaleFactor = Math.Min(scaleX, scaleY);
+                
+                foreach (PowerPoint.Slide slide in presentation.Slides)
+                {
+                    foreach (PowerPoint.Shape shape in slide.Shapes)
+                    {
+                        // Scale position and size
+                        shape.Left *= scaleFactor;
+                        shape.Top *= scaleFactor;
+                        shape.Width *= scaleFactor;
+                        shape.Height *= scaleFactor;
+                        
+                        // Scale font size proportionally
+                        if (shape.HasTextFrame == Office.MsoTriState.msoTrue)
+                        {
+                            try
+                            {
+                                var textRange = shape.TextFrame.TextRange;
+                                if (textRange.Font.Size > 0)
+                                {
+                                    textRange.Font.Size *= scaleFactor;
+                                }
+                            }
+                            catch
+                            {
+                                // Ignore font scaling errors for shapes without text
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error scaling content: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Updates the current size display to show the actual slide dimensions
+        /// </summary>
+        private void UpdateCurrentSizeDisplay()
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app != null && app.ActivePresentation != null)
+                {
+                    var presentation = app.ActivePresentation;
+                    float widthInches = presentation.PageSetup.SlideWidth / 72f;
+                    float heightInches = presentation.PageSetup.SlideHeight / 72f;
+                    
+                    // Update numeric controls to reflect current size
+                    if (nudWidth != null && nudHeight != null)
+                    {
+                        nudWidth.Value = (decimal)Math.Round(widthInches, 2);
+                        nudHeight.Value = (decimal)Math.Round(heightInches, 2);
+                    }
+                    
+                    // Update combo box to show closest preset
+                    UpdateComboBoxToClosestPreset(widthInches, heightInches);
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("No active presentation available for size display update");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error updating size display: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Updates the combo box to show the closest matching preset
+        /// </summary>
+        private void UpdateComboBoxToClosestPreset(float width, float height)
+        {
+            try
+            {
+                if (cmbSlideSize == null) return;
+                
+                string closestPreset = "Custom";
+                double minDifference = double.MaxValue;
+                
+                foreach (var preset in sizePresets)
+                {
+                    double diff = Math.Abs((double)preset.Value.width - (double)width) + Math.Abs((double)preset.Value.height - (double)height);
+                    if (diff < minDifference)
+                    {
+                        minDifference = diff;
+                        closestPreset = preset.Key;
+                    }
+                }
+                
+                // Only update if it's a close match (within 0.5 inches)
+                if (minDifference < 0.5)
+                {
+                    cmbSlideSize.SelectedItem = closestPreset;
+                }
+                else
+                {
+                    cmbSlideSize.SelectedItem = "Custom";
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error updating combo box: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Loads current slide size when task pane loads
+        /// </summary>
+        private void LoadCurrentSlideSize()
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app != null && app.ActivePresentation != null)
+                {
+                    UpdateCurrentSizeDisplay();
+                }
+                else
+                {
+                    // No active presentation - set default values
+                    if (nudWidth != null && nudHeight != null)
+                    {
+                        nudWidth.Value = 13.3m; // Default to 16:9
+                        nudHeight.Value = 7.5m;
+                    }
+                    if (cmbSlideSize != null)
+                    {
+                        cmbSlideSize.SelectedItem = "16:9 Widescreen";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading current slide size: {ex.Message}");
+                // Set safe defaults on error
+                try
+                {
+                    if (nudWidth != null && nudHeight != null)
+                    {
+                        nudWidth.Value = 13.3m; // Default to 16:9
+                        nudHeight.Value = 7.5m;
+                    }
+                    if (cmbSlideSize != null)
+                    {
+                        cmbSlideSize.SelectedItem = "16:9 Widescreen";
+                    }
+                }
+                catch
+                {
+                    // Ignore secondary errors
+                }
+            }
+        }
+
+        /// <summary>
+        /// Applies size to all slides in the presentation
+        /// </summary>
+        private void ApplySizeToAllSlides()
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActivePresentation != null && nudWidth != null && nudHeight != null)
+                {
+                    decimal width = nudWidth.Value;
+                    decimal height = nudHeight.Value;
+                    
+                    var presentation = app.ActivePresentation;
+                    presentation.PageSetup.SlideWidth = (float)width * 72;
+                    presentation.PageSetup.SlideHeight = (float)height * 72;
+                    
+                    MessageBox.Show($"Size applied to all {presentation.Slides.Count} slides!", 
+                        "Batch Size Applied", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error applying size to all slides: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Suggests optimal slide size based on content analysis
+        /// </summary>
+        private void SuggestOptimalSize()
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActivePresentation != null)
+                {
+                    var presentation = app.ActivePresentation;
+                    
+                    // Analyze content to suggest optimal size
+                    string suggestion = AnalyzeContentAndSuggestSize(presentation);
+                    
+                    MessageBox.Show($"Size Suggestion:\n{suggestion}", 
+                        "Smart Size Suggestion", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error suggesting size: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Analyzes presentation content and suggests optimal slide size
+        /// </summary>
+        private string AnalyzeContentAndSuggestSize(PowerPoint.Presentation presentation)
+        {
+            try
+            {
+                int totalSlides = presentation.Slides.Count;
+                int slidesWithImages = 0;
+                int slidesWithCharts = 0;
+                int slidesWithTables = 0;
+                int slidesWithText = 0;
+                int slidesWithVideos = 0;
+                int slidesWithSmartArt = 0;
+                
+                foreach (PowerPoint.Slide slide in presentation.Slides)
+                {
+                    bool hasImages = false, hasCharts = false, hasTables = false, hasText = false, 
+                         hasVideos = false, hasSmartArt = false;
+                    
+                    foreach (PowerPoint.Shape shape in slide.Shapes)
+                    {
+                        if (shape.Type == Office.MsoShapeType.msoPicture || 
+                            shape.Type == Office.MsoShapeType.msoLinkedPicture)
+                            hasImages = true;
+                        else if (shape.HasChart == Office.MsoTriState.msoTrue)
+                            hasCharts = true;
+                        else if (shape.HasTable == Office.MsoTriState.msoTrue)
+                            hasTables = true;
+                        else if (shape.HasTextFrame == Office.MsoTriState.msoTrue)
+                            hasText = true;
+                        else if (shape.Type == Office.MsoShapeType.msoMedia)
+                            hasVideos = true;
+                        else if (shape.Type == Office.MsoShapeType.msoSmartArt)
+                            hasSmartArt = true;
+                    }
+                    
+                    if (hasImages) slidesWithImages++;
+                    if (hasCharts) slidesWithCharts++;
+                    if (hasTables) slidesWithTables++;
+                    if (hasText) slidesWithText++;
+                    if (hasVideos) slidesWithVideos++;
+                    if (hasSmartArt) slidesWithSmartArt++;
+                }
+                
+                // Enhanced suggestion logic with more detailed analysis
+                double imageRatio = (double)slidesWithImages / totalSlides;
+                double chartRatio = (double)slidesWithCharts / totalSlides;
+                double tableRatio = (double)slidesWithTables / totalSlides;
+                double textRatio = (double)slidesWithText / totalSlides;
+                double videoRatio = (double)slidesWithVideos / totalSlides;
+                double smartArtRatio = (double)slidesWithSmartArt / totalSlides;
+                
+                // Priority-based suggestions
+                if (videoRatio > 0.3)
+                    return "16:9 Widescreen - Optimal for video content and modern displays";
+                else if (imageRatio > 0.7)
+                    return "16:9 Widescreen - Best for image-heavy presentations and visual storytelling";
+                else if (chartRatio > 0.5)
+                    return "16:9 Widescreen - Perfect for data visualization and charts";
+                else if (smartArtRatio > 0.4)
+                    return "16:9 Widescreen - Ideal for SmartArt and modern diagrams";
+                else if (tableRatio > 0.6)
+                    return "A4 Landscape - Excellent for table-heavy content and detailed data";
+                else if (textRatio > 0.8)
+                    return "4:3 Standard - Traditional format for text-heavy academic presentations";
+                else if (totalSlides > 20)
+                    return "16:9 Widescreen - Recommended for large presentations";
+                else if (totalSlides < 5)
+                    return "16:9 Widescreen - Perfect for short, impactful presentations";
+                else
+                    return "16:9 Widescreen - Modern standard for most presentations";
+            }
+            catch (Exception)
+            {
+                return "16:9 Widescreen - Recommended default size";
+            }
+        }
+
+        /// <summary>
+        /// Smart size optimization for different use cases
+        /// </summary>
+        private void OptimizeSizeForUseCase(string useCase)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActivePresentation != null)
+                {
+                    var presentation = app.ActivePresentation;
+                    string suggestion = "";
+                    
+                    switch (useCase.ToLower())
+                    {
+                        case "presentation":
+                            suggestion = "16:9 Widescreen - Standard for modern presentations";
+                            ApplySlideSizeWithSmartScaling(13.3m, 7.5m, "16:9 Widescreen");
+                            break;
+                        case "print":
+                            suggestion = "A4 Landscape - Optimized for printing";
+                            ApplySlideSizeWithSmartScaling(11.69m, 8.27m, "A4 Landscape");
+                            break;
+                        case "social":
+                            suggestion = "Social Media - Perfect for social platforms";
+                            ApplySlideSizeWithSmartScaling(1.91m, 1m, "Social Media");
+                            break;
+                        case "mobile":
+                            suggestion = "Instagram Story - Mobile-optimized";
+                            ApplySlideSizeWithSmartScaling(1m, 1.78m, "Instagram Story");
+                            break;
+                        case "webinar":
+                            suggestion = "16:9 Widescreen - Ideal for online presentations";
+                            ApplySlideSizeWithSmartScaling(13.3m, 7.5m, "16:9 Widescreen");
+                            break;
+                        default:
+                            suggestion = AnalyzeContentAndSuggestSize(presentation);
+                            break;
+                    }
+                    
+                    MessageBox.Show($"Optimized for {useCase}:\n{suggestion}", 
+                        "Smart Optimization", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error optimizing size: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Auto-fit content to current slide size
+        /// </summary>
+        private void AutoFitContentToSlide()
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActivePresentation != null)
+                {
+                    var presentation = app.ActivePresentation;
+                    int adjustedShapes = 0;
+                    
+                    foreach (PowerPoint.Slide slide in presentation.Slides)
+                    {
+                        foreach (PowerPoint.Shape shape in slide.Shapes)
+                        {
+                            // Check if shape is outside slide bounds
+                            if (shape.Left < 0 || shape.Top < 0 || 
+                                shape.Left + shape.Width > presentation.PageSetup.SlideWidth ||
+                                shape.Top + shape.Height > presentation.PageSetup.SlideHeight)
+                            {
+                                // Auto-fit the shape to slide bounds
+                                if (shape.Left < 0) shape.Left = 0;
+                                if (shape.Top < 0) shape.Top = 0;
+                                
+                                if (shape.Left + shape.Width > presentation.PageSetup.SlideWidth)
+                                    shape.Left = presentation.PageSetup.SlideWidth - shape.Width;
+                                if (shape.Top + shape.Height > presentation.PageSetup.SlideHeight)
+                                    shape.Top = presentation.PageSetup.SlideHeight - shape.Height;
+                                
+                                adjustedShapes++;
+                            }
+                        }
+                    }
+                    
+                    MessageBox.Show($"Auto-fitted {adjustedShapes} shapes to slide bounds!", 
+                        "Content Auto-Fit", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error auto-fitting content: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -2597,7 +3168,7 @@ namespace my_addin
             }
         }
 
-        private void BtnAlignRoundedRectangleArrows_Click(object sender, EventArgs e)
+        private void BtnAlignRoundedRectangleRadius_Click(object sender, EventArgs e)
         {
             try
             {
@@ -2607,7 +3178,7 @@ namespace my_addin
                     var shapes = app.ActiveWindow.Selection.ShapeRange;
                     if (shapes.Count > 1)
                     {
-                        // Find rounded rectangles and align them
+                        // Find rounded rectangles and align their radius
                         var roundedRects = new List<PowerPoint.Shape>();
                         foreach (PowerPoint.Shape shape in shapes)
                         {
@@ -2620,19 +3191,21 @@ namespace my_addin
                         
                         if (roundedRects.Count > 1)
                         {
-                            // Align rounded rectangles horizontally with equal spacing
-                            var sortedRects = roundedRects.OrderBy(s => s.Left).ToArray();
-                            float totalWidth = sortedRects.Sum(s => s.Width);
-                            float spacing = (app.ActiveWindow.Width - totalWidth) / (sortedRects.Length + 1);
-                            float currentX = spacing;
+                            // Use the last selected shape as the "Master" for radius
+                            var masterShape = roundedRects.Last();
                             
-                            foreach (var rect in sortedRects)
+                            // Apply the master's radius to all other rounded rectangles
+                            foreach (var rect in roundedRects)
                             {
-                                rect.Left = currentX;
-                                currentX += rect.Width + spacing;
+                                if (rect != masterShape)
+                                {
+                                    // Note: PowerPoint doesn't expose corner radius directly, 
+                                    // so this is a simplified implementation
+                                    rect.Adjustments[1] = masterShape.Adjustments[1];
+                                }
                             }
                             
-                            MessageBox.Show("Rounded rectangle arrows aligned!", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show("Rounded rectangle radius aligned!", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -2646,7 +3219,7 @@ namespace my_addin
                 }
                 else
                 {
-                    MessageBox.Show("Please select shapes to align rounded rectangle arrows.", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Please select shapes to align rounded rectangle radius.", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
@@ -3223,13 +3796,20 @@ namespace my_addin
                     if (useCtrlKey || shapes.Count == 1)
                     {
                         // Move to right edge of slide
-                        float slideWidth = app.ActivePresentation.PageSetup.SlideWidth;
+                        if (app.ActivePresentation != null)
+                        {
+                            float slideWidth = app.ActivePresentation.PageSetup.SlideWidth;
                         
                         foreach (PowerPoint.Shape shape in shapes)
                         {
                             shape.Left = slideWidth - shape.Width;
                         }
                         MessageBox.Show("Objects moved to the right edge of the slide!", "Dock Right", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("No active presentation found. Please open or create a presentation first.", "No Presentation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
                     }
                     else
                     {
@@ -3313,13 +3893,20 @@ namespace my_addin
                     if (useCtrlKey || shapes.Count == 1)
                     {
                         // Move to bottom edge of slide
-                        float slideHeight = app.ActivePresentation.PageSetup.SlideHeight;
+                        if (app.ActivePresentation != null)
+                        {
+                            float slideHeight = app.ActivePresentation.PageSetup.SlideHeight;
                         
                         foreach (PowerPoint.Shape shape in shapes)
                         {
                             shape.Top = slideHeight - shape.Height;
                         }
                         MessageBox.Show("Objects moved to the bottom edge of the slide!", "Dock Bottom", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("No active presentation found. Please open or create a presentation first.", "No Presentation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
                     }
                     else
                     {
@@ -3362,7 +3949,9 @@ namespace my_addin
                         if (useCtrlKey)
                         {
                             // Distribute across entire slide width
-                            float slideWidth = app.ActivePresentation.PageSetup.SlideWidth;
+                            if (app.ActivePresentation != null)
+                            {
+                                float slideWidth = app.ActivePresentation.PageSetup.SlideWidth;
                             var sortedShapes = shapes.Cast<PowerPoint.Shape>().OrderBy(s => s.Left).ToArray();
                             
                             float spacing = slideWidth / (sortedShapes.Length + 1);
@@ -3371,6 +3960,11 @@ namespace my_addin
                                 sortedShapes[i].Left = spacing * (i + 1) - sortedShapes[i].Width / 2;
                             }
                             MessageBox.Show("Objects distributed horizontally across the entire slide!", "Distribute Horizontal", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show("No active presentation found. Please open or create a presentation first.", "No Presentation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
                         }
                         else
                         {
@@ -3411,7 +4005,9 @@ namespace my_addin
                         if (useCtrlKey)
                         {
                             // Distribute across entire slide height
-                            float slideHeight = app.ActivePresentation.PageSetup.SlideHeight;
+                            if (app.ActivePresentation != null)
+                            {
+                                float slideHeight = app.ActivePresentation.PageSetup.SlideHeight;
                             var sortedShapes = shapes.Cast<PowerPoint.Shape>().OrderBy(s => s.Top).ToArray();
                             
                             float spacing = slideHeight / (sortedShapes.Length + 1);
@@ -3420,6 +4016,11 @@ namespace my_addin
                                 sortedShapes[i].Top = spacing * (i + 1) - sortedShapes[i].Height / 2;
                             }
                             MessageBox.Show("Objects distributed vertically across the entire slide!", "Distribute Vertical", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show("No active presentation found. Please open or create a presentation first.", "No Presentation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
                         }
                         else
                         {

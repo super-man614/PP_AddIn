@@ -119,7 +119,7 @@ namespace my_addin
             this.btnAlignToProcessArrow = new System.Windows.Forms.Button();
             this.btnAdjustPentagonHeader = new System.Windows.Forms.Button();
             this.btnAlignBlockArrows = new System.Windows.Forms.Button();
-            this.btnAlignRoundedRectangleArrows = new System.Windows.Forms.Button();
+            this.btnAlignRoundedRectangleRadius = new System.Windows.Forms.Button();
             this.divider6 = new System.Windows.Forms.Panel();
             this.colorPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.lblColorSection = new System.Windows.Forms.Label();
@@ -283,7 +283,8 @@ namespace my_addin
             //this.btnNew.Text = "📄";
             this.btnNew.Size = new System.Drawing.Size(20, 20);
             this.btnNew.BackColor = Color.Transparent;
-            this.btnNew.BackgroundImage = Image.FromFile("icons/file/icons8-file-50.png");
+            // Image will be loaded at runtime
+            // this.btnNew.BackgroundImage = Image.FromFile("icons/file/icons8-file-50.png");
             this.btnNew.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnNew.UseVisualStyleBackColor = false;
             this.btnNew.Click += new System.EventHandler(this.BtnNew_Click);
@@ -302,7 +303,8 @@ namespace my_addin
             this.btnOpen.TabIndex = 2;
             this.btnOpen.Size = new System.Drawing.Size(20, 20);
             this.btnOpen.BackColor = Color.Transparent;
-            this.btnOpen.BackgroundImage = Image.FromFile("icons/file/icons8-open-file-48.png");
+            // Image will be loaded at runtime
+            // this.btnOpen.BackgroundImage = Image.FromFile("icons/file/icons8-open-file-48.png");
             this.btnOpen.BackgroundImageLayout = ImageLayout.Stretch;
             //this.btnOpen.Text = "📂";
             this.btnOpen.UseVisualStyleBackColor = false;
@@ -324,7 +326,8 @@ namespace my_addin
             //this.btnSave.Text = "💾";
             this.btnSave.Size = new System.Drawing.Size(20, 20);
             this.btnSave.BackColor = Color.Transparent;
-            this.btnSave.BackgroundImage = Image.FromFile("icons/file/icons8-save-50.png");
+            // Image will be loaded at runtime
+            // this.btnSave.BackgroundImage = Image.FromFile("icons/file/icons8-save-50.png");
             this.btnSave.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnSave.UseVisualStyleBackColor = false;
             this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
@@ -344,7 +347,8 @@ namespace my_addin
             this.btnSaveAs.Size = new System.Drawing.Size(20, 20);
             this.btnSaveAs.TabIndex = 4;
             this.btnSaveAs.BackColor = Color.Transparent;
-            this.btnSaveAs.BackgroundImage = Image.FromFile("icons/file/icons8-save-as-50.png");
+            // Image will be loaded at runtime
+            // this.btnSaveAs.BackgroundImage = Image.FromFile("icons/file/icons8-save-as-50.png");
             this.btnSaveAs.BackgroundImageLayout = ImageLayout.Stretch;
             //this.btnSaveAs.Text = "📋";
             this.btnSaveAs.UseVisualStyleBackColor = false;
@@ -365,7 +369,8 @@ namespace my_addin
             this.btnPrint.Size = new System.Drawing.Size(20, 20);
             this.btnPrint.TabIndex = 5;
             this.btnPrint.BackColor = Color.Transparent;
-            this.btnPrint.BackgroundImage = Image.FromFile("icons/file/icons8-export-50.png");
+            // Image will be loaded at runtime
+            // this.btnPrint.BackgroundImage = Image.FromFile("icons/file/icons8-export-50.png");
             this.btnPrint.BackgroundImageLayout = ImageLayout.Stretch;
             //this.btnPrint.Text = "🖨";
             this.btnPrint.UseVisualStyleBackColor = false;
@@ -459,7 +464,8 @@ namespace my_addin
             this.btnAgenda.Size = new System.Drawing.Size(65, 20);
             this.btnAgenda.TabIndex = 1;
             // this.btnAgenda.Text = "📋";
-            this.btnAgenda.BackgroundImage = Image.FromFile("icons/wizzards/agenda.png");
+            // Image will be loaded at runtime
+            // this.btnAgenda.BackgroundImage = Image.FromFile("icons/wizzards/agenda.png");
             this.btnAgenda.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnAgenda.UseVisualStyleBackColor = false;
             this.btnAgenda.Click += new System.EventHandler(this.BtnAgenda_Click);
@@ -478,7 +484,8 @@ namespace my_addin
             this.btnMaster.Size = new System.Drawing.Size(65, 20);
             this.btnMaster.TabIndex = 2;
             // this.btnMaster.Text = "🎨";
-            this.btnMaster.BackgroundImage = Image.FromFile("icons/wizzards/master.png");
+            // Image will be loaded at runtime
+            // this.btnMaster.BackgroundImage = Image.FromFile("icons/wizzards/master.png");
             this.btnMaster.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnMaster.UseVisualStyleBackColor = false;
             this.btnMaster.Click += new System.EventHandler(this.BtnMaster_Click);
@@ -497,7 +504,8 @@ namespace my_addin
             this.btnElement.Size = new System.Drawing.Size(65, 20);
             this.btnElement.TabIndex = 3;
             // this.btnElement.Text = "🧩";
-            this.btnElement.BackgroundImage = Image.FromFile("icons/wizzards/element.png");
+            // Image will be loaded at runtime
+            // this.btnElement.BackgroundImage = Image.FromFile("icons/wizzards/element.png");
             this.btnElement.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnElement.UseVisualStyleBackColor = false;
             this.btnElement.Click += new System.EventHandler(this.BtnElement_Click);
@@ -516,7 +524,8 @@ namespace my_addin
             this.btnText.Size = new System.Drawing.Size(65, 20);
             this.btnText.TabIndex = 4;
             // this.btnText.Text = "✏️";
-            this.btnText.BackgroundImage = Image.FromFile("icons/wizzards/text.png");
+            // Image will be loaded at runtime
+            // this.btnText.BackgroundImage = Image.FromFile("icons/wizzards/text.png");
             this.btnText.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnText.UseVisualStyleBackColor = false;
             this.btnText.Click += new System.EventHandler(this.BtnTextWizard_Click);
@@ -535,7 +544,8 @@ namespace my_addin
             this.btnFormat.Size = new System.Drawing.Size(65, 20);
             this.btnFormat.TabIndex = 5;
             // this.btnFormat.Text = "🎯";
-            this.btnFormat.BackgroundImage = Image.FromFile("icons/wizzards/format.png");
+            // Image will be loaded at runtime
+            // this.btnFormat.BackgroundImage = Image.FromFile("icons/wizzards/format.png");
             this.btnFormat.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnFormat.UseVisualStyleBackColor = false;
             this.btnFormat.Click += new System.EventHandler(this.BtnFormat_Click);
@@ -554,7 +564,8 @@ namespace my_addin
             this.btnMap.Size = new System.Drawing.Size(65, 20);
             this.btnMap.TabIndex = 6;
             // this.btnMap.Text = "🗺️";
-            this.btnMap.BackgroundImage = Image.FromFile("icons/wizzards/map.png");
+            // Image will be loaded at runtime
+            // this.btnMap.BackgroundImage = Image.FromFile("icons/wizzards/map.png");
             this.btnMap.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnMap.UseVisualStyleBackColor = false;
             this.btnMap.Click += new System.EventHandler(this.BtnMap_Click);
@@ -626,7 +637,8 @@ namespace my_addin
             this.btnChart.Name = "btnChart";
             this.btnChart.Size = new System.Drawing.Size(20, 20);
             this.btnChart.TabIndex = 1;
-            this.btnChart.BackgroundImage = Image.FromFile("icons/elements/icons8-chart-60.png");
+            // Image will be loaded at runtime
+            // this.btnChart.BackgroundImage = Image.FromFile("icons/elements/icons8-chart-60.png");
             this.btnChart.BackgroundImageLayout = ImageLayout.Stretch;
             // this.btnChart.Text = "📊";
             this.btnChart.UseVisualStyleBackColor = false;
@@ -645,7 +657,8 @@ namespace my_addin
             this.btnDiagram.Name = "btnDiagram";
             this.btnDiagram.Size = new System.Drawing.Size(20, 20);
             this.btnDiagram.TabIndex = 2;
-            this.btnDiagram.BackgroundImage = Image.FromFile("icons/elements/icons8-color-palette-48.png");
+            // Image will be loaded at runtime
+            // this.btnDiagram.BackgroundImage = Image.FromFile("icons/elements/icons8-color-palette-48.png");
             this.btnDiagram.BackgroundImageLayout = ImageLayout.Stretch;
             // this.btnDiagram.Text = "🎨";
             this.btnDiagram.UseVisualStyleBackColor = false;
@@ -664,7 +677,8 @@ namespace my_addin
             this.btnTable.Name = "btnTable";
             this.btnTable.Size = new System.Drawing.Size(20, 20);
             this.btnTable.TabIndex = 3;
-            this.btnTable.BackgroundImage = Image.FromFile("icons/elements/icons8-table-50.png");
+            // Image will be loaded at runtime
+            // this.btnTable.BackgroundImage = Image.FromFile("icons/elements/icons8-table-50.png");
             this.btnTable.BackgroundImageLayout = ImageLayout.Stretch;
             // this.btnTable.Text = "📋";
             this.btnTable.UseVisualStyleBackColor = false;
@@ -683,7 +697,8 @@ namespace my_addin
             this.btnMatrixTable.Name = "btnMatrixTable";
             this.btnMatrixTable.Size = new System.Drawing.Size(20, 20);
             this.btnMatrixTable.TabIndex = 4;
-            this.btnMatrixTable.BackgroundImage = Image.FromFile("icons/elements/icons8-matrix-50.png");
+            // Image will be loaded at runtime
+            // this.btnMatrixTable.BackgroundImage = Image.FromFile("icons/elements/icons8-matrix-50.png");
             this.btnMatrixTable.BackgroundImageLayout = ImageLayout.Stretch;
             // this.btnMatrixTable.Text = "🏢";
             this.btnMatrixTable.UseVisualStyleBackColor = false;
@@ -702,7 +717,8 @@ namespace my_addin
             this.btnStickyNote.Name = "btnStickyNote";
             this.btnStickyNote.Size = new System.Drawing.Size(20, 20);
             this.btnStickyNote.TabIndex = 5;
-            this.btnStickyNote.BackgroundImage = Image.FromFile("icons/elements/icons8-sticky-notes-50.png");
+            // Image will be loaded at runtime
+            // this.btnStickyNote.BackgroundImage = Image.FromFile("icons/elements/icons8-sticky-notes-50.png");
             this.btnStickyNote.BackgroundImageLayout = ImageLayout.Stretch;
             // this.btnStickyNote.Text = "📝";
             this.btnStickyNote.UseVisualStyleBackColor = false;
@@ -721,7 +737,8 @@ namespace my_addin
             this.btnCitation.Name = "btnCitation";
             this.btnCitation.Size = new System.Drawing.Size(20, 20);
             this.btnCitation.TabIndex = 6;
-            this.btnCitation.BackgroundImage = Image.FromFile("icons/elements/icons8-get-quote-30.png");
+            // Image will be loaded at runtime
+            // this.btnCitation.BackgroundImage = Image.FromFile("icons/elements/icons8-get-quote-30.png");
             this.btnCitation.BackgroundImageLayout = ImageLayout.Stretch;
             // this.btnCitation.Text = "📑";
             this.btnCitation.UseVisualStyleBackColor = false;
@@ -740,7 +757,8 @@ namespace my_addin
             this.btnStandardObjects.Name = "btnStandardObjects";
             this.btnStandardObjects.Size = new System.Drawing.Size(20, 20);
             this.btnStandardObjects.TabIndex = 7;
-            this.btnStandardObjects.BackgroundImage = Image.FromFile("icons/elements/icons8-object-50.png");
+            // Image will be loaded at runtime
+            // this.btnStandardObjects.BackgroundImage = Image.FromFile("icons/elements/icons8-object-50.png");
             this.btnStandardObjects.BackgroundImageLayout = ImageLayout.Stretch;
             // this.btnStandardObjects.Text = "🗂️";
             this.btnStandardObjects.UseVisualStyleBackColor = false;
@@ -1480,7 +1498,7 @@ namespace my_addin
             this.shapeButtonsPanel.Controls.Add(this.btnAlignToProcessArrow);
             this.shapeButtonsPanel.Controls.Add(this.btnAdjustPentagonHeader);
             this.shapeButtonsPanel.Controls.Add(this.btnAlignBlockArrows);
-            this.shapeButtonsPanel.Controls.Add(this.btnAlignRoundedRectangleArrows);
+            this.shapeButtonsPanel.Controls.Add(this.btnAlignRoundedRectangleRadius);
             this.shapeButtonsPanel.Location = new System.Drawing.Point(0, 13);
             this.shapeButtonsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.shapeButtonsPanel.Name = "shapeButtonsPanel";
@@ -1572,22 +1590,22 @@ namespace my_addin
             this.btnAlignBlockArrows.UseVisualStyleBackColor = false;
             this.btnAlignBlockArrows.Click += new System.EventHandler(this.BtnAlignBlockArrows_Click);
             // 
-            // btnAlignRoundedRectangleArrows
+            // btnAlignRoundedRectangleRadius
             // 
-            this.btnAlignRoundedRectangleArrows.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.btnAlignRoundedRectangleArrows.FlatAppearance.BorderSize = 0;
-            this.btnAlignRoundedRectangleArrows.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.btnAlignRoundedRectangleArrows.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.btnAlignRoundedRectangleArrows.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAlignRoundedRectangleArrows.Font = new System.Drawing.Font("Segoe UI Emoji", 7F);
-            this.btnAlignRoundedRectangleArrows.Location = new System.Drawing.Point(125, 0);
-            this.btnAlignRoundedRectangleArrows.Margin = new System.Windows.Forms.Padding(1);
-            this.btnAlignRoundedRectangleArrows.Name = "btnAlignRoundedRectangleArrows";
-            this.btnAlignRoundedRectangleArrows.Size = new System.Drawing.Size(20, 20);
-            this.btnAlignRoundedRectangleArrows.TabIndex = 6;
-            this.btnAlignRoundedRectangleArrows.Text = "🔲";
-            this.btnAlignRoundedRectangleArrows.UseVisualStyleBackColor = false;
-            this.btnAlignRoundedRectangleArrows.Click += new System.EventHandler(this.BtnAlignRoundedRectangleArrows_Click);
+            this.btnAlignRoundedRectangleRadius.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnAlignRoundedRectangleRadius.FlatAppearance.BorderSize = 0;
+            this.btnAlignRoundedRectangleRadius.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnAlignRoundedRectangleRadius.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnAlignRoundedRectangleRadius.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAlignRoundedRectangleRadius.Font = new System.Drawing.Font("Segoe UI Emoji", 7F);
+            this.btnAlignRoundedRectangleRadius.Location = new System.Drawing.Point(125, 0);
+            this.btnAlignRoundedRectangleRadius.Margin = new System.Windows.Forms.Padding(1);
+            this.btnAlignRoundedRectangleRadius.Name = "btnAlignRoundedRectangleRadius";
+            this.btnAlignRoundedRectangleRadius.Size = new System.Drawing.Size(20, 20);
+            this.btnAlignRoundedRectangleRadius.TabIndex = 6;
+            this.btnAlignRoundedRectangleRadius.Text = "🔲";
+            this.btnAlignRoundedRectangleRadius.UseVisualStyleBackColor = false;
+            this.btnAlignRoundedRectangleRadius.Click += new System.EventHandler(this.BtnAlignRoundedRectangleRadius_Click);
             // 
             // divider6
             // 
@@ -2147,7 +2165,7 @@ namespace my_addin
         private System.Windows.Forms.Button btnAlignToProcessArrow;
         private System.Windows.Forms.Button btnAdjustPentagonHeader;
         private System.Windows.Forms.Button btnAlignBlockArrows;
-        private System.Windows.Forms.Button btnAlignRoundedRectangleArrows;
+        private System.Windows.Forms.Button btnAlignRoundedRectangleRadius;
         
         // Color section
         private System.Windows.Forms.FlowLayoutPanel colorPanel;

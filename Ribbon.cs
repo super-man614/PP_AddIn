@@ -1488,22 +1488,22 @@ namespace my_addin
         }
 
         /// <summary>
-        /// Align rounded rectangle arrows
+        /// Align rounded rectangle radius
         /// </summary>
-        public void AlignRoundedRectangleArrows_Click(Office.IRibbonControl control)
+        public void AlignRoundedRectangleRadius_Click(Office.IRibbonControl control)
         {
             try
             {
                 var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
                 if (taskPaneControl != null)
                 {
-                    var method = taskPaneControl.GetType().GetMethod("BtnAlignRoundedRectangleArrows_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    var method = taskPaneControl.GetType().GetMethod("BtnAlignRoundedRectangleRadius_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                     method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error aligning rounded rectangle arrows: {ex.Message}", "Error", 
+                MessageBox.Show($"Error aligning rounded rectangle radius: {ex.Message}", "Error", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -1795,6 +1795,35 @@ namespace my_addin
                 MessageBox.Show($"Error accessing webinar: {ex.Message}", "Error", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        #endregion
+
+        #region Icon Helpers
+
+        /// <summary>
+        /// Get the enlarge icon image for shape alignment buttons
+        /// </summary>
+        public System.Drawing.Bitmap GetApplyIcon(Office.IRibbonControl control)
+        {
+            try
+            {
+                string assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                string assemblyDir = System.IO.Path.GetDirectoryName(assemblyPath);
+                string iconPath = System.IO.Path.Combine(assemblyDir, "icons", "position", "icons8-enlarge-50.png");
+                
+                if (System.IO.File.Exists(iconPath))
+                {
+                    return new System.Drawing.Bitmap(iconPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading enlarge icon: {ex.Message}");
+            }
+            
+            // Return null if the icon can't be loaded - Office will use default
+            return null;
         }
 
         #endregion

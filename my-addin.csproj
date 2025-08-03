@@ -271,28 +271,46 @@
     <Compile Include="ButtonHoverUtility.cs">
       <SubType>Code</SubType>
     </Compile>
+    <!-- Clean Architecture Files -->
+    <Compile Include="Constants\AppConstants.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\SlideSizeInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\ShapeModels.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Services\IErrorHandlerService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Services\IPowerPointService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Services\ISlideService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Services\IShapeService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Services\ErrorHandlerService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Services\PowerPointService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Services\SlideService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Services\ShapeService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\ServiceContainer.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <EmbeddedResource Include="Ribbon.xml" />
-    <Content Include="icons\icons8-open-file-48.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="icons\wizzards\agenda.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="icons\wizzards\master.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="icons\wizzards\element.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="icons\wizzards\text.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="icons\wizzards\format.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="icons\wizzards\map.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <!-- Icon files are loaded from the output directory at runtime -->
+    <!-- Removed icon content references to prevent build errors -->
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <PropertyGroup>

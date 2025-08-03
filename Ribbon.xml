@@ -253,6 +253,46 @@
                   supertip="Insert line shape" />
         </group>
         
+        <!-- Shape Alignment Group -->
+        <group id="ShapeAlignmentGroup" label="Shape">
+          <button id="AlignProcessChainButton"
+                  label="Align Process Chain"
+                  size="normal"
+                  onAction="AlignProcessChain_Click"
+                  getImage="GetApplyIcon"
+                  supertip="Align the selected block arrows to form a process chain. The block arrow selected last will define the angle, position and sizing for all other block arrows in the process chain. The gaps between block arrows are filled from left to right and from top to bottom." />
+          <button id="AlignAnglesButton"
+                  label="Align Angles"
+                  size="normal"
+                  onAction="AlignAngles_Click"
+                  getImage="GetApplyIcon"
+                  supertip="Align the angles of all selected block arrows to the Master. The Master is always the object that you selected last. You can select multiple objects by holding down the Shift key and clicking on the objects to be selected." />
+          <button id="AlignToProcessArrowButton"
+                  label="Align to Process Arrow"
+                  size="normal"
+                  onAction="AlignToProcessArrow_Click"
+                  getImage="GetApplyIcon"
+                  supertip="Align the selected objects to the process arrow in the selection leaving out the arrow tip." />
+          <button id="AdjustPentagonHeaderButton"
+                  label="Adjust Pentagon Header"
+                  size="normal"
+                  onAction="AdjustPentagonHeader_Click"
+                  getImage="GetApplyIcon"
+                  supertip="Adjust the header boxes of headed Conclusion boxes (standard elements in the Element Wizard). Select a pentagon (block arrow) and the corresponding header box before using this feature." />
+          <button id="AlignBlockArrowsButton"
+                  label="Align Block Arrows"
+                  size="normal"
+                  onAction="AlignBlockArrows_Click"
+                  getImage="GetApplyIcon"
+                  supertip="Apply a standard style to all selected block arrows or define your own metrics based on the Master. The Master is always the object that you selected last." />
+          <button id="AlignRoundedRectangleRadiusButton"
+                  label="Align Rounded Rectangle Radius"
+                  size="normal"
+                  onAction="AlignRoundedRectangleRadius_Click"
+                  getImage="GetApplyIcon"
+                  supertip="Define the radius for the selected rounded rectangles or use the Master object's value. The Master is always the object that you selected last." />
+        </group>
+        
         <!-- Colors Group -->
         <group id="ColorsGroup" label="Colors">
           <button id="FillColorButton"
