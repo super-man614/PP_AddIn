@@ -2,7 +2,7 @@
 <customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load">
   <ribbon>
     <tabs>
-      <tab id="PowerPointToolsTab" label="PowerPoint Tools">
+      <tab id="PowerPointToolsTab" label="PowerPoint Add in Tools">
         
         <!-- Task Pane Group -->
         <group id="TaskPaneGroup" label="Task Pane">
@@ -12,6 +12,12 @@
                   onAction="ToggleTaskPane_Click"
                   imageMso="TaskPane"
                   supertip="Toggle the PowerPoint Tools task pane on or off" />
+          <button id="TestRibbonButton" 
+                  label="Test Ribbon" 
+                  size="normal"
+                  onAction="TestRibbon_Click"
+                  imageMso="HappyFace"
+                  supertip="Test if ribbon is working" />
         </group>
         
         <!-- File Operations Group -->

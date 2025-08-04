@@ -3,7 +3,6 @@ C:\Users\Administrator\Music\PP_AddIn\bin\Debug\my-addin.pdb
 C:\Users\Administrator\Music\PP_AddIn\bin\Debug\my-addin.dll.manifest
 C:\Users\Administrator\Music\PP_AddIn\bin\Debug\my-addin.vsto
 C:\Users\Administrator\Music\PP_AddIn\bin\Debug\Microsoft.Office.Tools.Common.v4.0.Utilities.dll
-C:\Users\Administrator\Music\PP_AddIn\obj\Debug\my-addin.csproj.AssemblyReference.cache
 C:\Users\Administrator\Music\PP_AddIn\obj\Debug\my_addin.Properties.Resources.resources
 C:\Users\Administrator\Music\PP_AddIn\obj\Debug\my_addin.TaskPaneControl.resources
 C:\Users\Administrator\Music\PP_AddIn\obj\Debug\my-addin.csproj.GenerateResource.cache
@@ -11,3 +10,4 @@ C:\Users\Administrator\Music\PP_AddIn\obj\Debug\my-addin.csproj.CoreCompileInput
 C:\Users\Administrator\Music\PP_AddIn\obj\Debug\my-addin.csproj.CopyComplete
 C:\Users\Administrator\Music\PP_AddIn\obj\Debug\my-addin.dll
 C:\Users\Administrator\Music\PP_AddIn\obj\Debug\my-addin.pdb
+C:\Users\Administrator\Music\PP_AddIn\obj\Debug\my-addin.csproj.AssemblyReference.cache

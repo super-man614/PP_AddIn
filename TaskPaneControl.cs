@@ -1115,12 +1115,269 @@ namespace my_addin
         {
             try
             {
-                MessageBox.Show("Smart Element wizard would help create interactive elements.\nTry inserting SmartArt from the Insert tab.", 
-                              "Elements", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActivePresentation != null && app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                {
+                    // Show element selection options
+                    var elementDialog = new Form();
+                    elementDialog.Text = "Smart Element Wizard";
+                    elementDialog.Size = new Size(400, 300);
+                    elementDialog.StartPosition = FormStartPosition.CenterParent;
+                    
+                    var listBox = new ListBox();
+                    listBox.Size = new Size(350, 200);
+                    listBox.Location = new Point(25, 25);
+                    listBox.Items.AddRange(new string[] {
+                        "📊 Process Flow (SmartArt)",
+                        "🔄 Cycle Diagram",
+                        "📈 Hierarchy Chart",
+                        "📋 List with Icons",
+                        "⚡ Decision Tree",
+                        "🎯 Target Diagram",
+                        "📐 Matrix Layout",
+                        "🌟 Feature Highlight"
+                    });
+                    
+                    var btnOK = new Button();
+                    btnOK.Text = "Create Element";
+                    btnOK.Size = new Size(100, 30);
+                    btnOK.Location = new Point(200, 240);
+                    btnOK.DialogResult = DialogResult.OK;
+                    
+                    var btnCancel = new Button();
+                    btnCancel.Text = "Cancel";
+                    btnCancel.Size = new Size(80, 30);
+                    btnCancel.Location = new Point(310, 240);
+                    btnCancel.DialogResult = DialogResult.Cancel;
+                    
+                    elementDialog.Controls.AddRange(new Control[] { listBox, btnOK, btnCancel });
+                    elementDialog.AcceptButton = btnOK;
+                    elementDialog.CancelButton = btnCancel;
+                    
+                    if (elementDialog.ShowDialog() == DialogResult.OK && listBox.SelectedIndex >= 0)
+                    {
+                        var slide = app.ActiveWindow.Selection.SlideRange[1];
+                        CreateSmartElement(slide, listBox.SelectedIndex);
+                        MessageBox.Show("Smart element created successfully!", "Element Wizard", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select a slide first to add smart elements.", "Element Wizard", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error accessing elements: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error creating element: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CreateSmartElement(PowerPoint.Slide slide, int elementType)
+        {
+            try
+            {
+                float slideWidth = slide.Master.Width;
+                float slideHeight = slide.Master.Height;
+                float centerX = slideWidth / 2;
+                float centerY = slideHeight / 2;
+                
+                                 switch (elementType)
+                 {
+                     case 0: // Process Flow
+                         CreateProcessFlowDiagram(slide, centerX - 200, centerY - 100);
+                         break;
+                     case 1: // Cycle Diagram
+                         CreateCycleDiagram(slide, centerX - 150, centerY - 150);
+                         break;
+                     case 2: // Hierarchy Chart
+                         CreateHierarchyChart(slide, centerX - 200, centerY - 150);
+                         break;
+                    case 3: // List with Icons
+                        CreateIconList(slide, centerX - 150, centerY - 100);
+                        break;
+                    case 4: // Decision Tree
+                        CreateDecisionTree(slide, centerX - 200, centerY - 150);
+                        break;
+                    case 5: // Target Diagram
+                        CreateTargetDiagram(slide, centerX - 100, centerY - 100);
+                        break;
+                    case 6: // Matrix Layout
+                        CreateMatrixLayout(slide, centerX - 150, centerY - 100);
+                        break;
+                    case 7: // Feature Highlight
+                        CreateFeatureHighlight(slide, centerX - 150, centerY - 75);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create smart element: {ex.Message}");
+            }
+        }
+
+        private void CreateIconList(PowerPoint.Slide slide, float left, float top)
+        {
+            string[] items = { "First Item", "Second Item", "Third Item" };
+            string[] icons = { "🔹", "🔸", "🔹" };
+            
+            for (int i = 0; i < items.Length; i++)
+            {
+                var textBox = slide.Shapes.AddTextbox(Office.MsoTextOrientation.msoTextOrientationHorizontal, 
+                    left, top + (i * 40), 300, 30);
+                textBox.TextFrame.TextRange.Text = $"{icons[i]} {items[i]}";
+                textBox.TextFrame.TextRange.Font.Size = 16;
+            }
+        }
+
+        private void CreateDecisionTree(PowerPoint.Slide slide, float left, float top)
+        {
+            // Create decision tree with shapes and connectors
+            var rootBox = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRoundedRectangle, left + 150, top, 100, 50);
+            rootBox.TextFrame.TextRange.Text = "Decision?";
+            rootBox.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.LightBlue);
+            
+            var yesBox = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, left, top + 100, 100, 50);
+            yesBox.TextFrame.TextRange.Text = "Yes";
+            yesBox.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.LightGreen);
+            
+            var noBox = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, left + 300, top + 100, 100, 50);
+            noBox.TextFrame.TextRange.Text = "No";
+            noBox.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.LightCoral);
+        }
+
+        private void CreateTargetDiagram(PowerPoint.Slide slide, float left, float top)
+        {
+            // Create concentric circles for target diagram
+            var outerCircle = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeOval, left, top, 200, 200);
+            outerCircle.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.LightGray);
+            outerCircle.TextFrame.TextRange.Text = "Goal";
+            
+            var innerCircle = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeOval, left + 50, top + 50, 100, 100);
+            innerCircle.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.Yellow);
+            innerCircle.TextFrame.TextRange.Text = "Target";
+        }
+
+        private void CreateMatrixLayout(PowerPoint.Slide slide, float left, float top)
+        {
+            // Create 2x2 matrix layout
+            string[] labels = { "Quadrant 1", "Quadrant 2", "Quadrant 3", "Quadrant 4" };
+            Color[] colors = { Color.LightBlue, Color.LightGreen, Color.LightYellow, Color.LightCoral };
+            
+            for (int i = 0; i < 4; i++)
+            {
+                int row = i / 2;
+                int col = i % 2;
+                var box = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, 
+                    left + (col * 150), top + (row * 100), 140, 90);
+                box.TextFrame.TextRange.Text = labels[i];
+                box.Fill.ForeColor.RGB = ColorTranslator.ToOle(colors[i]);
+            }
+        }
+
+        private void CreateFeatureHighlight(PowerPoint.Slide slide, float left, float top)
+        {
+            // Create feature highlight box
+            var highlightBox = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRoundedRectangle, left, top, 300, 150);
+            highlightBox.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.FromArgb(255, 255, 102));
+            highlightBox.Line.ForeColor.RGB = ColorTranslator.ToOle(Color.Orange);
+            highlightBox.Line.Weight = 3;
+            highlightBox.TextFrame.TextRange.Text = "⭐ Key Feature\n\nHighlight important information here";
+            highlightBox.TextFrame.TextRange.Font.Size = 14;
+            highlightBox.TextFrame.TextRange.Font.Bold = Office.MsoTriState.msoTrue;
+        }
+
+        private void CreateProcessFlowDiagram(PowerPoint.Slide slide, float left, float top)
+        {
+            // Create process flow with connected boxes and arrows
+            string[] steps = { "Start", "Process", "Decision", "End" };
+            
+            for (int i = 0; i < steps.Length; i++)
+            {
+                Office.MsoAutoShapeType shapeType = Office.MsoAutoShapeType.msoShapeRectangle;
+                if (i == 0) shapeType = Office.MsoAutoShapeType.msoShapeOval; // Start
+                if (i == 2) shapeType = Office.MsoAutoShapeType.msoShapeDiamond; // Decision
+                if (i == 3) shapeType = Office.MsoAutoShapeType.msoShapeOval; // End
+                
+                var step = slide.Shapes.AddShape(shapeType, left + (i * 100), top, 80, 60);
+                step.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.LightBlue);
+                step.TextFrame.TextRange.Text = steps[i];
+                step.TextFrame.TextRange.Font.Size = 12;
+                
+                // Add connecting arrows
+                if (i < steps.Length - 1)
+                {
+                    var arrow = slide.Shapes.AddConnector(Office.MsoConnectorType.msoConnectorStraight, 
+                        left + (i * 100) + 80, top + 30, left + ((i + 1) * 100), top + 30);
+                    arrow.Line.EndArrowheadStyle = Office.MsoArrowheadStyle.msoArrowheadTriangle;
+                }
+            }
+        }
+
+        private void CreateCycleDiagram(PowerPoint.Slide slide, float left, float top)
+        {
+            // Create circular process diagram
+            string[] phases = { "Phase 1", "Phase 2", "Phase 3", "Phase 4" };
+            float radius = 120f;
+            float centerX = left + 150;
+            float centerY = top + 150;
+            
+            for (int i = 0; i < phases.Length; i++)
+            {
+                double angle = (2 * Math.PI * i) / phases.Length;
+                float x = centerX + (float)(radius * Math.Cos(angle)) - 40;
+                float y = centerY + (float)(radius * Math.Sin(angle)) - 20;
+                
+                var phase = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRoundedRectangle, x, y, 80, 40);
+                phase.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.LightGreen);
+                phase.TextFrame.TextRange.Text = phases[i];
+                phase.TextFrame.TextRange.Font.Size = 10;
+            }
+            
+            // Add center circle
+            var center = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeOval, centerX - 30, centerY - 30, 60, 60);
+            center.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.Yellow);
+            center.TextFrame.TextRange.Text = "Cycle";
+        }
+
+        private void CreateHierarchyChart(PowerPoint.Slide slide, float left, float top)
+        {
+            // Create organizational chart structure
+            // Top level
+            var ceo = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, left + 150, top, 100, 50);
+            ceo.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.Gold);
+            ceo.TextFrame.TextRange.Text = "CEO";
+            ceo.TextFrame.TextRange.Font.Size = 12;
+            ceo.TextFrame.TextRange.Font.Bold = Office.MsoTriState.msoTrue;
+            
+            // Second level
+            string[] managers = { "Manager A", "Manager B", "Manager C" };
+            for (int i = 0; i < managers.Length; i++)
+            {
+                var manager = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, 
+                    left + (i * 130), top + 100, 100, 40);
+                manager.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.LightBlue);
+                manager.TextFrame.TextRange.Text = managers[i];
+                manager.TextFrame.TextRange.Font.Size = 10;
+                
+                // Connect to CEO
+                var connector = slide.Shapes.AddConnector(Office.MsoConnectorType.msoConnectorStraight,
+                    left + 200, top + 50, left + (i * 130) + 50, top + 100);
+                connector.Line.ForeColor.RGB = ColorTranslator.ToOle(Color.Gray);
+            }
+            
+            // Third level (under first manager only)
+            for (int i = 0; i < 2; i++)
+            {
+                var employee = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle,
+                    left + (i * 60), top + 200, 80, 30);
+                employee.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.LightGray);
+                employee.TextFrame.TextRange.Text = $"Employee {i + 1}";
+                employee.TextFrame.TextRange.Font.Size = 9;
+                
+                // Connect to manager
+                var connector = slide.Shapes.AddConnector(Office.MsoConnectorType.msoConnectorStraight,
+                    left + 50, top + 140, left + (i * 60) + 40, top + 200);
+                connector.Line.ForeColor.RGB = ColorTranslator.ToOle(Color.Gray);
             }
         }
 
@@ -1146,12 +1403,315 @@ namespace my_addin
         {
             try
             {
-                MessageBox.Show("Format wizard would help apply consistent formatting.\nUse the Design tab for themes and Format Painter for copying formats.", 
-                              "Format", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActivePresentation != null)
+                {
+                    // Show format options dialog
+                    var formatDialog = new Form();
+                    formatDialog.Text = "Format Wizard";
+                    formatDialog.Size = new Size(450, 350);
+                    formatDialog.StartPosition = FormStartPosition.CenterParent;
+                    
+                    var label = new Label();
+                    label.Text = "Select formatting action:";
+                    label.Size = new Size(400, 20);
+                    label.Location = new Point(25, 25);
+                    
+                    var listBox = new ListBox();
+                    listBox.Size = new Size(400, 220);
+                    listBox.Location = new Point(25, 50);
+                    listBox.Items.AddRange(new string[] {
+                        "🎨 Apply Corporate Color Scheme",
+                        "📝 Standardize All Text Fonts",
+                        "📐 Align All Objects to Grid",
+                        "🔲 Apply Consistent Shape Styles",
+                        "📊 Format All Charts Uniformly",
+                        "📋 Standardize Table Formatting",
+                        "🎯 Quick Professional Theme",
+                        "🌈 Color Harmony Correction",
+                        "📏 Consistent Spacing & Margins",
+                        "✨ Add Drop Shadows to All Shapes"
+                    });
+                    
+                    var btnOK = new Button();
+                    btnOK.Text = "Apply Format";
+                    btnOK.Size = new Size(100, 30);
+                    btnOK.Location = new Point(250, 280);
+                    btnOK.DialogResult = DialogResult.OK;
+                    
+                    var btnCancel = new Button();
+                    btnCancel.Text = "Cancel";
+                    btnCancel.Size = new Size(80, 30);
+                    btnCancel.Location = new Point(360, 280);
+                    btnCancel.DialogResult = DialogResult.Cancel;
+                    
+                    formatDialog.Controls.AddRange(new Control[] { label, listBox, btnOK, btnCancel });
+                    formatDialog.AcceptButton = btnOK;
+                    formatDialog.CancelButton = btnCancel;
+                    
+                    if (formatDialog.ShowDialog() == DialogResult.OK && listBox.SelectedIndex >= 0)
+                    {
+                        ApplyFormatting(app.ActivePresentation, listBox.SelectedIndex);
+                        MessageBox.Show("Formatting applied successfully!", "Format Wizard", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please open a presentation first to apply formatting.", "Format Wizard", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error accessing format options: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error applying formatting: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ApplyFormatting(PowerPoint.Presentation presentation, int formatType)
+        {
+            try
+            {
+                switch (formatType)
+                {
+                    case 0: // Corporate Color Scheme
+                        ApplyCorporateColors(presentation);
+                        break;
+                    case 1: // Standardize Fonts
+                        StandardizeFonts(presentation);
+                        break;
+                    case 2: // Align to Grid
+                        AlignObjectsToGrid(presentation);
+                        break;
+                    case 3: // Shape Styles
+                        ApplyConsistentShapeStyles(presentation);
+                        break;
+                    case 4: // Chart Formatting
+                        FormatAllCharts(presentation);
+                        break;
+                    case 5: // Table Formatting
+                        StandardizeTableFormatting(presentation);
+                        break;
+                    case 6: // Professional Theme
+                        ApplyProfessionalTheme(presentation);
+                        break;
+                    case 7: // Color Harmony
+                        CorrectColorHarmony(presentation);
+                        break;
+                    case 8: // Spacing & Margins
+                        FixSpacingAndMargins(presentation);
+                        break;
+                    case 9: // Drop Shadows
+                        AddDropShadowsToShapes(presentation);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to apply formatting: {ex.Message}");
+            }
+        }
+
+        private void ApplyCorporateColors(PowerPoint.Presentation presentation)
+        {
+            // Apply a professional blue-based color scheme
+            Color primaryColor = Color.FromArgb(0, 102, 204);   // Professional blue
+            
+            foreach (PowerPoint.Slide slide in presentation.Slides)
+            {
+                foreach (PowerPoint.Shape shape in slide.Shapes)
+                {
+                    if (shape.HasTextFrame == Office.MsoTriState.msoTrue)
+                    {
+                        shape.TextFrame.TextRange.Font.Color.RGB = ColorTranslator.ToOle(Color.FromArgb(51, 51, 51));
+                    }
+                    
+                    if (shape.Fill.Type == Office.MsoFillType.msoFillSolid)
+                    {
+                        shape.Fill.ForeColor.RGB = ColorTranslator.ToOle(primaryColor);
+                    }
+                }
+            }
+        }
+
+        private void StandardizeFonts(PowerPoint.Presentation presentation)
+        {
+            string headerFont = "Calibri";
+            string bodyFont = "Calibri";
+            
+            foreach (PowerPoint.Slide slide in presentation.Slides)
+            {
+                foreach (PowerPoint.Shape shape in slide.Shapes)
+                {
+                    if (shape.HasTextFrame == Office.MsoTriState.msoTrue)
+                    {
+                        var textRange = shape.TextFrame.TextRange;
+                        textRange.Font.Name = bodyFont;
+                        
+                        // Make title shapes larger
+                        if (shape.Type == Office.MsoShapeType.msoPlaceholder && 
+                            shape.PlaceholderFormat.Type == PowerPoint.PpPlaceholderType.ppPlaceholderTitle)
+                        {
+                            textRange.Font.Name = headerFont;
+                            textRange.Font.Size = 24;
+                            textRange.Font.Bold = Office.MsoTriState.msoTrue;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void AlignObjectsToGrid(PowerPoint.Presentation presentation)
+        {
+            float gridSize = 20f; // 20 point grid
+            
+            foreach (PowerPoint.Slide slide in presentation.Slides)
+            {
+                foreach (PowerPoint.Shape shape in slide.Shapes)
+                {
+                    // Snap to grid
+                    shape.Left = (float)(Math.Round(shape.Left / gridSize) * gridSize);
+                    shape.Top = (float)(Math.Round(shape.Top / gridSize) * gridSize);
+                }
+            }
+        }
+
+        private void ApplyConsistentShapeStyles(PowerPoint.Presentation presentation)
+        {
+            foreach (PowerPoint.Slide slide in presentation.Slides)
+            {
+                foreach (PowerPoint.Shape shape in slide.Shapes)
+                {
+                    if (shape.Type == Office.MsoShapeType.msoAutoShape)
+                    {
+                        shape.Line.Weight = 1.5f;
+                        shape.Line.ForeColor.RGB = ColorTranslator.ToOle(Color.Gray);
+                        shape.Fill.Transparency = 0.1f;
+                    }
+                }
+            }
+        }
+
+        private void FormatAllCharts(PowerPoint.Presentation presentation)
+        {
+            foreach (PowerPoint.Slide slide in presentation.Slides)
+            {
+                foreach (PowerPoint.Shape shape in slide.Shapes)
+                {
+                    if (shape.HasChart == Office.MsoTriState.msoTrue)
+                    {
+                        // Apply consistent chart formatting
+                        shape.Chart.ChartStyle = 42; // Professional style
+                    }
+                }
+            }
+        }
+
+        private void StandardizeTableFormatting(PowerPoint.Presentation presentation)
+        {
+            foreach (PowerPoint.Slide slide in presentation.Slides)
+            {
+                foreach (PowerPoint.Shape shape in slide.Shapes)
+                {
+                    if (shape.HasTable == Office.MsoTriState.msoTrue)
+                    {
+                        var table = shape.Table;
+                        
+                        // Apply consistent table styling
+                        for (int row = 1; row <= table.Rows.Count; row++)
+                        {
+                            for (int col = 1; col <= table.Columns.Count; col++)
+                            {
+                                var cell = table.Cell(row, col);
+                                cell.Shape.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.White);
+                                cell.Shape.Line.Weight = 1;
+                                cell.Shape.Line.ForeColor.RGB = ColorTranslator.ToOle(Color.LightGray);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ApplyProfessionalTheme(PowerPoint.Presentation presentation)
+        {
+            // Apply a built-in professional theme
+            try
+            {
+                // This would apply a built-in theme - simplified version
+                ApplyCorporateColors(presentation);
+                StandardizeFonts(presentation);
+                AlignObjectsToGrid(presentation);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Theme application failed: {ex.Message}");
+            }
+        }
+
+        private void CorrectColorHarmony(PowerPoint.Presentation presentation)
+        {
+            // Apply color harmony rules
+            Color[] harmonicColors = {
+                Color.FromArgb(0, 102, 204),    // Blue
+                Color.FromArgb(102, 153, 255),  // Light Blue
+                Color.FromArgb(153, 204, 255),  // Lighter Blue
+                Color.FromArgb(255, 165, 0),    // Orange (complementary)
+                Color.FromArgb(255, 215, 0)     // Gold (triadic)
+            };
+            
+            int colorIndex = 0;
+            foreach (PowerPoint.Slide slide in presentation.Slides)
+            {
+                foreach (PowerPoint.Shape shape in slide.Shapes)
+                {
+                    if (shape.Fill.Type == Office.MsoFillType.msoFillSolid)
+                    {
+                        shape.Fill.ForeColor.RGB = ColorTranslator.ToOle(harmonicColors[colorIndex % harmonicColors.Length]);
+                        colorIndex++;
+                    }
+                }
+            }
+        }
+
+        private void FixSpacingAndMargins(PowerPoint.Presentation presentation)
+        {
+            float margin = 50f;
+            
+            foreach (PowerPoint.Slide slide in presentation.Slides)
+            {
+                var shapes = slide.Shapes.Cast<PowerPoint.Shape>().ToList();
+                
+                for (int i = 0; i < shapes.Count; i++)
+                {
+                    var shape = shapes[i];
+                    
+                    // Ensure minimum margins
+                    if (shape.Left < margin) shape.Left = margin;
+                    if (shape.Top < margin) shape.Top = margin;
+                }
+            }
+        }
+
+        private void AddDropShadowsToShapes(PowerPoint.Presentation presentation)
+        {
+            foreach (PowerPoint.Slide slide in presentation.Slides)
+            {
+                foreach (PowerPoint.Shape shape in slide.Shapes)
+                {
+                    if (shape.Type == Office.MsoShapeType.msoAutoShape || 
+                        shape.Type == Office.MsoShapeType.msoTextBox)
+                    {
+                        try
+                        {
+                            shape.Shadow.Type = Office.MsoShadowType.msoShadow6;
+                            shape.Shadow.ForeColor.RGB = ColorTranslator.ToOle(Color.Gray);
+                            shape.Shadow.Transparency = 0.5f;
+                        }
+                        catch
+                        {
+                            // Some shapes might not support shadows
+                        }
+                    }
+                }
             }
         }
 
@@ -1159,13 +1719,305 @@ namespace my_addin
         {
             try
             {
-                MessageBox.Show("Map wizard would insert interactive maps.\nTry Insert > Online Pictures and search for 'map' or use Insert > Icons.", 
-                              "Map", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActivePresentation != null && app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                {
+                    // Show map options dialog
+                    var mapDialog = new Form();
+                    mapDialog.Text = "Map Wizard";
+                    mapDialog.Size = new Size(400, 320);
+                    mapDialog.StartPosition = FormStartPosition.CenterParent;
+                    
+                    var label = new Label();
+                    label.Text = "Select map type to insert:";
+                    label.Size = new Size(350, 20);
+                    label.Location = new Point(25, 25);
+                    
+                    var listBox = new ListBox();
+                    listBox.Size = new Size(350, 200);
+                    listBox.Location = new Point(25, 50);
+                    listBox.Items.AddRange(new string[] {
+                        "🌍 World Map Outline",
+                        "🇺🇸 USA Map with States",
+                        "🇪🇺 Europe Map",
+                        "📍 Location Pin Template",
+                        "🗺️ Process Journey Map",
+                        "🏢 Office Floor Plan Template",
+                        "🌆 City Skyline Template",
+                        "🔴 Hotspot Map Template",
+                        "📊 Geographic Data Visualization"
+                    });
+                    
+                    var btnOK = new Button();
+                    btnOK.Text = "Insert Map";
+                    btnOK.Size = new Size(100, 30);
+                    btnOK.Location = new Point(200, 260);
+                    btnOK.DialogResult = DialogResult.OK;
+                    
+                    var btnCancel = new Button();
+                    btnCancel.Text = "Cancel";
+                    btnCancel.Size = new Size(80, 30);
+                    btnCancel.Location = new Point(290, 260);
+                    btnCancel.DialogResult = DialogResult.Cancel;
+                    
+                    mapDialog.Controls.AddRange(new Control[] { label, listBox, btnOK, btnCancel });
+                    mapDialog.AcceptButton = btnOK;
+                    mapDialog.CancelButton = btnCancel;
+                    
+                    if (mapDialog.ShowDialog() == DialogResult.OK && listBox.SelectedIndex >= 0)
+                    {
+                        var slide = app.ActiveWindow.Selection.SlideRange[1];
+                        CreateMapTemplate(slide, listBox.SelectedIndex);
+                        MessageBox.Show("Map template created successfully!\n\nYou can customize colors, add labels, and modify as needed.", "Map Wizard", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select a slide first to insert a map.", "Map Wizard", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error accessing map options: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error creating map: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void CreateMapTemplate(PowerPoint.Slide slide, int mapType)
+        {
+            try
+            {
+                float slideWidth = slide.Master.Width;
+                float slideHeight = slide.Master.Height;
+                float centerX = slideWidth / 2;
+                float centerY = slideHeight / 2;
+                
+                switch (mapType)
+                {
+                    case 0: // World Map Outline
+                        CreateWorldMapOutline(slide, centerX - 200, centerY - 150);
+                        break;
+                    case 1: // USA Map
+                        CreateUSAMap(slide, centerX - 150, centerY - 100);
+                        break;
+                    case 2: // Europe Map
+                        CreateEuropeMap(slide, centerX - 125, centerY - 100);
+                        break;
+                    case 3: // Location Pin
+                        CreateLocationPinTemplate(slide, centerX - 100, centerY - 100);
+                        break;
+                    case 4: // Process Journey
+                        CreateProcessJourneyMap(slide, centerX - 200, centerY - 100);
+                        break;
+                    case 5: // Floor Plan
+                        CreateFloorPlanTemplate(slide, centerX - 150, centerY - 100);
+                        break;
+                    case 6: // City Skyline
+                        CreateCitySkylineTemplate(slide, centerX - 200, centerY - 75);
+                        break;
+                    case 7: // Hotspot Map
+                        CreateHotspotMap(slide, centerX - 150, centerY - 100);
+                        break;
+                    case 8: // Geographic Data Viz
+                        CreateGeographicDataVisualization(slide, centerX - 175, centerY - 125);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create map template: {ex.Message}");
+            }
+        }
+
+        private void CreateWorldMapOutline(PowerPoint.Slide slide, float left, float top)
+        {
+            // Simplified world map using basic shapes
+            var worldShape = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRoundedRectangle, left, top, 400, 300);
+            worldShape.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.LightBlue);
+            worldShape.Line.Weight = 2;
+            worldShape.Line.ForeColor.RGB = ColorTranslator.ToOle(Color.DarkBlue);
+            
+            // Add continent shapes (simplified)
+            var continent1 = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, left + 50, top + 80, 80, 60);
+            continent1.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.Green);
+            continent1.Line.ForeColor.RGB = ColorTranslator.ToOle(Color.DarkGreen);
+            
+            var continent2 = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, left + 200, top + 100, 120, 80);
+            continent2.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.Green);
+            continent2.Line.ForeColor.RGB = ColorTranslator.ToOle(Color.DarkGreen);
+            
+            // Add title
+            var title = slide.Shapes.AddTextbox(Office.MsoTextOrientation.msoTextOrientationHorizontal, left, top - 30, 400, 25);
+            title.TextFrame.TextRange.Text = "World Map";
+            title.TextFrame.TextRange.Font.Size = 18;
+            title.TextFrame.TextRange.Font.Bold = Office.MsoTriState.msoTrue;
+        }
+
+        private void CreateUSAMap(PowerPoint.Slide slide, float left, float top)
+        {
+            // Simplified USA outline
+            var usaShape = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, left, top, 300, 200);
+            usaShape.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.FromArgb(176, 224, 230));
+            usaShape.Line.Weight = 2;
+            usaShape.Line.ForeColor.RGB = ColorTranslator.ToOle(Color.Navy);
+            
+            // Add state labels
+            var label1 = slide.Shapes.AddTextbox(Office.MsoTextOrientation.msoTextOrientationHorizontal, left + 50, top + 50, 60, 20);
+            label1.TextFrame.TextRange.Text = "CA";
+            label1.TextFrame.TextRange.Font.Size = 12;
+            
+            var label2 = slide.Shapes.AddTextbox(Office.MsoTextOrientation.msoTextOrientationHorizontal, left + 200, top + 80, 60, 20);
+            label2.TextFrame.TextRange.Text = "NY";
+            label2.TextFrame.TextRange.Font.Size = 12;
+        }
+
+        private void CreateEuropeMap(PowerPoint.Slide slide, float left, float top)
+        {
+            // Simplified Europe outline
+            var europeShape = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, left, top, 250, 200);
+            europeShape.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.FromArgb(255, 228, 181));
+            europeShape.Line.Weight = 2;
+            europeShape.Line.ForeColor.RGB = ColorTranslator.ToOle(Color.Brown);
+            
+            // Add country markers
+            CreateLocationPin(slide, left + 100, top + 80, "🇩🇪 Germany");
+            CreateLocationPin(slide, left + 50, top + 60, "🇫🇷 France");
+            CreateLocationPin(slide, left + 150, top + 100, "🇮🇹 Italy");
+        }
+
+        private void CreateLocationPinTemplate(PowerPoint.Slide slide, float left, float top)
+        {
+            // Create location pin with callout
+            var pin = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeOval, left + 90, top + 150, 20, 20);
+            pin.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.Red);
+            
+            var pinTop = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeIsoscelesTriangle, left + 95, top + 130, 10, 20);
+            pinTop.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.Red);
+            pinTop.Rotation = 180;
+            
+            // Add callout
+            var callout = slide.Shapes.AddCallout(Office.MsoCalloutType.msoCalloutTwo, left + 120, top + 100, 150, 60);
+            callout.TextFrame.TextRange.Text = "📍 Location Name\nDescription here";
+            callout.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.Yellow);
+        }
+
+        private void CreateLocationPin(PowerPoint.Slide slide, float left, float top, string label)
+        {
+            var pin = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeOval, left, top, 12, 12);
+            pin.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.Red);
+            
+            var labelBox = slide.Shapes.AddTextbox(Office.MsoTextOrientation.msoTextOrientationHorizontal, left + 15, top - 5, 80, 20);
+            labelBox.TextFrame.TextRange.Text = label;
+            labelBox.TextFrame.TextRange.Font.Size = 10;
+        }
+
+        private void CreateProcessJourneyMap(PowerPoint.Slide slide, float left, float top)
+        {
+            // Create journey steps with connecting arrows
+            string[] steps = { "Start", "Step 1", "Step 2", "End" };
+            
+            for (int i = 0; i < steps.Length; i++)
+            {
+                var step = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRoundedRectangle, 
+                    left + (i * 100), top, 80, 40);
+                step.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.LightGreen);
+                step.TextFrame.TextRange.Text = steps[i];
+                
+                if (i < steps.Length - 1)
+                {
+                    var arrow = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRightArrow, 
+                        left + (i * 100) + 85, top + 15, 10, 10);
+                    arrow.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.Blue);
+                }
+            }
+        }
+
+        private void CreateFloorPlanTemplate(PowerPoint.Slide slide, float left, float top)
+        {
+            // Create simple floor plan outline
+            var building = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, left, top, 300, 200);
+            building.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.LightGray);
+            building.Line.Weight = 2;
+            
+            // Add rooms
+            var room1 = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, left + 20, top + 20, 80, 60);
+            room1.Fill.Transparency = 0.5f;
+            room1.TextFrame.TextRange.Text = "Office 1";
+            
+            var room2 = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, left + 120, top + 20, 80, 60);
+            room2.Fill.Transparency = 0.5f;
+            room2.TextFrame.TextRange.Text = "Office 2";
+            
+            var corridor = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, left + 20, top + 100, 180, 40);
+            corridor.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.White);
+            corridor.TextFrame.TextRange.Text = "Corridor";
+        }
+
+        private void CreateCitySkylineTemplate(PowerPoint.Slide slide, float left, float top)
+        {
+            // Create city skyline with buildings of different heights
+            int[] buildingHeights = { 80, 120, 100, 150, 90, 110, 130 };
+            
+            for (int i = 0; i < buildingHeights.Length; i++)
+            {
+                var building = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, 
+                    left + (i * 40), top + (150 - buildingHeights[i]), 35, buildingHeights[i]);
+                building.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.FromArgb(105, 105, 105));
+                building.Line.ForeColor.RGB = ColorTranslator.ToOle(Color.Black);
+                
+                // Add windows
+                for (int w = 0; w < 3; w++)
+                {
+                    var window = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle,
+                        left + (i * 40) + 5 + (w * 8), top + (150 - buildingHeights[i]) + 10, 6, 8);
+                    window.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.Yellow);
+                }
+            }
+        }
+
+        private void CreateHotspotMap(PowerPoint.Slide slide, float left, float top)
+        {
+            // Create base map
+            var baseMap = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, left, top, 300, 200);
+            baseMap.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.LightGray);
+            
+            // Add hotspots with different intensities
+            var hotspot1 = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeOval, left + 50, top + 50, 30, 30);
+            hotspot1.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.Red);
+            hotspot1.Fill.Transparency = 0.3f;
+            
+            var hotspot2 = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeOval, left + 150, top + 80, 40, 40);
+            hotspot2.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.Orange);
+            hotspot2.Fill.Transparency = 0.3f;
+            
+            var hotspot3 = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeOval, left + 200, top + 120, 25, 25);
+            hotspot3.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.Yellow);
+            hotspot3.Fill.Transparency = 0.3f;
+        }
+
+        private void CreateGeographicDataVisualization(PowerPoint.Slide slide, float left, float top)
+        {
+            // Create choropleth-style map with data regions
+            var baseRegion = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, left, top, 350, 250);
+            baseRegion.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.LightBlue);
+            
+            // Add data regions with different colors representing data values
+            Color[] dataColors = { Color.Red, Color.Orange, Color.Yellow, Color.LightGreen, Color.Green };
+            string[] dataLabels = { "High", "Med-High", "Medium", "Med-Low", "Low" };
+            
+            for (int i = 0; i < 5; i++)
+            {
+                var region = slide.Shapes.AddShape(Office.MsoAutoShapeType.msoShapeRectangle, 
+                    left + (i * 60) + 20, top + 50, 50, 60);
+                region.Fill.ForeColor.RGB = ColorTranslator.ToOle(dataColors[i]);
+                region.TextFrame.TextRange.Text = dataLabels[i];
+                region.TextFrame.TextRange.Font.Size = 10;
+            }
+            
+            // Add legend
+            var legend = slide.Shapes.AddTextbox(Office.MsoTextOrientation.msoTextOrientationHorizontal, 
+                left + 280, top + 180, 100, 80);
+            legend.TextFrame.TextRange.Text = "Legend:\n🔴 High\n🟠 Med-High\n🟡 Medium\n🟢 Low";
+            legend.TextFrame.TextRange.Font.Size = 10;
         }
 
         #endregion
@@ -2986,9 +3838,9 @@ namespace my_addin
                     var shapes = app.ActiveWindow.Selection.ShapeRange;
                     if (shapes.Count > 1)
                     {
-                        // Align shapes at their angles (corners)
-                        var firstShape = shapes[1];
-                        float targetAngle = firstShape.Rotation;
+                        // Align shapes at their angles (corners) - use last selected shape as master
+                        var masterShape = shapes[shapes.Count];
+                        float targetAngle = masterShape.Rotation;
                         
                         foreach (PowerPoint.Shape shape in shapes)
                         {
@@ -3201,7 +4053,18 @@ namespace my_addin
                                 {
                                     // Note: PowerPoint doesn't expose corner radius directly, 
                                     // so this is a simplified implementation
-                                    rect.Adjustments[1] = masterShape.Adjustments[1];
+                                    try
+                                    {
+                                        if (masterShape.Adjustments.Count > 0)
+                                        {
+                                            rect.Adjustments[1] = masterShape.Adjustments[1];
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        // Fallback: adjust using alternative method
+                                        rect.AutoShapeType = masterShape.AutoShapeType;
+                                    }
                                 }
                             }
                             

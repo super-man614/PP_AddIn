@@ -5,27 +5,37 @@ using System.Text;
 using System.Xml.Linq;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 using Office = Microsoft.Office.Core;
+using System.Runtime.InteropServices;
 
 namespace my_addin
 {
     public partial class ThisAddIn
     {
         private CustomTaskPane _customTaskPane;
+        private Ribbon _ribbon;
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine("ThisAddIn_Startup called");
+                
+                // Add-in is loading - debug message removed for production
+                
                 // Initialize the custom task pane
                 InitializeTaskPane();
                 
-                // Add ribbon controls
-                AddRibbonControls();
+                // Test ribbon registration
+                TestRibbonRegistration();
+                
+                // Ribbon will be automatically loaded via IRibbonExtensibility interface
+                System.Diagnostics.Debug.WriteLine("Task pane initialized, ribbon should load automatically");
             }
             catch (Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show($"Error during startup: {ex.Message}", 
                     "Startup Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Startup error: {ex}");
             }
         }
 
@@ -38,6 +48,8 @@ namespace my_addin
                 _customTaskPane = null;
             }
         }
+
+
 
         /// <summary>
         /// Initializes the custom task pane
@@ -108,6 +120,29 @@ namespace my_addin
         {
             get { return _customTaskPane; }
         }
+        
+        /// <summary>
+        /// Test method to verify ribbon registration
+        /// </summary>
+        public void TestRibbonRegistration()
+        {
+            try
+            {
+                // Test if ribbon interface is available
+                var ribbon = new Ribbon();
+                string customUI = ribbon.GetCustomUI("Microsoft.PowerPoint");
+                System.Diagnostics.Debug.WriteLine($"Ribbon test - CustomUI available: {!string.IsNullOrEmpty(customUI)}");
+                if (!string.IsNullOrEmpty(customUI))
+                {
+                    System.Diagnostics.Debug.WriteLine($"CustomUI length: {customUI.Length}");
+                    System.Diagnostics.Debug.WriteLine($"CustomUI preview: {customUI.Substring(0, Math.Min(200, customUI.Length))}...");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ribbon test failed: {ex.Message}");
+            }
+        }
 
         #region VSTO generated code
 
@@ -122,5 +157,7 @@ namespace my_addin
         }
         
         #endregion
+
+
     }
 }

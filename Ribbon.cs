@@ -9,6 +9,8 @@ using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 namespace my_addin
 {
     [ComVisible(true)]
+    [Guid("F5B65F24-5F3A-4B7E-8B9D-1234567890AB")]
+    [ClassInterface(ClassInterfaceType.None)]
     public class Ribbon : Office.IRibbonExtensibility
     {
         private Office.IRibbonUI ribbon;
@@ -21,7 +23,63 @@ namespace my_addin
 
         public string GetCustomUI(string ribbonID)
         {
-            return GetResourceText("my_addin.Ribbon.xml");
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"GetCustomUI called with ribbonID: '{ribbonID}'");
+                
+                // Try multiple resource name variations
+                string[] possibleNames = {
+                    "my_addin.Ribbon.xml",
+                    "my-addin.Ribbon.xml", 
+                    "Ribbon.xml"
+                };
+                
+                string ribbonXml = null;
+                foreach (string resourceName in possibleNames)
+                {
+                    ribbonXml = GetResourceText(resourceName);
+                    if (ribbonXml != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Successfully loaded ribbon XML from: {resourceName}");
+                        break;
+                    }
+                }
+                
+                if (ribbonXml == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("Ribbon XML is null - checking embedded resources...");
+                    Assembly asm = Assembly.GetExecutingAssembly();
+                    string[] resourceNames = asm.GetManifestResourceNames();
+                    System.Diagnostics.Debug.WriteLine("Available resources:");
+                    foreach (string name in resourceNames)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"  - {name}");
+                        if (name.Contains("Ribbon") || name.Contains("xml"))
+                        {
+                            ribbonXml = GetResourceText(name);
+                            if (ribbonXml != null)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"Found ribbon XML in resource: {name}");
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+                System.Diagnostics.Debug.WriteLine($"Final ribbon XML loaded: {ribbonXml != null}");
+                if (ribbonXml != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Ribbon XML length: {ribbonXml.Length} characters");
+                }
+                
+                return ribbonXml;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in GetCustomUI: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                return null;
+            }
         }
 
         #endregion
@@ -33,7 +91,23 @@ namespace my_addin
         /// </summary>
         public void Ribbon_Load(Office.IRibbonUI ribbonUI)
         {
+            System.Diagnostics.Debug.WriteLine("🎉 RIBBON_LOAD CALLED - RIBBON IS BEING INITIALIZED! 🎉");
             this.ribbon = ribbonUI;
+            
+            // Test ribbon functionality
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("Ribbon UI object received successfully");
+                System.Diagnostics.Debug.WriteLine($"Ribbon UI type: {ribbonUI.GetType().Name}");
+                
+                // Force a ribbon refresh to ensure it's visible
+                ribbonUI.Invalidate();
+                System.Diagnostics.Debug.WriteLine("Ribbon invalidated - should be visible now");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error during ribbon initialization: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -55,6 +129,21 @@ namespace my_addin
             {
                 MessageBox.Show($"Error toggling task pane: {ex.Message}", "Error", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public void TestRibbon_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("🎉 TEST RIBBON BUTTON CLICKED! 🎉");
+                MessageBox.Show("🎉 Ribbon is working! The 'PowerPoint Add in Tools' tab is successfully loaded and functional! 🎉", 
+                    "Ribbon Test", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in TestRibbon_Click: {ex.Message}");
+                MessageBox.Show($"Error testing ribbon: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
