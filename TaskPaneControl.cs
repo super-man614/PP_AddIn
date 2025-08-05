@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
@@ -84,6 +85,14 @@ namespace my_addin
                 cmbSlideSize.SelectedIndexChanged += CmbSlideSize_SelectedIndexChanged;
             if (btnApplySize != null)
                 btnApplySize.Click += BtnApplySize_Click;
+            if (cmbAlign != null)
+                cmbAlign.SelectedIndexChanged += CmbAlign_SelectedIndexChanged;
+            if (cmbStretch != null)
+                cmbStretch.SelectedIndexChanged += CmbStretch_SelectedIndexChanged;
+            if (cmbFill != null)
+                cmbFill.SelectedIndexChanged += CmbFill_SelectedIndexChanged;
+            if (cmbMagicResizer != null)
+                cmbMagicResizer.SelectedIndexChanged += CmbMagicResizer_SelectedIndexChanged;
             
             // OPTIMIZED: Apply hover effects to ALL buttons at once using our utility
             // This replaces ~250 lines of duplicate hover event handlers!
@@ -103,6 +112,55 @@ namespace my_addin
                 cmbSlideSize.Items.Add("Custom");
                 cmbSlideSize.SelectedIndex = 1; // Default to 16:9 Widescreen
             }
+            
+            // Populate align combo box
+            if (cmbAlign != null)
+            {
+                cmbAlign.Items.Clear();
+                cmbAlign.Items.AddRange(new object[] {
+                    "Align Width",
+                    "Align Height",
+                    "Align Width & Height"
+                });
+            }
+            
+            // Populate stretch combo box
+            if (cmbStretch != null)
+            {
+                cmbStretch.Items.Clear();
+                cmbStretch.Items.AddRange(new object[] {
+                    "Stretch Left",
+                    "Stretch Right",
+                    "Stretch Up",
+                    "Stretch Down"
+                });
+            }
+            
+            // Populate fill combo box
+            if (cmbFill != null)
+            {
+                cmbFill.Items.Clear();
+                cmbFill.Items.AddRange(new object[] {
+                    "Fill Left",
+                    "Fill Right",
+                    "Fill Up",
+                    "Fill Down"
+                });
+            }
+            
+            // Populate magic resizer combo box
+            if (cmbMagicResizer != null)
+            {
+                cmbMagicResizer.Items.Clear();
+                cmbMagicResizer.Items.AddRange(new object[] {
+                    "Increase Width",
+                    "Decrease Width",
+                    "Increase Height", 
+                    "Decrease Height",
+                    "Increase All",
+                    "Decrease All"
+                });
+            }
         }
 
         /// <summary>
@@ -112,11 +170,8 @@ namespace my_addin
         {
             try
             {
-                string assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                string assemblyDir = System.IO.Path.GetDirectoryName(assemblyPath);
-                
                 // Load image for btnNew
-                string newIconPath = System.IO.Path.Combine(assemblyDir, "icons", "icons8-open-file-48.png");
+                string newIconPath = Path.Combine(Application.StartupPath, "icons\\icons8-open-file-48.png");
                 if (System.IO.File.Exists(newIconPath))
                 {
                     btnNew.BackgroundImage = Image.FromFile(newIconPath);
@@ -125,13 +180,13 @@ namespace my_addin
                 }
 
                 // Load wizard button images
-                LoadWizardButtonImages(assemblyDir);
+                LoadWizardButtonImages();
 
                 // Load shape button images - all use the same enlarge icon
-                LoadShapeButtonImages(assemblyDir);
+                LoadShapeButtonImages();
 
                 // Load text button images - all use the same enlarge icon  
-                LoadTextButtonImages(assemblyDir);
+                LoadTextButtonImages();
             }
             catch (Exception ex)
             {
@@ -143,24 +198,24 @@ namespace my_addin
         /// <summary>
         /// Loads images for wizard buttons
         /// </summary>
-        private void LoadWizardButtonImages(string assemblyDir)
+        private void LoadWizardButtonImages()
         {
             try
             {
                 // Wizard button images
                 var wizardButtons = new Dictionary<Button, string>
                 {
-                    { btnAgenda, "icons/wizzards/agenda.png" },
-                    { btnMaster, "icons/wizzards/master.png" },
-                    { btnElement, "icons/wizzards/element.png" },
-                    { btnText, "icons/wizzards/text.png" },
-                    { btnFormat, "icons/wizzards/format.png" },
-                    { btnMap, "icons/wizzards/map.png" }
+                    { btnAgenda, "icons\\wizzards\\agenda.png" },
+                    { btnMaster, "icons\\wizzards\\master.png" },
+                    { btnElement, "icons\\wizzards\\element.png" },
+                    { btnText, "icons\\wizzards\\text.png" },
+                    { btnFormat, "icons\\wizzards\\format.png" },
+                    { btnMap, "icons\\wizzards\\map.png" }
                 };
 
                 foreach (var button in wizardButtons)
                 {
-                    string iconPath = System.IO.Path.Combine(assemblyDir, button.Value);
+                    string iconPath = Path.Combine(Application.StartupPath, button.Value);
                     if (System.IO.File.Exists(iconPath))
                     {
                         button.Key.BackgroundImage = Image.FromFile(iconPath);
@@ -178,11 +233,11 @@ namespace my_addin
         /// <summary>
         /// Loads images for shape alignment buttons
         /// </summary>
-        private void LoadShapeButtonImages(string assemblyDir)
+        private void LoadShapeButtonImages()
         {
             try
             {
-                string iconPath = System.IO.Path.Combine(assemblyDir, "icons", "position", "icons8-enlarge-50.png");
+                string iconPath = Path.Combine(Application.StartupPath, "icons\\position\\icons8-enlarge-50.png");
                 if (System.IO.File.Exists(iconPath))
                 {
                     var enlargeImage = Image.FromFile(iconPath);
@@ -218,11 +273,11 @@ namespace my_addin
         /// <summary>
         /// Loads images for text formatting buttons  
         /// </summary>
-        private void LoadTextButtonImages(string assemblyDir)
+        private void LoadTextButtonImages()
         {
             try
             {
-                string iconPath = System.IO.Path.Combine(assemblyDir, "icons", "position", "icons8-enlarge-50.png");
+                string iconPath = Path.Combine(Application.StartupPath, "icons\\position\\icons8-enlarge-50.png");
                 if (System.IO.File.Exists(iconPath))
                 {
                     var enlargeImage = Image.FromFile(iconPath);
@@ -5298,6 +5353,241 @@ namespace my_addin
                 MessageBox.Show($"Error applying positions: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        #region Size Tools Event Handlers
+
+        /// <summary>
+        /// Property to get the PowerPoint Application instance
+        /// </summary>
+        private PowerPoint.Application pptApp => Globals.ThisAddIn.Application;
+
+        /// <summary>
+        /// Align Width/Height event handler
+        /// </summary>
+        private void CmbAlign_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                string selected = cmbAlign.SelectedItem?.ToString();
+                if (string.IsNullOrEmpty(selected)) return;
+
+                var sel = pptApp.ActiveWindow.Selection;
+                if (sel.Type == PowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 1)
+                {
+                    var shapes = sel.ShapeRange;
+                    PowerPoint.Shape master = shapes[shapes.Count]; // last selected = master
+
+                    foreach (PowerPoint.Shape shp in shapes)
+                    {
+                        if (shp != master)
+                        {
+                            if (selected.Contains("Width")) shp.Width = master.Width;
+                            if (selected.Contains("Height")) shp.Height = master.Height;
+                        }
+                    }
+                    
+                    // Reset the selection to avoid triggering again
+                    cmbAlign.SelectedIndex = -1;
+                }
+                else
+                {
+                    MessageBox.Show("Please select at least 2 shapes to align their dimensions.", "Size Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    cmbAlign.SelectedIndex = -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error aligning shapes: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cmbAlign.SelectedIndex = -1;
+            }
+        }
+
+        /// <summary>
+        /// Stretch Functions event handler
+        /// </summary>
+        private void CmbStretch_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                string selected = cmbStretch.SelectedItem?.ToString();
+                if (string.IsNullOrEmpty(selected)) return;
+
+                var sel = pptApp.ActiveWindow.Selection;
+                var slide = pptApp.ActiveWindow.View.Slide;
+
+                if (sel.Type == PowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 1)
+                {
+                    var shapes = sel.ShapeRange;
+                    PowerPoint.Shape master = shapes[shapes.Count];
+
+                    foreach (PowerPoint.Shape shp in shapes)
+                    {
+                        if (shp != master)
+                        {
+                            switch (selected)
+                            {
+                                case "Stretch Left": shp.Left = master.Left; break;
+                                case "Stretch Right": shp.Left = master.Left + master.Width - shp.Width; break;
+                                case "Stretch Up": shp.Top = master.Top; break;
+                                case "Stretch Down": shp.Top = master.Top + master.Height - shp.Height; break;
+                            }
+                        }
+                    }
+                }
+                else if (sel.Type == PowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count == 1)
+                {
+                    // Single object - stretch to slide edge
+                    var shape = sel.ShapeRange[1];
+                    switch (selected)
+                    {
+                        case "Stretch Left": shape.Left = 0; break;
+                        case "Stretch Right": shape.Left = slide.Master.Width - shape.Width; break;
+                        case "Stretch Up": shape.Top = 0; break;
+                        case "Stretch Down": shape.Top = slide.Master.Height - shape.Height; break;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select at least one shape to stretch.", "Size Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                
+                // Reset the selection
+                cmbStretch.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error stretching shapes: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cmbStretch.SelectedIndex = -1;
+            }
+        }
+
+        /// <summary>
+        /// Fill Functions event handler
+        /// </summary>
+        private void CmbFill_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                string selected = cmbFill.SelectedItem?.ToString();
+                if (string.IsNullOrEmpty(selected)) return;
+
+                var sel = pptApp.ActiveWindow.Selection;
+
+                if (sel.Type == PowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 1)
+                {
+                    var shapes = sel.ShapeRange;
+                    PowerPoint.Shape master = shapes[shapes.Count];
+
+                    foreach (PowerPoint.Shape shp in shapes)
+                    {
+                        if (shp != master)
+                        {
+                            switch (selected)
+                            {
+                                case "Fill Left": 
+                                    shp.Width += (master.Left - shp.Left); 
+                                    shp.Left = master.Left; 
+                                    break;
+                                case "Fill Right": 
+                                    shp.Width = (master.Left + master.Width) - shp.Left; 
+                                    break;
+                                case "Fill Up": 
+                                    shp.Height += (master.Top - shp.Top); 
+                                    shp.Top = master.Top; 
+                                    break;
+                                case "Fill Down": 
+                                    shp.Height = (master.Top + master.Height) - shp.Top; 
+                                    break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select at least 2 shapes to use fill functions.", "Size Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                
+                // Reset the selection
+                cmbFill.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error filling shapes: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cmbFill.SelectedIndex = -1;
+            }
+        }
+
+        /// <summary>
+        /// Magic Resizer event handler
+        /// </summary>
+        private void CmbMagicResizer_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                string selected = cmbMagicResizer.SelectedItem?.ToString();
+                if (string.IsNullOrEmpty(selected)) return;
+
+                var sel = pptApp.ActiveWindow.Selection;
+                if (sel.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    var shapes = sel.ShapeRange;
+                    float factor = selected.Contains("Increase") ? 1.1f : 0.9f; // 10% increase or decrease
+                    
+                    foreach (PowerPoint.Shape shp in shapes)
+                    {
+                        switch (selected)
+                        {
+                            case "Increase Width":
+                            case "Decrease Width":
+                                shp.Width *= factor;
+                                break;
+                                
+                            case "Increase Height":
+                            case "Decrease Height":
+                                shp.Height *= factor;
+                                break;
+                                
+                            case "Increase All":
+                            case "Decrease All":
+                                shp.Width *= factor;
+                                shp.Height *= factor;
+                                
+                                // Adjust line weight if shape has a line
+                                if (shp.Line.Visible == Office.MsoTriState.msoTrue)
+                                {
+                                    shp.Line.Weight *= factor;
+                                }
+                                
+                                // Adjust font size if shape has text
+                                if (shp.HasTextFrame == Office.MsoTriState.msoTrue && 
+                                    shp.TextFrame2.HasText == Office.MsoTriState.msoTrue)
+                                {
+                                    shp.TextFrame2.TextRange.Font.Size *= factor;
+                                }
+                                break;
+                        }
+                    }
+                    
+                    string action = selected.Contains("Increase") ? "increased" : "decreased";
+                    MessageBox.Show($"Magic Resizer applied to {shapes.Count} shape(s)!\n{selected.Replace("Increase ", "").Replace("Decrease ", "")} {action} by 10%.", 
+                                  "Magic Resizer", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Please select one or more shapes to resize.", "Magic Resizer", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                
+                // Reset the selection
+                cmbMagicResizer.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error with Magic Resizer: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cmbMagicResizer.SelectedIndex = -1;
+            }
+        }
+
+        #endregion
 
         #endregion
     }

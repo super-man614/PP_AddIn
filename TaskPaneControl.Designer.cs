@@ -110,6 +110,10 @@ namespace my_addin
             this.lblHeight = new System.Windows.Forms.Label();
             this.nudHeight = new System.Windows.Forms.NumericUpDown();
             this.btnApplySize = new System.Windows.Forms.Button();
+            this.cmbAlign = new System.Windows.Forms.ComboBox();
+            this.cmbStretch = new System.Windows.Forms.ComboBox();
+            this.cmbFill = new System.Windows.Forms.ComboBox();
+            this.cmbMagicResizer = new System.Windows.Forms.ComboBox();
             this.divider5 = new System.Windows.Forms.Panel();
             this.shapePanel = new System.Windows.Forms.FlowLayoutPanel();
             this.lblShapeSection = new System.Windows.Forms.Label();
@@ -284,7 +288,7 @@ namespace my_addin
             this.btnNew.Size = new System.Drawing.Size(20, 20);
             this.btnNew.BackColor = Color.Transparent;
             // Image will be loaded at runtime
-            // this.btnNew.BackgroundImage = Image.FromFile("icons/file/icons8-file-50.png");
+            this.btnNew.BackgroundImage = Image.FromFile("icons/file/icons8-file-50.png");
             this.btnNew.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnNew.UseVisualStyleBackColor = false;
             this.btnNew.Click += new System.EventHandler(this.BtnNew_Click);
@@ -304,7 +308,7 @@ namespace my_addin
             this.btnOpen.Size = new System.Drawing.Size(20, 20);
             this.btnOpen.BackColor = Color.Transparent;
             // Image will be loaded at runtime
-            // this.btnOpen.BackgroundImage = Image.FromFile("icons/file/icons8-open-file-48.png");
+            this.btnOpen.BackgroundImage = Image.FromFile("icons/file/icons8-open-file-48.png");
             this.btnOpen.BackgroundImageLayout = ImageLayout.Stretch;
             //this.btnOpen.Text = "📂";
             this.btnOpen.UseVisualStyleBackColor = false;
@@ -327,7 +331,7 @@ namespace my_addin
             this.btnSave.Size = new System.Drawing.Size(20, 20);
             this.btnSave.BackColor = Color.Transparent;
             // Image will be loaded at runtime
-            // this.btnSave.BackgroundImage = Image.FromFile("icons/file/icons8-save-50.png");
+            this.btnSave.BackgroundImage = Image.FromFile("icons/file/icons8-save-50.png");
             this.btnSave.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnSave.UseVisualStyleBackColor = false;
             this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
@@ -348,7 +352,7 @@ namespace my_addin
             this.btnSaveAs.TabIndex = 4;
             this.btnSaveAs.BackColor = Color.Transparent;
             // Image will be loaded at runtime
-            // this.btnSaveAs.BackgroundImage = Image.FromFile("icons/file/icons8-save-as-50.png");
+            this.btnSaveAs.BackgroundImage = Image.FromFile("icons/file/icons8-save-as-50.png");
             this.btnSaveAs.BackgroundImageLayout = ImageLayout.Stretch;
             //this.btnSaveAs.Text = "📋";
             this.btnSaveAs.UseVisualStyleBackColor = false;
@@ -370,7 +374,7 @@ namespace my_addin
             this.btnPrint.TabIndex = 5;
             this.btnPrint.BackColor = Color.Transparent;
             // Image will be loaded at runtime
-            // this.btnPrint.BackgroundImage = Image.FromFile("icons/file/icons8-export-50.png");
+            this.btnPrint.BackgroundImage = Image.FromFile("icons/file/icons8-export-50.png");
             this.btnPrint.BackgroundImageLayout = ImageLayout.Stretch;
             //this.btnPrint.Text = "🖨";
             this.btnPrint.UseVisualStyleBackColor = false;
@@ -465,12 +469,11 @@ namespace my_addin
             this.btnAgenda.TabIndex = 1;
             // this.btnAgenda.Text = "📋";
             // Image will be loaded at runtime
-            // this.btnAgenda.BackgroundImage = Image.FromFile("icons/wizzards/agenda.png");
+            this.btnAgenda.BackgroundImage = Image.FromFile("icons/wizzards/agenda.png");
             this.btnAgenda.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnAgenda.UseVisualStyleBackColor = false;
             this.btnAgenda.Click += new System.EventHandler(this.BtnAgenda_Click);
             // 
-            // btnMaster
             // 
             this.btnMaster.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.btnMaster.FlatAppearance.BorderSize = 0;
@@ -485,7 +488,7 @@ namespace my_addin
             this.btnMaster.TabIndex = 2;
             // this.btnMaster.Text = "🎨";
             // Image will be loaded at runtime
-            // this.btnMaster.BackgroundImage = Image.FromFile("icons/wizzards/master.png");
+            this.btnMaster.BackgroundImage = Image.FromFile("icons/wizzards/master.png");
             this.btnMaster.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnMaster.UseVisualStyleBackColor = false;
             this.btnMaster.Click += new System.EventHandler(this.BtnMaster_Click);
@@ -505,7 +508,7 @@ namespace my_addin
             this.btnElement.TabIndex = 3;
             // this.btnElement.Text = "🧩";
             // Image will be loaded at runtime
-            // this.btnElement.BackgroundImage = Image.FromFile("icons/wizzards/element.png");
+            this.btnElement.BackgroundImage = Image.FromFile("icons/wizzards/element.png");
             this.btnElement.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnElement.UseVisualStyleBackColor = false;
             this.btnElement.Click += new System.EventHandler(this.BtnElement_Click);
@@ -525,7 +528,7 @@ namespace my_addin
             this.btnText.TabIndex = 4;
             // this.btnText.Text = "✏️";
             // Image will be loaded at runtime
-            // this.btnText.BackgroundImage = Image.FromFile("icons/wizzards/text.png");
+            this.btnText.BackgroundImage = Image.FromFile("icons/wizzards/text.png");
             this.btnText.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnText.UseVisualStyleBackColor = false;
             this.btnText.Click += new System.EventHandler(this.BtnTextWizard_Click);
@@ -545,7 +548,7 @@ namespace my_addin
             this.btnFormat.TabIndex = 5;
             // this.btnFormat.Text = "🎯";
             // Image will be loaded at runtime
-            // this.btnFormat.BackgroundImage = Image.FromFile("icons/wizzards/format.png");
+            this.btnFormat.BackgroundImage = Image.FromFile("icons/wizzards/format.png");
             this.btnFormat.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnFormat.UseVisualStyleBackColor = false;
             this.btnFormat.Click += new System.EventHandler(this.BtnFormat_Click);
@@ -565,7 +568,7 @@ namespace my_addin
             this.btnMap.TabIndex = 6;
             // this.btnMap.Text = "🗺️";
             // Image will be loaded at runtime
-            // this.btnMap.BackgroundImage = Image.FromFile("icons/wizzards/map.png");
+            this.btnMap.BackgroundImage = Image.FromFile("icons/wizzards/map.png");
             this.btnMap.BackgroundImageLayout = ImageLayout.Stretch;
             this.btnMap.UseVisualStyleBackColor = false;
             this.btnMap.Click += new System.EventHandler(this.BtnMap_Click);
@@ -638,7 +641,7 @@ namespace my_addin
             this.btnChart.Size = new System.Drawing.Size(20, 20);
             this.btnChart.TabIndex = 1;
             // Image will be loaded at runtime
-            // this.btnChart.BackgroundImage = Image.FromFile("icons/elements/icons8-chart-60.png");
+            this.btnChart.BackgroundImage = Image.FromFile("icons/elements/icons8-chart-60.png");
             this.btnChart.BackgroundImageLayout = ImageLayout.Stretch;
             // this.btnChart.Text = "📊";
             this.btnChart.UseVisualStyleBackColor = false;
@@ -658,7 +661,7 @@ namespace my_addin
             this.btnDiagram.Size = new System.Drawing.Size(20, 20);
             this.btnDiagram.TabIndex = 2;
             // Image will be loaded at runtime
-            // this.btnDiagram.BackgroundImage = Image.FromFile("icons/elements/icons8-color-palette-48.png");
+            this.btnDiagram.BackgroundImage = Image.FromFile("icons/elements/icons8-color-palette-48.png");
             this.btnDiagram.BackgroundImageLayout = ImageLayout.Stretch;
             // this.btnDiagram.Text = "🎨";
             this.btnDiagram.UseVisualStyleBackColor = false;
@@ -678,7 +681,7 @@ namespace my_addin
             this.btnTable.Size = new System.Drawing.Size(20, 20);
             this.btnTable.TabIndex = 3;
             // Image will be loaded at runtime
-            // this.btnTable.BackgroundImage = Image.FromFile("icons/elements/icons8-table-50.png");
+            this.btnTable.BackgroundImage = Image.FromFile("icons/elements/icons8-table-50.png");
             this.btnTable.BackgroundImageLayout = ImageLayout.Stretch;
             // this.btnTable.Text = "📋";
             this.btnTable.UseVisualStyleBackColor = false;
@@ -698,7 +701,7 @@ namespace my_addin
             this.btnMatrixTable.Size = new System.Drawing.Size(20, 20);
             this.btnMatrixTable.TabIndex = 4;
             // Image will be loaded at runtime
-            // this.btnMatrixTable.BackgroundImage = Image.FromFile("icons/elements/icons8-matrix-50.png");
+            this.btnMatrixTable.BackgroundImage = Image.FromFile("icons/elements/icons8-matrix-50.png");
             this.btnMatrixTable.BackgroundImageLayout = ImageLayout.Stretch;
             // this.btnMatrixTable.Text = "🏢";
             this.btnMatrixTable.UseVisualStyleBackColor = false;
@@ -718,7 +721,7 @@ namespace my_addin
             this.btnStickyNote.Size = new System.Drawing.Size(20, 20);
             this.btnStickyNote.TabIndex = 5;
             // Image will be loaded at runtime
-            // this.btnStickyNote.BackgroundImage = Image.FromFile("icons/elements/icons8-sticky-notes-50.png");
+            this.btnStickyNote.BackgroundImage = Image.FromFile("icons/elements/icons8-sticky-notes-50.png");
             this.btnStickyNote.BackgroundImageLayout = ImageLayout.Stretch;
             // this.btnStickyNote.Text = "📝";
             this.btnStickyNote.UseVisualStyleBackColor = false;
@@ -738,7 +741,7 @@ namespace my_addin
             this.btnCitation.Size = new System.Drawing.Size(20, 20);
             this.btnCitation.TabIndex = 6;
             // Image will be loaded at runtime
-            // this.btnCitation.BackgroundImage = Image.FromFile("icons/elements/icons8-get-quote-30.png");
+            this.btnCitation.BackgroundImage = Image.FromFile("icons/elements/icons8-get-quote-30.png");
             this.btnCitation.BackgroundImageLayout = ImageLayout.Stretch;
             // this.btnCitation.Text = "📑";
             this.btnCitation.UseVisualStyleBackColor = false;
@@ -758,7 +761,7 @@ namespace my_addin
             this.btnStandardObjects.Size = new System.Drawing.Size(20, 20);
             this.btnStandardObjects.TabIndex = 7;
             // Image will be loaded at runtime
-            // this.btnStandardObjects.BackgroundImage = Image.FromFile("icons/elements/icons8-object-50.png");
+            this.btnStandardObjects.BackgroundImage = Image.FromFile("icons/elements/icons8-object-50.png");
             this.btnStandardObjects.BackgroundImageLayout = ImageLayout.Stretch;
             // this.btnStandardObjects.Text = "🗂️";
             this.btnStandardObjects.UseVisualStyleBackColor = false;
@@ -1310,7 +1313,7 @@ namespace my_addin
             this.sizePanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.sizePanel.Location = new System.Drawing.Point(3, 217);
             this.sizePanel.Name = "sizePanel";
-            this.sizePanel.Size = new System.Drawing.Size(287, 141);
+            this.sizePanel.Size = new System.Drawing.Size(287, 251);
             this.sizePanel.TabIndex = 4;
             // 
             // lblSizeSection
@@ -1320,9 +1323,9 @@ namespace my_addin
             this.lblSizeSection.ForeColor = System.Drawing.Color.Gray;
             this.lblSizeSection.Location = new System.Drawing.Point(3, 0);
             this.lblSizeSection.Name = "lblSizeSection";
-            this.lblSizeSection.Size = new System.Drawing.Size(27, 13);
+            this.lblSizeSection.Size = new System.Drawing.Size(57, 13);
             this.lblSizeSection.TabIndex = 0;
-            this.lblSizeSection.Text = "Size";
+            this.lblSizeSection.Text = "Size Tools";
             this.lblSizeSection.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // sizeControlsPanel
@@ -1331,12 +1334,16 @@ namespace my_addin
             this.sizeControlsPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.sizeControlsPanel.Controls.Add(this.widthPanel);
             this.sizeControlsPanel.Controls.Add(this.heightPanel);
+            this.sizeControlsPanel.Controls.Add(this.cmbAlign);
+            this.sizeControlsPanel.Controls.Add(this.cmbStretch);
+            this.sizeControlsPanel.Controls.Add(this.cmbFill);
+            this.sizeControlsPanel.Controls.Add(this.cmbMagicResizer);
             this.sizeControlsPanel.Controls.Add(this.btnApplySize);
             this.sizeControlsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.sizeControlsPanel.Location = new System.Drawing.Point(0, 13);
             this.sizeControlsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.sizeControlsPanel.Name = "sizeControlsPanel";
-            this.sizeControlsPanel.Size = new System.Drawing.Size(287, 128);
+            this.sizeControlsPanel.Size = new System.Drawing.Size(287, 238);
             this.sizeControlsPanel.TabIndex = 1;
             // 
             // widthPanel
@@ -1451,6 +1458,46 @@ namespace my_addin
             this.btnApplySize.Text = "Apply Size";
             this.btnApplySize.UseVisualStyleBackColor = false;
             this.btnApplySize.Click += new System.EventHandler(this.BtnApplySize_Click);
+            // 
+            // cmbAlign
+            // 
+            this.cmbAlign.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbAlign.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.cmbAlign.Location = new System.Drawing.Point(3, 131);
+            this.cmbAlign.Name = "cmbAlign";
+            this.cmbAlign.Size = new System.Drawing.Size(281, 21);
+            this.cmbAlign.TabIndex = 6;
+            this.cmbAlign.SelectedIndexChanged += new System.EventHandler(this.CmbAlign_SelectedIndexChanged);
+            // 
+            // cmbStretch
+            // 
+            this.cmbStretch.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStretch.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.cmbStretch.Location = new System.Drawing.Point(3, 158);
+            this.cmbStretch.Name = "cmbStretch";
+            this.cmbStretch.Size = new System.Drawing.Size(281, 21);
+            this.cmbStretch.TabIndex = 7;
+            this.cmbStretch.SelectedIndexChanged += new System.EventHandler(this.CmbStretch_SelectedIndexChanged);
+            // 
+            // cmbFill
+            // 
+            this.cmbFill.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFill.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.cmbFill.Location = new System.Drawing.Point(3, 185);
+            this.cmbFill.Name = "cmbFill";
+            this.cmbFill.Size = new System.Drawing.Size(281, 21);
+            this.cmbFill.TabIndex = 8;
+            this.cmbFill.SelectedIndexChanged += new System.EventHandler(this.CmbFill_SelectedIndexChanged);
+            // 
+            // cmbMagicResizer
+            // 
+            this.cmbMagicResizer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbMagicResizer.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.cmbMagicResizer.Location = new System.Drawing.Point(3, 212);
+            this.cmbMagicResizer.Name = "cmbMagicResizer";
+            this.cmbMagicResizer.Size = new System.Drawing.Size(281, 21);
+            this.cmbMagicResizer.TabIndex = 9;
+            this.cmbMagicResizer.SelectedIndexChanged += new System.EventHandler(this.CmbMagicResizer_SelectedIndexChanged);
             // 
             // divider5
             // 
@@ -2155,6 +2202,10 @@ namespace my_addin
         private System.Windows.Forms.Label lblHeight;
         private System.Windows.Forms.NumericUpDown nudHeight;
         private System.Windows.Forms.Button btnApplySize;
+        private System.Windows.Forms.ComboBox cmbAlign;
+        private System.Windows.Forms.ComboBox cmbStretch;
+        private System.Windows.Forms.ComboBox cmbFill;
+        private System.Windows.Forms.ComboBox cmbMagicResizer;
         
         // Shape section
         private System.Windows.Forms.FlowLayoutPanel shapePanel;

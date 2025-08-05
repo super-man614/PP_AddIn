@@ -10,4 +10,3 @@ C:\Users\Administrator\Music\PP_AddIn\obj\Debug\my-addin.csproj.CoreCompileInput
 C:\Users\Administrator\Music\PP_AddIn\obj\Debug\my-addin.csproj.CopyComplete
 C:\Users\Administrator\Music\PP_AddIn\obj\Debug\my-addin.dll
 C:\Users\Administrator\Music\PP_AddIn\obj\Debug\my-addin.pdb
-C:\Users\Administrator\Music\PP_AddIn\obj\Debug\my-addin.csproj.AssemblyReference.cache
