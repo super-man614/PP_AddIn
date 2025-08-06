@@ -91,23 +91,8 @@ namespace my_addin
         /// </summary>
         public void Ribbon_Load(Office.IRibbonUI ribbonUI)
         {
-            System.Diagnostics.Debug.WriteLine("🎉 RIBBON_LOAD CALLED - RIBBON IS BEING INITIALIZED! 🎉");
+            System.Diagnostics.Debug.WriteLine("Ribbon loading...");
             this.ribbon = ribbonUI;
-            
-            // Test ribbon functionality
-            try
-            {
-                System.Diagnostics.Debug.WriteLine("Ribbon UI object received successfully");
-                System.Diagnostics.Debug.WriteLine($"Ribbon UI type: {ribbonUI.GetType().Name}");
-                
-                // Force a ribbon refresh to ensure it's visible
-                ribbonUI.Invalidate();
-                System.Diagnostics.Debug.WriteLine("Ribbon invalidated - should be visible now");
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error during ribbon initialization: {ex.Message}");
-            }
         }
 
         /// <summary>
@@ -127,8 +112,7 @@ namespace my_addin
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error toggling task pane: {ex.Message}", "Error", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Error toggling task pane: {ex.Message}");
             }
         }
 
@@ -136,14 +120,12 @@ namespace my_addin
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine("🎉 TEST RIBBON BUTTON CLICKED! 🎉");
-                MessageBox.Show("🎉 Ribbon is working! The 'PowerPoint Add in Tools' tab is successfully loaded and functional! 🎉", 
-                    "Ribbon Test", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                System.Diagnostics.Debug.WriteLine("Test ribbon button clicked");
+                // Test functionality without showing dialog
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error in TestRibbon_Click: {ex.Message}");
-                MessageBox.Show($"Error testing ribbon: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -156,13 +138,11 @@ namespace my_addin
             {
                 var app = Globals.ThisAddIn.Application;
                 app.Presentations.Add();
-                MessageBox.Show("New presentation created!", "Success", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // New presentation created successfully
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error creating presentation: {ex.Message}", "Error", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Error creating presentation: {ex.Message}");
             }
         }
 
@@ -1356,8 +1336,7 @@ namespace my_addin
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error selecting slide size: {ex.Message}", "Error", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Error selecting slide size: {ex.Message}");
             }
         }
 
@@ -1450,20 +1429,17 @@ namespace my_addin
                                 break;
                         }
                         
-                        MessageBox.Show($"Slide size changed to {slideSizes[selectedSizeIndex]}!", "Success", 
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        System.Diagnostics.Debug.WriteLine($"Slide size changed to {slideSizes[selectedSizeIndex]}!");
                     }
                     else
                     {
-                        MessageBox.Show("No active presentation to resize.", "Warning", 
-                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        System.Diagnostics.Debug.WriteLine("No active presentation to resize.");
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error applying slide size: {ex.Message}", "Error", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Error applying slide size: {ex.Message}");
             }
         }
 
@@ -1741,13 +1717,45 @@ namespace my_addin
                 var taskPaneControl = Globals.ThisAddIn.TaskPane?.TaskPaneControl;
                 if (taskPaneControl != null)
                 {
-                    var method = taskPaneControl.GetType().GetMethod("BtnBullets_Click", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                    method?.Invoke(taskPaneControl, new object[] { null, EventArgs.Empty });
+                    // Directly apply real bullet points to selected shapes/text
+                    var app = Globals.ThisAddIn.Application;
+                    if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                    {
+                        var shapes = app.ActiveWindow.Selection.ShapeRange;
+                        int bulletCount = 0;
+                        for (int i = 1; i <= shapes.Count; i++)
+                        {
+                            var shape = shapes[i];
+                            if (shape.HasTextFrame == Office.MsoTriState.msoTrue &&
+                                shape.TextFrame.HasText == Office.MsoTriState.msoTrue)
+                            {
+                                var textRange = shape.TextFrame.TextRange;
+                                // Ensure numbering is turned off before applying bullets
+                                textRange.ParagraphFormat.Bullet.Type = PowerPoint.PpBulletType.ppBulletUnnumbered;
+                                textRange.ParagraphFormat.Bullet.Visible = Office.MsoTriState.msoTrue;
+                                textRange.ParagraphFormat.Bullet.Character = 8226; // Unicode bullet •
+                                textRange.ParagraphFormat.Bullet.Font.Name = "Symbol";
+                                bulletCount++;
+                            }
+                        }
+                        if (bulletCount > 0)
+                        {
+                            MessageBox.Show($"Bullet points applied to {bulletCount} shape(s).", "Bullets", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("No shapes with text found to apply bullet points.", "Bullets", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select one or more shapes with text to apply bullet points.", "Bullets", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error adding bullets: {ex.Message}", "Error", 
+                MessageBox.Show($"Error adding bullet points: {ex.Message}", "Error", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

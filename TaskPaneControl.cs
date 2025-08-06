@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
@@ -13,12 +12,46 @@ namespace my_addin
     {
         public TaskPaneControl()
         {
+            try
+            {
             InitializeComponent();
             OptimizeRemainingPanels(); // Optimize panels not yet optimized in Designer
             SetupEventHandlers();
             SetInitialValues();
-            LoadButtonImages(); // Load custom images for buttons
+                // Delay image loading until after control is fully loaded
+                this.Load += TaskPaneControl_LoadImages;
             SetupTooltips(); // Setup tooltips for all buttons
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in TaskPaneControl constructor: {ex.Message}");
+                // Still initialize basic functionality even if there are errors
+                try
+                {
+                    InitializeComponent();
+                }
+                catch
+                {
+                    // If even basic initialization fails, log it
+                    System.Diagnostics.Debug.WriteLine("Critical error: InitializeComponent failed");
+                }
+            }
+        }
+
+        private void TaskPaneControl_LoadImages(object sender, EventArgs e)
+        {
+            try
+            {
+                // Remove the event handler to prevent multiple calls
+                this.Load -= TaskPaneControl_LoadImages;
+                
+                // Load images after the control is fully loaded
+                LoadButtonImages();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading images: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -80,6 +113,8 @@ namespace my_addin
 
         private void SetupEventHandlers()
         {
+            try
+        {
             // Size section events
             if (cmbSlideSize != null)
                 cmbSlideSize.SelectedIndexChanged += CmbSlideSize_SelectedIndexChanged;
@@ -91,8 +126,8 @@ namespace my_addin
                 cmbStretch.SelectedIndexChanged += CmbStretch_SelectedIndexChanged;
             if (cmbFill != null)
                 cmbFill.SelectedIndexChanged += CmbFill_SelectedIndexChanged;
-            if (cmbMagicResizer != null)
-                cmbMagicResizer.SelectedIndexChanged += CmbMagicResizer_SelectedIndexChanged;
+            if (btnMagicResizer != null)
+                btnMagicResizer.Click += BtnMagicResizer_Click;
             
             // OPTIMIZED: Apply hover effects to ALL buttons at once using our utility
             // This replaces ~250 lines of duplicate hover event handlers!
@@ -100,9 +135,16 @@ namespace my_addin
             
             // Load current slides
             this.Load += TaskPaneControl_Load;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error setting up event handlers: {ex.Message}");
+            }
         }
 
         private void SetInitialValues()
+        {
+            try
         {
             // Populate slide size combo box with smart presets
             if (cmbSlideSize != null)
@@ -146,20 +188,11 @@ namespace my_addin
                     "Fill Up",
                     "Fill Down"
                 });
+                }
             }
-            
-            // Populate magic resizer combo box
-            if (cmbMagicResizer != null)
+            catch (Exception ex)
             {
-                cmbMagicResizer.Items.Clear();
-                cmbMagicResizer.Items.AddRange(new object[] {
-                    "Increase Width",
-                    "Decrease Width",
-                    "Increase Height", 
-                    "Decrease Height",
-                    "Increase All",
-                    "Decrease All"
-                });
+                System.Diagnostics.Debug.WriteLine($"Error setting initial values: {ex.Message}");
             }
         }
 
@@ -170,23 +203,20 @@ namespace my_addin
         {
             try
             {
-                // Load image for btnNew
-                string newIconPath = Path.Combine(Application.StartupPath, "icons\\icons8-open-file-48.png");
-                if (System.IO.File.Exists(newIconPath))
-                {
-                    btnNew.BackgroundImage = Image.FromFile(newIconPath);
-                    btnNew.BackgroundImageLayout = ImageLayout.Stretch;
-                    btnNew.Text = ""; // Clear text to show image
-                }
+                // Load presentation button images
+                LoadPresentationButtonImages();
 
                 // Load wizard button images
                 LoadWizardButtonImages();
 
-                // Load shape button images - all use the same enlarge icon
-                LoadShapeButtonImages();
+                // Load smart elements button images
+                LoadSmartElementsButtonImages();
 
-                // Load text button images - all use the same enlarge icon  
-                LoadTextButtonImages();
+                // Load position button images
+                LoadPositionButtonImages();
+
+                // Shape, Color, and Text sections use emoji text instead of images
+                SetupEmojiButtons();
             }
             catch (Exception ex)
             {
@@ -196,31 +226,176 @@ namespace my_addin
         }
 
         /// <summary>
+        /// Loads an image for a specific button with multiple fallback paths
+        /// Falls back to emoji text if image is not found
+        /// </summary>
+        private void LoadImageForButton(Button button, string imageName, string subfolder = "")
+        {
+            try
+            {
+                // Add null check for button
+                if (button == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Button is null when trying to load image {imageName}");
+                    return;
+                }
+
+                string imagePath = FindImagePath(imageName, subfolder);
+                if (!string.IsNullOrEmpty(imagePath) && System.IO.File.Exists(imagePath))
+                {
+                    try
+                    {
+                        // Successfully load the image
+                        button.BackgroundImage = Image.FromFile(imagePath);
+                        button.BackgroundImageLayout = ImageLayout.Stretch;
+                        button.Text = ""; // Clear text to show image
+                        System.Diagnostics.Debug.WriteLine($"Loaded image: {imageName}");
+                    }
+                    catch (Exception imgEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Failed to load image file {imagePath}: {imgEx.Message}");
+                        // Keep any existing text/emoji as fallback
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"Image not found: {imageName} in {subfolder} - keeping text/emoji fallback");
+                    // Image not found - button will use its designed text/emoji
+                    button.BackgroundImage = null; // Ensure no background image
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in LoadImageForButton for {imageName}: {ex.Message}");
+                // Ensure button remains functional with text fallback
+                if (button != null)
+                {
+                    button.BackgroundImage = null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Finds the correct path for an image file using multiple fallback locations
+        /// Optimized for VSTO deployment scenarios
+        /// </summary>
+        private string FindImagePath(string imageName, string subfolder = "")
+        {
+            var searchPaths = new List<string>();
+            
+            try
+            {
+                // Get the assembly location (where the .dll is deployed)
+                string assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                string assemblyDir = System.IO.Path.GetDirectoryName(assemblyPath);
+                
+                // For VSTO deployment, images are typically in the same folder as the assembly
+                if (!string.IsNullOrEmpty(subfolder))
+                {
+                    searchPaths.Add(System.IO.Path.Combine(assemblyDir, "icons", subfolder, imageName));
+                    searchPaths.Add(System.IO.Path.Combine(assemblyDir, subfolder, imageName));
+                }
+                searchPaths.Add(System.IO.Path.Combine(assemblyDir, "icons", imageName));
+                searchPaths.Add(System.IO.Path.Combine(assemblyDir, imageName));
+                
+                // Additional fallback locations for different deployment scenarios
+                var additionalBaseDirs = new List<string>();
+                
+                // VSTO deployment folder (typically under user's Local folder)
+                if (assemblyDir.Contains("Users") && assemblyDir.Contains("Local"))
+                {
+                    additionalBaseDirs.Add(assemblyDir);
+                }
+                
+                // Application data folder
+                string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                string vstoAppPath = System.IO.Path.Combine(appDataPath, "Apps", "2.0");
+                if (System.IO.Directory.Exists(vstoAppPath))
+                {
+                    // Look for VSTO deployment folder
+                    var vstoDirs = System.IO.Directory.GetDirectories(vstoAppPath, "*", System.IO.SearchOption.AllDirectories)
+                        .Where(d => d.Contains("my-addin") || System.IO.File.Exists(System.IO.Path.Combine(d, "my-addin.dll")));
+                    additionalBaseDirs.AddRange(vstoDirs);
+                }
+                
+                // Add these paths to search list
+                foreach (var baseDir in additionalBaseDirs)
+                {
+                    if (!string.IsNullOrEmpty(subfolder))
+                    {
+                        searchPaths.Add(System.IO.Path.Combine(baseDir, "icons", subfolder, imageName));
+                        searchPaths.Add(System.IO.Path.Combine(baseDir, subfolder, imageName));
+                    }
+                    searchPaths.Add(System.IO.Path.Combine(baseDir, "icons", imageName));
+                    searchPaths.Add(System.IO.Path.Combine(baseDir, imageName));
+                }
+                
+                // Development fallbacks
+                if (assemblyDir.Contains("bin"))
+                {
+                    var projectDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(assemblyDir));
+                    if (!string.IsNullOrEmpty(projectDir))
+                    {
+                        if (!string.IsNullOrEmpty(subfolder))
+                        {
+                            searchPaths.Add(System.IO.Path.Combine(projectDir, "icons", subfolder, imageName));
+                        }
+                        searchPaths.Add(System.IO.Path.Combine(projectDir, "icons", imageName));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error building search paths: {ex.Message}");
+            }
+            
+            // Search through all paths
+            foreach (var path in searchPaths)
+            {
+                try
+                {
+                    if (System.IO.File.Exists(path))
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Found image at: {path}");
+                        return path;
+                    }
+                }
+                catch
+                {
+                    // Continue searching if path access fails
+                    continue;
+                }
+            }
+            
+            System.Diagnostics.Debug.WriteLine($"Image not found: {imageName} in subfolder: {subfolder}");
+            System.Diagnostics.Debug.WriteLine($"Searched paths: {string.Join("; ", searchPaths)}");
+            
+            return null;
+        }
+
+        /// <summary>
         /// Loads images for wizard buttons
         /// </summary>
         private void LoadWizardButtonImages()
         {
             try
             {
-                // Wizard button images
+                // Wizard button images mapping
                 var wizardButtons = new Dictionary<Button, string>
                 {
-                    { btnAgenda, "icons\\wizzards\\agenda.png" },
-                    { btnMaster, "icons\\wizzards\\master.png" },
-                    { btnElement, "icons\\wizzards\\element.png" },
-                    { btnText, "icons\\wizzards\\text.png" },
-                    { btnFormat, "icons\\wizzards\\format.png" },
-                    { btnMap, "icons\\wizzards\\map.png" }
+                    { btnAgenda, "agenda.png" },
+                    { btnMaster, "master.png" },
+                    { btnElement, "element.png" },
+                    { btnText, "text.png" },
+                    { btnFormat, "format.png" },
+                    { btnMap, "map.png" }
                 };
 
                 foreach (var button in wizardButtons)
                 {
-                    string iconPath = Path.Combine(Application.StartupPath, button.Value);
-                    if (System.IO.File.Exists(iconPath))
+                    if (button.Key != null)
                     {
-                        button.Key.BackgroundImage = Image.FromFile(iconPath);
-                        button.Key.BackgroundImageLayout = ImageLayout.Stretch;
-                        button.Key.Text = ""; // Clear text to show image
+                        LoadImageForButton(button.Key, button.Value, "wizzards", true);
                     }
                 }
             }
@@ -231,82 +406,114 @@ namespace my_addin
         }
 
         /// <summary>
-        /// Loads images for shape alignment buttons
+        /// Sets up emoji text for Shape, Color, and Text sections (no image loading)
         /// </summary>
-        private void LoadShapeButtonImages()
+        private void SetupEmojiButtons()
         {
             try
             {
-                string iconPath = Path.Combine(Application.StartupPath, "icons\\position\\icons8-enlarge-50.png");
-                if (System.IO.File.Exists(iconPath))
+                // Shape section buttons - ensure emoji text is visible and no background image
+                // (Text already set in Designer, just ensure no background images)
+                var shapeButtons = new Button[]
                 {
-                    var enlargeImage = Image.FromFile(iconPath);
-                    
-                    // Apply the same icon to all shape buttons
-                    var shapeButtons = new Button[] 
-                    { 
-                        btnAlignProcessChain,
-                        btnAlignAngles,
-                        btnAlignToProcessArrow,
-                        btnAdjustPentagonHeader,
-                        btnAlignBlockArrows,
-                        btnAlignRoundedRectangleRadius
-                    };
+                    btnAlignProcessChain,    // "🔗"
+                    btnAlignAngles,          // "📐"
+                    btnAlignToProcessArrow,  // "➡️"
+                    btnAdjustPentagonHeader, // "🔷"
+                    btnAlignBlockArrows,     // "▶️"
+                    btnAlignRoundedRectangleRadius // "🔲"
+                };
 
-                    foreach (var button in shapeButtons)
+                foreach (var button in shapeButtons)
+                {
+                    if (button != null)
                     {
-                        if (button != null)
+                        button.BackgroundImage = null; // Remove any background image
+                        button.UseVisualStyleBackColor = false;
+                        
+                        // Ensure emoji font is set correctly
+                        if (button.Font == null || !button.Font.Name.Contains("Emoji"))
                         {
-                            button.BackgroundImage = enlargeImage;
-                            button.BackgroundImageLayout = ImageLayout.Stretch;
-                            button.Text = ""; // Clear text to show image
+                            button.Font = new System.Drawing.Font("Segoe UI Emoji", 7F);
                         }
+                        
+                        // Ensure text is visible and not empty
+                        if (string.IsNullOrEmpty(button.Text))
+                        {
+                            // Set default emoji if text is missing
+                            switch (button.Name)
+                            {
+                                case "btnAlignProcessChain":
+                                    button.Text = "📐";
+                                    break;
+                                case "btnAlignAngles": 
+                                    button.Text = "📐";
+                                    break;
+                                case "btnAlignToProcessArrow":
+                                    button.Text = "➡️";
+                                    break;
+                                case "btnAdjustPentagonHeader":
+                                    button.Text = "🔷";
+                                    break;
+                                case "btnAlignBlockArrows":
+                                    button.Text = "▶️";
+                                    break;
+                                case "btnAlignRoundedRectangleRadius":
+                                    button.Text = "🔲";
+                                    break;
+                            }
+                        }
+                        
+                        System.Diagnostics.Debug.WriteLine($"✅ Shape button {button.Name}: text='{button.Text}', font={button.Font.Name}");
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error loading shape button images: {ex.Message}");
-            }
-        }
 
-        /// <summary>
-        /// Loads images for text formatting buttons  
-        /// </summary>
-        private void LoadTextButtonImages()
-        {
-            try
-            {
-                string iconPath = Path.Combine(Application.StartupPath, "icons\\position\\icons8-enlarge-50.png");
-                if (System.IO.File.Exists(iconPath))
+                // Color section buttons - ensure emoji text is visible
+                // (Text already set in Designer, just ensure no background images)
+                var colorButtons = new Button[]
                 {
-                    var enlargeImage = Image.FromFile(iconPath);
-                    
-                    // Apply the same icon to all text buttons
+                    btnFillColor,    // "🎨"
+                    btnTextColor,    // "A"
+                    btnOutlineColor  // "◯"
+                };
+
+                foreach (var button in colorButtons)
+                {
+                    if (button != null)
+                    {
+                        button.BackgroundImage = null; // Remove any background image
+                        button.UseVisualStyleBackColor = false;
+                        // Text is already set in Designer file
+                    }
+                }
+
+                // Text section buttons - ensure emoji text is visible
+                // (Text already set in Designer, just ensure no background images)
                     var textButtons = new Button[] 
                     { 
-                        btnBold,
-                        btnItalic,
-                        btnUnderline,
-                        btnBullets,
-                        btnWrapText,
-                        btnNoWrapText
+                    btnBold,        // "B"
+                    btnItalic,      // "I"
+                    btnUnderline,   // "U"
+                    btnBullets,     // "•"
+                    btnWrapText,    // "📦"
+                    btnNoWrapText   // "📄"
                     };
 
                     foreach (var button in textButtons)
                     {
                         if (button != null)
                         {
-                            button.BackgroundImage = enlargeImage;
-                            button.BackgroundImageLayout = ImageLayout.Stretch;
-                            button.Text = ""; // Clear text to show image
-                        }
+                        button.BackgroundImage = null; // Remove any background image
+                        button.UseVisualStyleBackColor = false;
+                        // Text is already set in Designer file
                     }
                 }
+
+                System.Diagnostics.Debug.WriteLine("Emoji buttons setup completed for Shape, Color, and Text sections");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error loading text button images: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error setting up emoji buttons: {ex.Message}");
             }
         }
 
@@ -315,6 +522,8 @@ namespace my_addin
         /// </summary>
         private void SetupTooltips()
         {
+            try
+        {
             // Create tooltip control
             var tooltip = new ToolTip();
             tooltip.AutoPopDelay = 5000;
@@ -322,109 +531,117 @@ namespace my_addin
             tooltip.ReshowDelay = 500;
             tooltip.ShowAlways = true;
 
-            // Presentation section tooltips
-            tooltip.SetToolTip(btnNew, "New Presentation");
-            tooltip.SetToolTip(btnOpen, "Open Presentation");
-            tooltip.SetToolTip(btnSave, "Save Presentation");
-            tooltip.SetToolTip(btnSaveAs, "Save As");
-            tooltip.SetToolTip(btnPrint, "Print");
-            //tooltip.SetToolTip(btnShare, "Share");
+                // Presentation section tooltips - with null checks
+                if (btnNew != null) tooltip.SetToolTip(btnNew, "New Presentation");
+                if (btnOpen != null) tooltip.SetToolTip(btnOpen, "Open Presentation");
+                if (btnSave != null) tooltip.SetToolTip(btnSave, "Save Presentation");
+                if (btnSaveAs != null) tooltip.SetToolTip(btnSaveAs, "Save As");
+                if (btnPrint != null) tooltip.SetToolTip(btnPrint, "Print");
+                //if (btnShare != null) tooltip.SetToolTip(btnShare, "Share");
 
-            // Wizards section tooltips
-            tooltip.SetToolTip(btnAgenda, "Agenda");
-            tooltip.SetToolTip(btnMaster, "Master");
-            tooltip.SetToolTip(btnElement, "Element");
-            tooltip.SetToolTip(btnText, "Text");
-            tooltip.SetToolTip(btnFormat, "Format");
-            tooltip.SetToolTip(btnMap, "Map");
+                // Wizards section tooltips - with null checks
+                if (btnAgenda != null) tooltip.SetToolTip(btnAgenda, "Agenda");
+                if (btnMaster != null) tooltip.SetToolTip(btnMaster, "Master");
+                if (btnElement != null) tooltip.SetToolTip(btnElement, "Element");
+                if (btnText != null) tooltip.SetToolTip(btnText, "Text");
+                if (btnFormat != null) tooltip.SetToolTip(btnFormat, "Format");
+                if (btnMap != null) tooltip.SetToolTip(btnMap, "Map");
 
-            // Smart Elements section tooltips
-            tooltip.SetToolTip(btnChart, "Chart");
-            tooltip.SetToolTip(btnDiagram, "Diagram");
-            tooltip.SetToolTip(btnTable, "Table");
-            tooltip.SetToolTip(btnMatrixTable, "Matrix Table");
-            tooltip.SetToolTip(btnStickyNote, "Sticky Note");
-            tooltip.SetToolTip(btnCitation, "Citation");
-            tooltip.SetToolTip(btnStandardObjects, "Standard Objects");
+                // Smart Elements section tooltips - with null checks
+                if (btnChart != null) tooltip.SetToolTip(btnChart, "Chart");
+                if (btnDiagram != null) tooltip.SetToolTip(btnDiagram, "Diagram");
+                if (btnTable != null) tooltip.SetToolTip(btnTable, "Table");
+                if (btnMatrixTable != null) tooltip.SetToolTip(btnMatrixTable, "Matrix Table");
+                if (btnStickyNote != null) tooltip.SetToolTip(btnStickyNote, "Sticky Note");
+                if (btnCitation != null) tooltip.SetToolTip(btnCitation, "Citation");
+                if (btnStandardObjects != null) tooltip.SetToolTip(btnStandardObjects, "Standard Objects");
 
-            // Position section tooltips
-            tooltip.SetToolTip(btnAlignLeft, "Align Left\nAlign objects to left edge (Ctrl: to slide edge)");
-            tooltip.SetToolTip(btnAlignCenter, "Align Center\nAlign objects to center (Ctrl: to slide center)");
-            tooltip.SetToolTip(btnAlignRight, "Align Right\nAlign objects to right edge (Ctrl: to slide edge)");
-            tooltip.SetToolTip(btnAlignTop, "Align Top\nAlign objects to top edge (Ctrl: to slide top)");
-            tooltip.SetToolTip(btnAlignBottom, "Align Bottom\nAlign objects to bottom edge (Ctrl: to slide bottom)");
-            tooltip.SetToolTip(btnAlignMiddle, "Align Middle\nAlign objects to vertical middle (Ctrl: to slide middle)");
-            tooltip.SetToolTip(btnDockLeft, "Dock Left\nMove objects to touch left edge (Ctrl: to slide edge)");
-            tooltip.SetToolTip(btnDockRight, "Dock Right\nMove objects to touch right edge (Ctrl: to slide edge)");
-            tooltip.SetToolTip(btnDockTop, "Dock Top\nMove objects to touch top edge (Ctrl: to slide top)");
-            tooltip.SetToolTip(btnDockBottom, "Dock Bottom\nMove objects to touch bottom edge (Ctrl: to slide bottom)");
-            tooltip.SetToolTip(btnDistribute, "Distribute\nDistribute objects evenly");
-            tooltip.SetToolTip(btnDistributeHorizontal, "Distribute Horizontal\nDistribute horizontally (Ctrl: across slide)");
-            tooltip.SetToolTip(btnDistributeVertical, "Distribute Vertical\nDistribute vertically (Ctrl: across slide)");
-            tooltip.SetToolTip(btnMatchBoth, "Match Both\nMatch width and height to master object");
-            tooltip.SetToolTip(btnMatchHeight, "Match Height\nMatch height to master object");
-            tooltip.SetToolTip(btnMatchWidth, "Match Width\nMatch width to master object");
-            tooltip.SetToolTip(btnGoldenCanon, "Golden Canon\nAlign in golden ratio (1:2 margin ratio)");
-            tooltip.SetToolTip(btnAlignMatrix, "Align Matrix\nArrange objects in matrix grid");
-            tooltip.SetToolTip(btnSliceShape, "Slice Shape\nSlice or multiply shape into grid");
-            tooltip.SetToolTip(btnDuplicateRight, "Duplicate Right\nDuplicate objects to the right");
-            tooltip.SetToolTip(btnCenterTopLeft, "Center on Top Left\nCenter objects on master's top-left corner");
-            tooltip.SetToolTip(btnSavePosition, "Save Position\nSave position and size of selected objects");
-            tooltip.SetToolTip(btnApplyPosition, "Apply Position\nApply saved position and size to selected objects");
+                // Position section tooltips - with null checks
+                if (btnAlignLeft != null) tooltip.SetToolTip(btnAlignLeft, "Align Left\nAlign objects to left edge (Ctrl: to slide edge)");
+                if (btnAlignCenter != null) tooltip.SetToolTip(btnAlignCenter, "Align Center\nAlign objects to center (Ctrl: to slide center)");
+                if (btnAlignRight != null) tooltip.SetToolTip(btnAlignRight, "Align Right\nAlign objects to right edge (Ctrl: to slide edge)");
+                if (btnAlignTop != null) tooltip.SetToolTip(btnAlignTop, "Align Top\nAlign objects to top edge (Ctrl: to slide top)");
+                if (btnAlignBottom != null) tooltip.SetToolTip(btnAlignBottom, "Align Bottom\nAlign objects to bottom edge (Ctrl: to slide bottom)");
+                if (btnAlignMiddle != null) tooltip.SetToolTip(btnAlignMiddle, "Align Middle\nAlign objects to vertical middle (Ctrl: to slide middle)");
+                if (btnDockLeft != null) tooltip.SetToolTip(btnDockLeft, "Dock Left\nMove objects to touch left edge (Ctrl: to slide edge)");
+                if (btnDockRight != null) tooltip.SetToolTip(btnDockRight, "Dock Right\nMove objects to touch right edge (Ctrl: to slide edge)");
+                if (btnDockTop != null) tooltip.SetToolTip(btnDockTop, "Dock Top\nMove objects to touch top edge (Ctrl: to slide top)");
+                if (btnDockBottom != null) tooltip.SetToolTip(btnDockBottom, "Dock Bottom\nMove objects to touch bottom edge (Ctrl: to slide bottom)");
+                if (btnDistribute != null) tooltip.SetToolTip(btnDistribute, "Distribute\nDistribute objects evenly");
+                if (btnDistributeHorizontal != null) tooltip.SetToolTip(btnDistributeHorizontal, "Distribute Horizontal\nDistribute horizontally (Ctrl: across slide)");
+                if (btnDistributeVertical != null) tooltip.SetToolTip(btnDistributeVertical, "Distribute Vertical\nDistribute vertically (Ctrl: across slide)");
+                if (btnMatchBoth != null) tooltip.SetToolTip(btnMatchBoth, "Match Both\nMatch width and height to master object");
+                if (btnMatchHeight != null) tooltip.SetToolTip(btnMatchHeight, "Match Height\nMatch height to master object");
+                if (btnMatchWidth != null) tooltip.SetToolTip(btnMatchWidth, "Match Width\nMatch width to master object");
+                if (btnGoldenCanon != null) tooltip.SetToolTip(btnGoldenCanon, "Golden Canon\nAlign in golden ratio (1:2 margin ratio)");
+                if (btnAlignMatrix != null) tooltip.SetToolTip(btnAlignMatrix, "Align Matrix\nArrange objects in matrix grid");
+                if (btnSliceShape != null) tooltip.SetToolTip(btnSliceShape, "Slice Shape\nSlice or multiply shape into grid");
+                if (btnDuplicateRight != null) tooltip.SetToolTip(btnDuplicateRight, "Duplicate Right\nDuplicate objects to the right");
+                if (btnCenterTopLeft != null) tooltip.SetToolTip(btnCenterTopLeft, "Center on Top Left\nCenter objects on master's top-left corner");
+                if (btnSavePosition != null) tooltip.SetToolTip(btnSavePosition, "Save Position\nSave position and size of selected objects");
+                if (btnApplyPosition != null) tooltip.SetToolTip(btnApplyPosition, "Apply Position\nApply saved position and size to selected objects");
 
-            // Shape section tooltips
-            tooltip.SetToolTip(btnAlignProcessChain, "Align Process Chain");
-            tooltip.SetToolTip(btnAlignAngles, "Align Angles");
-            tooltip.SetToolTip(btnAlignToProcessArrow, "Align to Process Arrow");
-            tooltip.SetToolTip(btnAdjustPentagonHeader, "Adjust Pentagon Header");
-            tooltip.SetToolTip(btnAlignBlockArrows, "Align Block Arrows");
-            tooltip.SetToolTip(btnAlignRoundedRectangleRadius, "Align Rounded Rectangle Radius");
+                // Shape section tooltips - with null checks
+                if (btnAlignProcessChain != null) tooltip.SetToolTip(btnAlignProcessChain, "Align Process Chain");
+                if (btnAlignAngles != null) tooltip.SetToolTip(btnAlignAngles, "Align Angles");
+                if (btnAlignToProcessArrow != null) tooltip.SetToolTip(btnAlignToProcessArrow, "Align to Process Arrow");
+                if (btnAdjustPentagonHeader != null) tooltip.SetToolTip(btnAdjustPentagonHeader, "Adjust Pentagon Header");
+                if (btnAlignBlockArrows != null) tooltip.SetToolTip(btnAlignBlockArrows, "Align Block Arrows");
+                if (btnAlignRoundedRectangleRadius != null) tooltip.SetToolTip(btnAlignRoundedRectangleRadius, "Align Rounded Rectangle Radius");
 
-            // Transform section tooltips
-            tooltip.SetToolTip(btnMakeVertical, "Make Vertical");
-            tooltip.SetToolTip(btnMakeHorizontal, "Make Horizontal");
-            tooltip.SetToolTip(btnSwapLocations, "Swap Locations");
+                // Transform section tooltips - with null checks
+                if (btnMakeVertical != null) tooltip.SetToolTip(btnMakeVertical, "Make Vertical");
+                if (btnMakeHorizontal != null) tooltip.SetToolTip(btnMakeHorizontal, "Make Horizontal");
+                if (btnSwapLocations != null) tooltip.SetToolTip(btnSwapLocations, "Swap Locations");
 
-            // Size section tooltips
-            tooltip.SetToolTip(btnApplySize, "Apply size with intelligent content scaling");
+                // Size section tooltips - with null checks
+                if (btnApplySize != null) tooltip.SetToolTip(btnApplySize, "Apply size with intelligent content scaling");
 
-            // Colors section tooltips
-            tooltip.SetToolTip(btnFillColor, "Fill Color");
-            tooltip.SetToolTip(btnTextColor, "Text Color");
-            tooltip.SetToolTip(btnOutlineColor, "Outline Color");
+                // Colors section tooltips - with null checks
+                if (btnFillColor != null) tooltip.SetToolTip(btnFillColor, "Fill Color");
+                if (btnTextColor != null) tooltip.SetToolTip(btnTextColor, "Text Color");
+                if (btnOutlineColor != null) tooltip.SetToolTip(btnOutlineColor, "Outline Color");
 
-            // Text section tooltips
-            tooltip.SetToolTip(btnBold, "Bold");
-            tooltip.SetToolTip(btnItalic, "Italic");
-            tooltip.SetToolTip(btnUnderline, "Underline");
-            tooltip.SetToolTip(btnBullets, "Bullets");
-            tooltip.SetToolTip(btnWrapText, "Wrap Text");
-            tooltip.SetToolTip(btnNoWrapText, "No Wrap Text");
+                // Text section tooltips - with null checks
+                if (btnBold != null) tooltip.SetToolTip(btnBold, "Bold");
+                if (btnItalic != null) tooltip.SetToolTip(btnItalic, "Italic");
+                if (btnUnderline != null) tooltip.SetToolTip(btnUnderline, "Underline");
+                if (btnBullets != null) tooltip.SetToolTip(btnBullets, "Bullet Points");
+                if (btnWrapText != null) tooltip.SetToolTip(btnWrapText, "Wrap Text");
+                if (btnNoWrapText != null) tooltip.SetToolTip(btnNoWrapText, "No Wrap Text");
 
-            // Navigation section tooltips
-            tooltip.SetToolTip(btnZoomIn, "Zoom In");
-            tooltip.SetToolTip(btnZoomOut, "Zoom Out");
-            tooltip.SetToolTip(btnFitToWindow, "Fit to Window");
+                // Navigation section tooltips - with null checks
+                if (btnZoomIn != null) tooltip.SetToolTip(btnZoomIn, "Zoom In");
+                if (btnZoomOut != null) tooltip.SetToolTip(btnZoomOut, "Zoom Out");
+                if (btnFitToWindow != null) tooltip.SetToolTip(btnFitToWindow, "Fit to Window");
 
-            // Expert Tools section tooltips
-            tooltip.SetToolTip(btnFreeWebinar, "Free Webinar");
+                // Expert Tools section tooltips - with null checks
+                if (btnFreeWebinar != null) tooltip.SetToolTip(btnFreeWebinar, "Free Webinar");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error setting up tooltips: {ex.Message}");
+            }
         }
 
         #region Event Handlers
 
         private void TaskPaneControl_Load(object sender, EventArgs e)
         {
-            // Initialize the interface and load current slide size with delay
-            // Use timer to allow PowerPoint to fully load before accessing presentation
-            var timer = new System.Windows.Forms.Timer();
-            timer.Interval = 1000; // 1 second delay
-            timer.Tick += (s, args) =>
+            // Initialize the interface safely without trying to access PowerPoint presentation on startup
+            try
             {
-                timer.Stop();
-                timer.Dispose();
-                LoadCurrentSlideSize();
-            };
-            timer.Start();
+                // Set default slide size selection without accessing PowerPoint
+                if (cmbSlideSize != null && cmbSlideSize.Items.Count > 1)
+                {
+                    cmbSlideSize.SelectedIndex = 1; // Default to 16:9 Widescreen
+                }
+                System.Diagnostics.Debug.WriteLine("Task pane loaded successfully");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error during task pane load: {ex.Message}");
+            }
         }
 
         #region Presentation Section
@@ -435,11 +652,11 @@ namespace my_addin
             {
                 var app = Globals.ThisAddIn.Application;
                 app.Presentations.Add();
-                MessageBox.Show("New presentation created!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // Presentation created successfully
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error creating presentation: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Error creating presentation: {ex.Message}");
             }
         }
 
@@ -1034,12 +1251,12 @@ namespace my_addin
                 {
                     var app = Globals.ThisAddIn.Application;
                     app.Presentations.Open(openDialog.FileName);
-                    MessageBox.Show("Presentation opened successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Presentation opened successfully
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error opening presentation: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Error opening presentation: {ex.Message}");
             }
         }
 
@@ -1051,11 +1268,11 @@ namespace my_addin
                 if (app.ActivePresentation != null)
                 {
                     app.ActivePresentation.Save();
-                    MessageBox.Show("Presentation saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Presentation saved successfully
                 }
                 else
                 {
-                    MessageBox.Show("No active presentation to save.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Diagnostics.Debug.WriteLine("No active presentation to save.");
                 }
             }
             catch (Exception ex)
@@ -1078,17 +1295,17 @@ namespace my_addin
                     if (saveDialog.ShowDialog() == DialogResult.OK)
                     {
                         app.ActivePresentation.SaveAs(saveDialog.FileName);
-                        MessageBox.Show("Presentation saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Presentation saved successfully
                     }
                 }
                 else
                 {
-                    MessageBox.Show("No active presentation to save.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Diagnostics.Debug.WriteLine("No active presentation to save.");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error saving presentation: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Error saving presentation: {ex.Message}");
             }
         }
 
@@ -3290,17 +3507,19 @@ namespace my_addin
                     var shapes = app.ActiveWindow.Selection.ShapeRange;
                     if (shapes.Count == 2)
                     {
-                        // Get positions of both shapes
-                        float shape1Left = shapes[1].Left;
-                        float shape1Top = shapes[1].Top;
-                        float shape2Left = shapes[2].Left;
-                        float shape2Top = shapes[2].Top;
+                        // Swap locations based on center points
+                        float shape1CenterX = shapes[1].Left + shapes[1].Width / 2f;
+                        float shape1CenterY = shapes[1].Top + shapes[1].Height / 2f;
+                        float shape2CenterX = shapes[2].Left + shapes[2].Width / 2f;
+                        float shape2CenterY = shapes[2].Top + shapes[2].Height / 2f;
 
-                        // Swap the positions
-                        shapes[1].Left = shape2Left;
-                        shapes[1].Top = shape2Top;
-                        shapes[2].Left = shape1Left;
-                        shapes[2].Top = shape1Top;
+                        // Move shape 1's center to shape 2's center
+                        shapes[1].Left = shape2CenterX - shapes[1].Width / 2f;
+                        shapes[1].Top = shape2CenterY - shapes[1].Height / 2f;
+
+                        // Move shape 2's center to shape 1's center
+                        shapes[2].Left = shape1CenterX - shapes[2].Width / 2f;
+                        shapes[2].Top = shape1CenterY - shapes[2].Height / 2f;
 
                         MessageBox.Show("Swapped positions of the two selected shapes!", "Swap Locations", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -3390,7 +3609,7 @@ namespace my_addin
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error applying slide size: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Error applying slide size: {ex.Message}");
             }
         }
 
@@ -3427,28 +3646,32 @@ namespace my_addin
                 float scaleX = presentation.PageSetup.SlideWidth / oldWidth;
                 float scaleY = presentation.PageSetup.SlideHeight / oldHeight;
                 
-                // Smart scaling of content on all slides
-                ScaleContentIntelligently(presentation, scaleX, scaleY);
+                // Apply intelligent content scaling
+                ScaleContentIntelligently(scaleX, scaleY);
                 
                 // Update current slide size display
                 UpdateCurrentSizeDisplay();
                 
-                MessageBox.Show($"Slide size changed to {sizeName} ({width}\" × {height}\")!\nContent has been intelligently scaled.", 
-                    "Smart Size Applied", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                System.Diagnostics.Debug.WriteLine($"Slide size changed to {sizeName} ({width}\" × {height}\")");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error applying smart slide size: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Error applying smart slide size: {ex.Message}");
             }
         }
 
         /// <summary>
         /// Intelligently scales content when slide size changes
         /// </summary>
-        private void ScaleContentIntelligently(PowerPoint.Presentation presentation, float scaleX, float scaleY)
+        private void ScaleContentIntelligently(float scaleX, float scaleY)
         {
             try
             {
+                var app = Globals.ThisAddIn.Application;
+                if (app?.ActivePresentation == null) return;
+                
+                var presentation = app.ActivePresentation;
+                
                 // Use the smaller scale factor to maintain aspect ratios
                 float scaleFactor = Math.Min(scaleX, scaleY);
                 
@@ -3568,44 +3791,29 @@ namespace my_addin
             try
             {
                 var app = Globals.ThisAddIn.Application;
-                if (app != null && app.ActivePresentation != null)
+                if (app?.ActivePresentation != null)
                 {
+                    float widthInches = app.ActivePresentation.PageSetup.SlideWidth / 72f;
+                    float heightInches = app.ActivePresentation.PageSetup.SlideHeight / 72f;
+
+                    if (nudWidth != null && nudHeight != null)
+                    {
+                        nudWidth.Value = (decimal)Math.Round(widthInches, 2);
+                        nudHeight.Value = (decimal)Math.Round(heightInches, 2);
+                    }
+
                     UpdateCurrentSizeDisplay();
+                    System.Diagnostics.Debug.WriteLine($"Loaded slide size: {widthInches}\" x {heightInches}\"");
                 }
                 else
                 {
-                    // No active presentation - set default values
-                    if (nudWidth != null && nudHeight != null)
-                    {
-                        nudWidth.Value = 13.3m; // Default to 16:9
-                        nudHeight.Value = 7.5m;
-                    }
-                    if (cmbSlideSize != null)
-                    {
-                        cmbSlideSize.SelectedItem = "16:9 Widescreen";
-                    }
+                    System.Diagnostics.Debug.WriteLine("No active presentation - slide size not loaded");
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error loading current slide size: {ex.Message}");
-                // Set safe defaults on error
-                try
-                {
-                    if (nudWidth != null && nudHeight != null)
-                    {
-                        nudWidth.Value = 13.3m; // Default to 16:9
-                        nudHeight.Value = 7.5m;
-                    }
-                    if (cmbSlideSize != null)
-                    {
-                        cmbSlideSize.SelectedItem = "16:9 Widescreen";
-                    }
-                }
-                catch
-                {
-                    // Ignore secondary errors
-                }
+                // Silent failure - no user-facing errors
             }
         }
 
@@ -3626,13 +3834,12 @@ namespace my_addin
                     presentation.PageSetup.SlideWidth = (float)width * 72;
                     presentation.PageSetup.SlideHeight = (float)height * 72;
                     
-                    MessageBox.Show($"Size applied to all {presentation.Slides.Count} slides!", 
-                        "Batch Size Applied", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    System.Diagnostics.Debug.WriteLine($"Size applied to all {presentation.Slides.Count} slides!");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error applying size to all slides: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Error applying size to all slides: {ex.Message}");
             }
         }
 
@@ -3651,13 +3858,12 @@ namespace my_addin
                     // Analyze content to suggest optimal size
                     string suggestion = AnalyzeContentAndSuggestSize(presentation);
                     
-                    MessageBox.Show($"Size Suggestion:\n{suggestion}", 
-                        "Smart Size Suggestion", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    System.Diagnostics.Debug.WriteLine($"Size Suggestion: {suggestion}");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error suggesting size: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Error suggesting size: {ex.Message}");
             }
         }
 
@@ -3786,7 +3992,7 @@ namespace my_addin
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error optimizing size: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Error optimizing size: {ex.Message}");
             }
         }
 
@@ -4306,19 +4512,62 @@ namespace my_addin
                 if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionText)
                 {
                     var textRange = app.ActiveWindow.Selection.TextRange;
-                    textRange.ParagraphFormat.Bullet.Visible = 
-                        textRange.ParagraphFormat.Bullet.Visible == Office.MsoTriState.msoTrue ? 
-                        Office.MsoTriState.msoFalse : Office.MsoTriState.msoTrue;
-                    MessageBox.Show("Bullet formatting toggled!", "Text", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    
+                    // Check if bullets are currently visible
+                    bool bulletsVisible = textRange.ParagraphFormat.Bullet.Visible == Office.MsoTriState.msoTrue;
+                    
+                    if (bulletsVisible)
+                    {
+                        // Turn off bullets
+                        textRange.ParagraphFormat.Bullet.Visible = Office.MsoTriState.msoFalse;
+                    }
+                    else
+                    {
+                        // Turn on bullet points (not numbered list)
+                        textRange.ParagraphFormat.Bullet.Type = PowerPoint.PpBulletType.ppBulletUnnumbered;
+                        textRange.ParagraphFormat.Bullet.Visible = Office.MsoTriState.msoTrue;
+                        textRange.ParagraphFormat.Bullet.Character = 8226; // Unicode bullet •
+                        textRange.ParagraphFormat.Bullet.Font.Name = "Symbol";
+                        textRange.ParagraphFormat.Bullet.UseTextFont = Office.MsoTriState.msoFalse;
+                    }
+                    
+                    System.Diagnostics.Debug.WriteLine("Bullet formatting toggled!");
+                }
+                else if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    // Handle shape selection - apply bullets to all text shapes
+                    var shapes = app.ActiveWindow.Selection.ShapeRange;
+                    int shapesWithText = 0;
+                    
+                    for (int i = 1; i <= shapes.Count; i++)
+                    {
+                        var shape = shapes[i];
+                        if (shape.HasTextFrame == Office.MsoTriState.msoTrue &&
+                            shape.TextFrame.HasText == Office.MsoTriState.msoTrue)
+                        {
+                            var textRange = shape.TextFrame.TextRange;
+                            
+                            // Apply bullet points (not numbered list)
+                            textRange.ParagraphFormat.Bullet.Type = PowerPoint.PpBulletType.ppBulletUnnumbered;
+                            textRange.ParagraphFormat.Bullet.Visible = Office.MsoTriState.msoTrue;
+                            textRange.ParagraphFormat.Bullet.Character = 8226; // Unicode bullet •
+                            textRange.ParagraphFormat.Bullet.Font.Name = "Symbol";
+                            textRange.ParagraphFormat.Bullet.UseTextFont = Office.MsoTriState.msoFalse;
+                            
+                            shapesWithText++;
+                        }
+                    }
+                    
+                    System.Diagnostics.Debug.WriteLine($"Bullet points applied to {shapesWithText} shape(s) with text");
                 }
                 else
                 {
-                    MessageBox.Show("Please select text to add bullets.", "Text", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    System.Diagnostics.Debug.WriteLine("Please select text or shapes with text to add bullets");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error formatting bullets: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Error formatting bullets: {ex.Message}");
             }
         }
 
@@ -5520,75 +5769,252 @@ namespace my_addin
         /// <summary>
         /// Magic Resizer event handler
         /// </summary>
-        private void CmbMagicResizer_SelectedIndexChanged(object sender, EventArgs e)
+        private void BtnMagicResizer_Click(object sender, EventArgs e)
         {
             try
             {
-                string selected = cmbMagicResizer.SelectedItem?.ToString();
-                if (string.IsNullOrEmpty(selected)) return;
-
                 var sel = pptApp.ActiveWindow.Selection;
                 if (sel.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
                 {
                     var shapes = sel.ShapeRange;
-                    float factor = selected.Contains("Increase") ? 1.1f : 0.9f; // 10% increase or decrease
-                    
                     foreach (PowerPoint.Shape shp in shapes)
                     {
-                        switch (selected)
+                        // Increase size by 10%
+                        shp.Width *= 1.1f;
+                        shp.Height *= 1.1f;
+                        
+                        // Increase line weight if shape has a line
+                        if (shp.Line.Visible == Office.MsoTriState.msoTrue)
                         {
-                            case "Increase Width":
-                            case "Decrease Width":
-                                shp.Width *= factor;
-                                break;
-                                
-                            case "Increase Height":
-                            case "Decrease Height":
-                                shp.Height *= factor;
-                                break;
-                                
-                            case "Increase All":
-                            case "Decrease All":
-                                shp.Width *= factor;
-                                shp.Height *= factor;
-                                
-                                // Adjust line weight if shape has a line
-                                if (shp.Line.Visible == Office.MsoTriState.msoTrue)
-                                {
-                                    shp.Line.Weight *= factor;
-                                }
-                                
-                                // Adjust font size if shape has text
-                                if (shp.HasTextFrame == Office.MsoTriState.msoTrue && 
-                                    shp.TextFrame2.HasText == Office.MsoTriState.msoTrue)
-                                {
-                                    shp.TextFrame2.TextRange.Font.Size *= factor;
-                                }
-                                break;
+                            shp.Line.Weight *= 1.1f;
+                        }
+                        
+                        // Increase font size if shape has text
+                        if (shp.HasTextFrame == Office.MsoTriState.msoTrue && 
+                            shp.TextFrame2.HasText == Office.MsoTriState.msoTrue)
+                        {
+                            shp.TextFrame2.TextRange.Font.Size *= 1.1f;
                         }
                     }
                     
-                    string action = selected.Contains("Increase") ? "increased" : "decreased";
-                    MessageBox.Show($"Magic Resizer applied to {shapes.Count} shape(s)!\n{selected.Replace("Increase ", "").Replace("Decrease ", "")} {action} by 10%.", 
-                                  "Magic Resizer", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Magic Resizer applied to {shapes.Count} shape(s)!\nAll elements increased by 10%.", "Magic Resizer", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
                     MessageBox.Show("Please select one or more shapes to resize.", "Magic Resizer", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                
-                // Reset the selection
-                cmbMagicResizer.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error with Magic Resizer: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                cmbMagicResizer.SelectedIndex = -1;
             }
         }
 
         #endregion
 
         #endregion
+
+        /// <summary>
+        /// Loads images for presentation buttons
+        /// </summary>
+        private void LoadPresentationButtonImages()
+        {
+            try
+            {
+                // Presentation button images mapping
+                var presentationButtons = new Dictionary<Button, string>
+                {
+                    { btnNew, "icons8-file-50.png" },
+                    { btnOpen, "icons8-open-file-48.png" },
+                    { btnSave, "icons8-save-50.png" },
+                    { btnSaveAs, "icons8-save-as-50.png" },
+                    { btnPrint, "icons8-export-50.png" }
+                };
+
+                foreach (var button in presentationButtons)
+                {
+                    if (button.Key != null)
+                    {
+                        LoadImageForButton(button.Key, button.Value, "file", true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading presentation button images: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Loads images for smart elements buttons
+        /// </summary>
+        private void LoadSmartElementsButtonImages()
+        {
+            try
+            {
+                // Smart elements button images mapping
+                var smartElementsButtons = new Dictionary<Button, string>
+                {
+                    { btnChart, "icons8-chart-60.png" },
+                    { btnDiagram, "icons8-color-palette-48.png" },
+                    { btnTable, "icons8-table-50.png" },
+                    { btnMatrixTable, "icons8-matrix-50.png" },
+                    { btnStickyNote, "icons8-sticky-notes-50.png" },
+                    { btnCitation, "icons8-get-quote-30.png" },
+                    { btnStandardObjects, "icons8-object-50.png" }
+                };
+
+                foreach (var button in smartElementsButtons)
+                {
+                    if (button.Key != null)
+                    {
+                        LoadImageForButton(button.Key, button.Value, "elements", true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading smart elements button images: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Loads images for position buttons
+        /// </summary>
+        private void LoadPositionButtonImages()
+        {
+            try
+            {
+                // Position button images mapping
+                var positionButtons = new Dictionary<Button, string>
+                {
+                    { btnAlignLeft, "icons8-align-left-64.png" },
+                    { btnAlignCenter, "icons8-align-center-64.png" },
+                    { btnAlignRight, "icons8-align-right-64.png" },
+                    { btnAlignTop, "icons8-align-top-64.png" },
+                    { btnAlignBottom, "icons8-align-bottom-64.png" },
+                    { btnAlignMiddle, "icons8-align-center-64.png" },
+                    { btnDockLeft, "icons8-align-left-64.png" },
+                    { btnDockRight, "icons8-align-right-64.png" },
+                    { btnDockTop, "icons8-align-top-64.png" },
+                    { btnDockBottom, "icons8-align-bottom-64.png" },
+                    { btnDistribute, "icons8-align-justify-64.png" },
+                    { btnDistributeHorizontal, "icons8-align-center-64.png" },
+                    { btnDistributeVertical, "icons8-align-justify-64.png" },
+                    { btnMatchBoth, "icons8-enlarge-50.png" },
+                    { btnMatchHeight, "icons8-height-50.png" },
+                    { btnMatchWidth, "icons8-width-50.png" },
+                    { btnMakeVertical, "icons8-rotate-left-48.png" },
+                    { btnMakeHorizontal, "icons8-rotate-right-48.png" },
+                    { btnSwapLocations, "icons8-swap-50.png" },
+                    { btnGoldenCanon, "icons8-swap-50.png" },
+                    { btnAlignMatrix, "icons8-matrix-50.png" },
+                    { btnSliceShape, "icons8-slice-50.png" },
+                    { btnDuplicateRight, "icons8-duplicate-50.png" },
+                    { btnCenterTopLeft, "icons8-snap-to-center-48.png" },
+                    { btnSavePosition, "icons8-save-50.png" },
+                    { btnApplyPosition, "icons8-apply-64.png" }
+                };
+
+                foreach (var button in positionButtons)
+                {
+                    if (button.Key != null)
+                    {
+                        LoadImageForButton(button.Key, button.Value, "position", true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading position button images: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Loads an image from embedded resources
+        /// </summary>
+        /// <param name="resourceName">Name of the embedded resource (e.g., "icons8-file-50.png")</param>
+        /// <param name="subfolder">Subfolder within icons (e.g., "file", "wizzards", "position")</param>
+        /// <returns>Image object or null if not found</returns>
+        private Image LoadEmbeddedImage(string resourceName, string subfolder)
+        {
+            try
+            {
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                string resourcePath = $"my_addin.icons.{subfolder}.{resourceName}";
+                
+                using (var stream = assembly.GetManifestResourceStream(resourcePath))
+                {
+                    if (stream != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"✅ Loaded embedded image: {resourcePath}");
+                        return Image.FromStream(stream);
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ Embedded resource not found: {resourcePath}");
+                        
+                        // List available resources for debugging
+                        var resourceNames = assembly.GetManifestResourceNames();
+                        System.Diagnostics.Debug.WriteLine($"Available resources: {string.Join(", ", resourceNames.Where(r => r.Contains("icons")))}");
+                        
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading embedded image {resourceName}: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Loads an image for a button, trying embedded resources first, then file system
+        /// </summary>
+        /// <param name="button">Button to set image for</param>
+        /// <param name="imageName">Name of the image file</param>
+        /// <param name="subfolder">Subfolder (file, wizzards, position, elements)</param>
+        /// <param name="useEmbedded">Whether to try embedded resources first</param>
+        private void LoadImageForButton(Button button, string imageName, string subfolder = "", bool useEmbedded = false)
+        {
+            try
+            {
+                Image loadedImage = null;
+
+                if (useEmbedded)
+                {
+                    // Try embedded resource first
+                    loadedImage = LoadEmbeddedImage(imageName, subfolder);
+                }
+
+                if (loadedImage == null)
+                {
+                    // Fallback to file system
+                    string imagePath = FindImagePath(imageName, subfolder);
+                    if (!string.IsNullOrEmpty(imagePath))
+                    {
+                        loadedImage = Image.FromFile(imagePath);
+                        System.Diagnostics.Debug.WriteLine($"✅ Loaded image from file: {imagePath}");
+                    }
+                }
+
+                if (loadedImage != null)
+                {
+                    button.BackgroundImage = loadedImage;
+                    button.BackgroundImageLayout = ImageLayout.Zoom;
+                }
+                else
+                {
+                    button.BackgroundImage = null;
+                    System.Diagnostics.Debug.WriteLine($"❌ Image not found: {imageName} in {subfolder}");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading image for button {button.Name}: {ex.Message}");
+                button.BackgroundImage = null;
+            }
+        }
     }
 }

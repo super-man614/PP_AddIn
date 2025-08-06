@@ -13,24 +13,29 @@ namespace my_addin
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine("Creating TaskPaneControl...");
                 // Create the user control for the task pane
                 _taskPaneControl = new TaskPaneControl();
+                System.Diagnostics.Debug.WriteLine("TaskPaneControl created successfully");
                 
+                System.Diagnostics.Debug.WriteLine("Adding task pane to collection...");
                 // Create the custom task pane
                 _taskPane = Globals.ThisAddIn.CustomTaskPanes.Add(_taskPaneControl, "PowerPoint Tools");
+                System.Diagnostics.Debug.WriteLine("Task pane added to collection");
                 
                 // Set task pane properties
                 _taskPane.Width = 320;
                 _taskPane.DockPosition = Microsoft.Office.Core.MsoCTPDockPosition.msoCTPDockPositionRight;
-                _taskPane.Visible = false; // Initially hidden
+                _taskPane.Visible = true; // Show on startup
+                System.Diagnostics.Debug.WriteLine($"Task pane properties set - Width: {_taskPane.Width}, Dock: {_taskPane.DockPosition}");
                 
                 // Handle visibility events
                 _taskPane.VisibleChanged += TaskPane_VisibleChanged;
+                System.Diagnostics.Debug.WriteLine("Task pane event handlers attached");
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show($"Error creating task pane: {ex.Message}", 
-                    "Task Pane Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Error creating task pane: {ex.Message}");
             }
         }
 

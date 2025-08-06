@@ -18,23 +18,16 @@ namespace my_addin
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine("ThisAddIn_Startup called");
-                
-                // Add-in is loading - debug message removed for production
+                System.Diagnostics.Debug.WriteLine("=== ADD-IN STARTUP BEGINNING ===");
                 
                 // Initialize the custom task pane
                 InitializeTaskPane();
                 
-                // Test ribbon registration
-                TestRibbonRegistration();
-                
                 // Ribbon will be automatically loaded via IRibbonExtensibility interface
-                System.Diagnostics.Debug.WriteLine("Task pane initialized, ribbon should load automatically");
+                System.Diagnostics.Debug.WriteLine("=== ADD-IN STARTUP COMPLETED ===");
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show($"Error during startup: {ex.Message}", 
-                    "Startup Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                 System.Diagnostics.Debug.WriteLine($"Startup error: {ex}");
             }
         }
@@ -58,16 +51,18 @@ namespace my_addin
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine("Creating CustomTaskPane...");
                 _customTaskPane = new CustomTaskPane();
                 
+                System.Diagnostics.Debug.WriteLine("Task pane created, making it visible...");
                 // Show the task pane on startup
                 _customTaskPane.Show();
+                
+                System.Diagnostics.Debug.WriteLine($"Task pane visibility: {_customTaskPane.Visible}");
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show($"Error initializing task pane: {ex.Message}", 
-                    "Initialization Error", System.Windows.Forms.MessageBoxButtons.OK, 
-                    System.Windows.Forms.MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Error initializing task pane: {ex.Message}");
             }
         }
 
@@ -121,28 +116,7 @@ namespace my_addin
             get { return _customTaskPane; }
         }
         
-        /// <summary>
-        /// Test method to verify ribbon registration
-        /// </summary>
-        public void TestRibbonRegistration()
-        {
-            try
-            {
-                // Test if ribbon interface is available
-                var ribbon = new Ribbon();
-                string customUI = ribbon.GetCustomUI("Microsoft.PowerPoint");
-                System.Diagnostics.Debug.WriteLine($"Ribbon test - CustomUI available: {!string.IsNullOrEmpty(customUI)}");
-                if (!string.IsNullOrEmpty(customUI))
-                {
-                    System.Diagnostics.Debug.WriteLine($"CustomUI length: {customUI.Length}");
-                    System.Diagnostics.Debug.WriteLine($"CustomUI preview: {customUI.Substring(0, Math.Min(200, customUI.Length))}...");
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Ribbon test failed: {ex.Message}");
-            }
-        }
+
 
         #region VSTO generated code
 
