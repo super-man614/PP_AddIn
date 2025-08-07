@@ -2511,37 +2511,106 @@ namespace my_addin
         {
             try
             {
-                // Calculate optimal position and size for matrix
+                CreateCustomMatrix(slide, rows, columns);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error creating matrix table: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public void CreateCustomMatrix(PowerPoint.Slide slide, int rows, int columns)
+        {
+            try
+            {
+                // Slide size
                 float slideWidth = slide.Master.Width;
                 float slideHeight = slide.Master.Height;
-                
-                // Matrix dimensions (make it more square and centered)
-                float tableSize = Math.Min(slideWidth * 0.75f, slideHeight * 0.7f);
-                float tableWidth = tableSize;
-                float tableHeight = tableSize;
-                
-                // Center the matrix table
-                float left = (slideWidth - tableWidth) / 2;
-                float top = (slideHeight - tableHeight) / 2;
-                
-                // Create native PowerPoint table
-                var tableShape = slide.Shapes.AddTable(rows, columns, left, top, tableWidth, tableHeight);
-                var table = tableShape.Table;
-                
-                                        // Apply uniform styling (ignoring header setting for consistent appearance)
-                        ApplyMatrixTableStyle(table, false);
-                
-                // Set default matrix content
-                SetMatrixDefaultContent(table, hasHeader);
-                
-                // Focus on the first editable cell
-                int startRow = hasHeader ? 2 : 1;
-                int startCol = hasHeader ? 2 : 1;
-                if (rows >= startRow && columns >= startCol)
+
+                // Define consistent spacing between cells
+                float cellSpacing = 8f;
+
+                // Grid size with margin
+                float availableWidth = slideWidth * 0.85f;
+                float availableHeight = slideHeight * 0.75f;
+
+                // Total spacing needed
+                float totalHorizontalSpacing = (columns - 1) * cellSpacing;
+                float totalVerticalSpacing = (rows - 1) * cellSpacing;
+
+                // Available space for actual cells
+                float cellAreaWidth = availableWidth - totalHorizontalSpacing;
+                float cellAreaHeight = availableHeight - totalVerticalSpacing;
+
+                // Cell size
+                float maxCellWidth = cellAreaWidth / columns;
+                float maxCellHeight = cellAreaHeight / rows;
+                float cellSize = Math.Min(maxCellWidth, maxCellHeight);
+                cellSize = Math.Max(cellSize, 30f); // Enforce minimum readable size
+
+                // Actual grid size
+                float actualGridWidth = (columns * cellSize) + totalHorizontalSpacing;
+                float actualGridHeight = (rows * cellSize) + totalVerticalSpacing;
+
+                // Grid start position
+                float startLeft = (slideWidth - actualGridWidth) / 2;
+                float startTop = (slideHeight - actualGridHeight) / 2;
+
+                // Track all cells in row-major order for later selection
+                List<PowerPoint.Shape> allCells = new List<PowerPoint.Shape>();
+
+                for (int row = 0; row < rows; row++)
                 {
-                    table.Cell(startRow, startCol).Shape.TextFrame.TextRange.Select();
+                    for (int col = 0; col < columns; col++)
+                    {
+                        float left = startLeft + (col * (cellSize + cellSpacing));
+                        float top = startTop + (row * (cellSize + cellSpacing));
+
+                        // Create individual shape (text-enabled rectangle)
+                        PowerPoint.Shape cell = slide.Shapes.AddShape(
+                            Type: Office.MsoAutoShapeType.msoShapeRectangle,
+                            Left: left,
+                            Top: top,
+                            Width: cellSize,
+                            Height: cellSize);
+
+                        // Default text
+                        cell.TextFrame.TextRange.Text = "XXXX";
+                        cell.TextFrame.TextRange.Font.Size = Math.Max(8f, cellSize / 4f);
+                        cell.TextFrame.TextRange.Font.Color.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Black);
+                        cell.TextFrame.TextRange.Font.Name = "Segoe UI";
+
+                        // Align text
+                        cell.TextFrame.HorizontalAnchor = Office.MsoHorizontalAnchor.msoAnchorCenter;
+                        cell.TextFrame.VerticalAnchor = Office.MsoVerticalAnchor.msoAnchorMiddle;
+                        cell.TextFrame.TextRange.ParagraphFormat.Alignment = PowerPoint.PpParagraphAlignment.ppAlignCenter;
+
+                        // Remove text margins for tight layout
+                        cell.TextFrame.MarginBottom = 0f;
+                        cell.TextFrame.MarginTop = 0f;
+                        cell.TextFrame.MarginLeft = 0f;
+                        cell.TextFrame.MarginRight = 0f;
+
+                        // Border
+                        cell.Line.Visible = Office.MsoTriState.msoTrue;
+                        cell.Line.Weight = 1.0f;
+                        cell.Line.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Gray);
+
+                        // Background
+                        cell.Fill.Visible = Office.MsoTriState.msoTrue;
+                        cell.Fill.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.White);
+
+                        // Track cell
+                        allCells.Add(cell);
+                    }
                 }
+
+                // Select all shapes in row-major order (important for Excel paste)
+                string[] shapeNames = allCells.Select(s => s.Name).ToArray();
+                PowerPoint.ShapeRange shapeRange = slide.Shapes.Range(shapeNames);
+                shapeRange.Select();
             }
+
             catch (Exception ex)
             {
                 throw new Exception($"Failed to create matrix table: {ex.Message}");
@@ -3344,22 +3413,12 @@ namespace my_addin
                             shapes[i].Height = referenceHeight;
                             shapes[i].Width = referenceWidth;
                         }
-
-                        MessageBox.Show($"Matched height and width to the last selected shape!", "Match Dimensions", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                    else
-                    {
-                        MessageBox.Show("Please select at least two shapes to match dimensions.", "Match Dimensions", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Please select shapes to match dimensions.", "Match Dimensions", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error matching dimensions: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Silently handle errors to avoid popup dialogs
             }
         }
 
@@ -3382,22 +3441,12 @@ namespace my_addin
                         {
                             shapes[i].Height = referenceHeight;
                         }
-
-                        MessageBox.Show($"Matched height to the last selected shape!", "Match Height", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                    else
-                    {
-                        MessageBox.Show("Please select at least two shapes to match height.", "Match Height", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Please select shapes to match height.", "Match Height", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error matching height: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Silently handle errors to avoid popup dialogs
             }
         }
 
@@ -3420,22 +3469,12 @@ namespace my_addin
                         {
                             shapes[i].Width = referenceWidth;
                         }
-
-                        MessageBox.Show($"Matched width to the last selected shape!", "Match Width", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                    else
-                    {
-                        MessageBox.Show("Please select at least two shapes to match width.", "Match Width", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Please select shapes to match width.", "Match Width", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error matching width: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Silently handle errors to avoid popup dialogs
             }
         }
 
@@ -3520,22 +3559,12 @@ namespace my_addin
                         // Move shape 2's center to shape 1's center
                         shapes[2].Left = shape1CenterX - shapes[2].Width / 2f;
                         shapes[2].Top = shape1CenterY - shapes[2].Height / 2f;
-
-                        MessageBox.Show("Swapped positions of the two selected shapes!", "Swap Locations", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                    else
-                    {
-                        MessageBox.Show("Please select exactly two shapes to swap their locations.", "Swap Locations", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Please select two shapes to swap their locations.", "Swap Locations", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error swapping shape locations: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Silently handle errors to avoid popup dialogs
             }
         }
 
@@ -4367,17 +4396,12 @@ namespace my_addin
                     if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
                     {
                         app.ActiveWindow.Selection.ShapeRange.Fill.ForeColor.RGB = ColorTranslator.ToOle(colorDialog.Color);
-                        MessageBox.Show("Fill color applied!", "Color", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Please select an object to change its fill color.", "Color", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error changing fill color: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Silently handle errors to avoid popup dialogs
             }
         }
 
@@ -4392,17 +4416,12 @@ namespace my_addin
                     if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionText)
                     {
                         app.ActiveWindow.Selection.TextRange.Font.Color.RGB = ColorTranslator.ToOle(colorDialog.Color);
-                        MessageBox.Show("Text color applied!", "Color", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Please select text to change its color.", "Color", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error changing text color: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Silently handle errors to avoid popup dialogs
             }
         }
 
@@ -4417,17 +4436,12 @@ namespace my_addin
                     if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
                     {
                         app.ActiveWindow.Selection.ShapeRange.Line.ForeColor.RGB = ColorTranslator.ToOle(colorDialog.Color);
-                        MessageBox.Show("Outline color applied!", "Color", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Please select an object to change its outline color.", "Color", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
                     }
                 }
-                catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                MessageBox.Show($"Error changing outline color: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Silently handle errors to avoid popup dialogs
             }
         }
 

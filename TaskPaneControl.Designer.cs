@@ -1565,7 +1565,7 @@ namespace my_addin
             this.btnAlignProcessChain.Name = "btnAlignProcessChain";
             this.btnAlignProcessChain.Size = new System.Drawing.Size(20, 20);
             this.btnAlignProcessChain.TabIndex = 1;
-            this.btnAlignProcessChain.Text = "📐";
+            // this.btnAlignProcessChain.Text = "📐";
             this.btnAlignProcessChain.UseVisualStyleBackColor = false;
             this.btnAlignProcessChain.Click += new System.EventHandler(this.BtnAlignProcessChain_Click);
             // 
