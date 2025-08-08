@@ -1,20 +1,21 @@
 using System;
 using Microsoft.Office.Tools;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
+using my_addin.Core;
 
 namespace my_addin
 {
-    public class CustomTaskPane
+    public class ColorPaletteTaskPane
     {
         private Microsoft.Office.Tools.CustomTaskPane _taskPane;
-        private TaskPaneControl _taskPaneControl;
+        private ColorPaletteControl _colorPaletteControl;
         private bool _isDisposed = false;
 
-        public CustomTaskPane()
+        public ColorPaletteTaskPane()
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine("Creating TaskPaneControl...");
+                System.Diagnostics.Debug.WriteLine("Creating ColorPaletteControl...");
                 
                 // Validate that ThisAddIn is available
                 if (Globals.ThisAddIn == null)
@@ -27,29 +28,29 @@ namespace my_addin
                     throw new InvalidOperationException("CustomTaskPanes collection is null");
                 }
                 
-                // Create the user control for the task pane
-                _taskPaneControl = new TaskPaneControl();
-                System.Diagnostics.Debug.WriteLine("TaskPaneControl created successfully");
+                // Create the user control for the color palette
+                _colorPaletteControl = new ColorPaletteControl();
+                System.Diagnostics.Debug.WriteLine("ColorPaletteControl created successfully");
                 
-                System.Diagnostics.Debug.WriteLine("Adding task pane to collection...");
+                System.Diagnostics.Debug.WriteLine("Adding Color Palette task pane to collection...");
                 // Create the custom task pane
-                _taskPane = Globals.ThisAddIn.CustomTaskPanes.Add(_taskPaneControl, "PowerPoint Tools");
-                System.Diagnostics.Debug.WriteLine("Task pane added to collection");
+                _taskPane = Globals.ThisAddIn.CustomTaskPanes.Add(_colorPaletteControl, "Color Palette");
+                System.Diagnostics.Debug.WriteLine("Color Palette task pane added to collection");
                 
                 // Set task pane properties
-                _taskPane.Width = 320;
+                _taskPane.Width = 140;
                 _taskPane.DockPosition = Microsoft.Office.Core.MsoCTPDockPosition.msoCTPDockPositionRight;
-                _taskPane.Visible = false; // Start hidden, show only when clicked
-                System.Diagnostics.Debug.WriteLine($"Task pane properties set - Width: {_taskPane.Width}, Dock: {_taskPane.DockPosition}, Visible: {_taskPane.Visible}");
+                _taskPane.Visible = true; // Auto-show Color Palette on startup
+                System.Diagnostics.Debug.WriteLine($"Color Palette properties set - Width: {_taskPane.Width}, Dock: {_taskPane.DockPosition}, Visible: {_taskPane.Visible}");
                 
                 // Handle visibility events
                 _taskPane.VisibleChanged += TaskPane_VisibleChanged;
-                System.Diagnostics.Debug.WriteLine("Task pane event handlers attached");
-                System.Diagnostics.Debug.WriteLine("CustomTaskPane creation completed successfully");
+                System.Diagnostics.Debug.WriteLine("Color Palette event handlers attached");
+                System.Diagnostics.Debug.WriteLine("ColorPaletteTaskPane creation completed successfully");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error creating task pane: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error creating Color Palette task pane: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
                 throw; // Re-throw to let the caller handle it
             }
@@ -111,21 +112,22 @@ namespace my_addin
         /// </summary>
         private void TaskPane_VisibleChanged(object sender, EventArgs e)
         {
-            // You can add custom logic here when the task pane is shown or hidden
-            // For example, refresh data when the pane becomes visible
-            if (_taskPane.Visible && _taskPaneControl != null)
+            // Keep Color Palette at left-most among right-docked panes
+            try
             {
-                // Refresh slide list when task pane becomes visible
-                // This is handled in the TaskPaneControl itself
+                Core.PaneOrdering.EnsureColorPaletteLeftMost(this);
             }
+            catch { }
+
+            System.Diagnostics.Debug.WriteLine($"Color Palette visibility changed: {_taskPane.Visible}");
         }
 
         /// <summary>
         /// Gets the underlying task pane control
         /// </summary>
-        public TaskPaneControl TaskPaneControl
+        public ColorPaletteControl ColorPaletteControl
         {
-            get { return _taskPaneControl; }
+            get { return _colorPaletteControl; }
         }
 
         /// <summary>
@@ -172,10 +174,10 @@ namespace my_addin
                 _taskPane = null;
             }
             
-            if (_taskPaneControl != null)
+            if (_colorPaletteControl != null)
             {
-                _taskPaneControl.Dispose();
-                _taskPaneControl = null;
+                _colorPaletteControl.Dispose();
+                _colorPaletteControl = null;
             }
 
             _isDisposed = true;

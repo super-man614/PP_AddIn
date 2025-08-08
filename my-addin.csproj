@@ -231,6 +231,7 @@
     <EmbeddedResource Include="TaskPaneControl.resx">
       <DependentUpon>TaskPaneControl.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="my-addin_1_TemporaryKey.pfx" />
     <None Include="my-addin_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -257,6 +258,12 @@
     </Compile>
     <Compile Include="CustomTaskPane.cs">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ColorPaletteTaskPane.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ColorPaletteControl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Ribbon.cs">
       <SubType>Code</SubType>
@@ -313,10 +320,19 @@
     <Compile Include="Services\ShapeService.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\ServiceContainer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <EmbeddedResource Include="Ribbon.xml" />
+    	<Compile Include="Core\ServiceContainer.cs">
+      	<SubType>Code</SubType>
+      	</Compile>
+    	<Compile Include="Core\PaneOrdering.cs">
+      	<SubType>Code</SubType>
+    	</Compile>
+        <Compile Include="Core\ColorPalette.cs">
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Include="ColorPaletteEditorDialog.cs">
+          <SubType>Form</SubType>
+        </Compile>
+      	<EmbeddedResource Include="Ribbon.xml" />
     <!-- Icon files are loaded from the output directory at runtime -->
     <!-- Removed icon content references to prevent build errors -->
     <AppDesigner Include="Properties\" />
@@ -329,10 +345,13 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>my-addin_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>my-addin_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>F59992E15A7294B56CD4ADC1C35D582406FF17FD</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>81F21B3DFB7FED35A8F3F7D39BDA987CCB58B15A</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -346,7 +365,7 @@
       <FlavorProperties GUID="{BAA0C2D2-18E2-41B9-852F-F413020CAA33}">
         <ProjectProperties HostName="PowerPoint" HostPackage="{29A7B9D7-A7F1-4328-8EF0-6B2D1A56B2C1}" OfficeVersion="15.0" VstxVersion="4.0" ApplicationType="PowerPoint" Language="cs" TemplatesPath="" DebugInfoExeName="#Software\Microsoft\Office\16.0\PowerPoint\InstallRoot\Path#powerpnt.exe" AddItemTemplatesGuid="{51063C3A-E220-4D12-8922-BDA915ACD783}" />
         <Host Name="PowerPoint" GeneratedCodeNamespace="my_addin" PublishedHash="69C324AB27932AA2FBF2B7EA72250886FF164DE6" IconIndex="0">
-          <HostItem Name="ThisAddIn" Code="ThisAddIn.cs" CanonicalName="AddIn" CanActivate="false" IconIndex="1" Blueprint="ThisAddIn.Designer.xml" GeneratedCode="ThisAddIn.Designer.cs" PublishedHash="DFB083248A3D2C961D413DFED101E1A87BB8470B" />
+          <HostItem Name="ThisAddIn" Code="ThisAddIn.cs" CanonicalName="AddIn" PublishedHash="DFB083248A3D2C961D413DFED101E1A87BB8470B" CanActivate="false" IconIndex="1" Blueprint="ThisAddIn.Designer.xml" GeneratedCode="ThisAddIn.Designer.cs" />
         </Host>
       </FlavorProperties>
     </VisualStudio>

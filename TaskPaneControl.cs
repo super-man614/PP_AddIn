@@ -3416,7 +3416,7 @@ namespace my_addin
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Silently handle errors to avoid popup dialogs
             }
@@ -3444,7 +3444,7 @@ namespace my_addin
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Silently handle errors to avoid popup dialogs
             }
@@ -3472,7 +3472,7 @@ namespace my_addin
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Silently handle errors to avoid popup dialogs
             }
@@ -3562,7 +3562,7 @@ namespace my_addin
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Silently handle errors to avoid popup dialogs
             }
@@ -4399,7 +4399,7 @@ namespace my_addin
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Silently handle errors to avoid popup dialogs
             }
@@ -4419,7 +4419,7 @@ namespace my_addin
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Silently handle errors to avoid popup dialogs
             }
@@ -4439,7 +4439,7 @@ namespace my_addin
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Silently handle errors to avoid popup dialogs
             }
