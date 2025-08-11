@@ -94,6 +94,7 @@ namespace my_addin
             this.btnCenterTopLeft = new System.Windows.Forms.Button();
             this.btnSavePosition = new System.Windows.Forms.Button();
             this.btnApplyPosition = new System.Windows.Forms.Button();
+            this.btnRemoveMarginObjects = new System.Windows.Forms.Button();
             this.divider4 = new System.Windows.Forms.Panel();
             this.sizePanel = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSizeSection = new System.Windows.Forms.Label();
@@ -829,6 +830,7 @@ namespace my_addin
             this.positionButtonsPanel.Controls.Add(this.btnCenterTopLeft);
             this.positionButtonsPanel.Controls.Add(this.btnSavePosition);
             this.positionButtonsPanel.Controls.Add(this.btnApplyPosition);
+            this.positionButtonsPanel.Controls.Add(this.btnRemoveMarginObjects);
             this.positionButtonsPanel.Location = new System.Drawing.Point(0, 13);
             this.positionButtonsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.positionButtonsPanel.Name = "positionButtonsPanel";
@@ -1283,6 +1285,21 @@ namespace my_addin
              this.btnApplyPosition.BackgroundImageLayout = ImageLayout.Stretch;
              this.btnApplyPosition.UseVisualStyleBackColor = false;
              this.btnApplyPosition.Click += new System.EventHandler(this.BtnApplyPosition_Click);
+             // btnRemoveMarginObjects
+             this.btnRemoveMarginObjects.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+             this.btnRemoveMarginObjects.FlatAppearance.BorderSize = 0;
+             this.btnRemoveMarginObjects.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+             this.btnRemoveMarginObjects.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+             this.btnRemoveMarginObjects.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+             this.btnRemoveMarginObjects.Font = new System.Drawing.Font("Segoe UI Emoji", 8F);
+             this.btnRemoveMarginObjects.Location = new System.Drawing.Point(575, 0);
+             this.btnRemoveMarginObjects.Margin = new System.Windows.Forms.Padding(1);
+             this.btnRemoveMarginObjects.Name = "btnRemoveMarginObjects";
+             this.btnRemoveMarginObjects.Size = new System.Drawing.Size(20, 20);
+             this.btnRemoveMarginObjects.TabIndex = 27;
+             this.btnRemoveMarginObjects.Text = "🗑️";
+             this.btnRemoveMarginObjects.UseVisualStyleBackColor = false;
+             this.btnRemoveMarginObjects.Click += new System.EventHandler(this.BtnRemoveMarginObjects_Click);
             // 
             // divider4
             // 
@@ -1785,7 +1802,7 @@ namespace my_addin
             this.textButtonsPanel.Controls.Add(this.btnUnderline);
             this.textButtonsPanel.Controls.Add(this.btnBullets);
             this.textButtonsPanel.Controls.Add(this.btnWrapText);
-            this.textButtonsPanel.Controls.Add(this.btnNoWrapText);
+            // this.textButtonsPanel.Controls.Remove(this.btnNoWrapText);
             this.textButtonsPanel.Location = new System.Drawing.Point(0, 13);
             this.textButtonsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.textButtonsPanel.Name = "textButtonsPanel";
@@ -1894,7 +1911,7 @@ namespace my_addin
             this.btnNoWrapText.TabIndex = 6;
             this.btnNoWrapText.Text = "📄";
             this.btnNoWrapText.UseVisualStyleBackColor = false;
-            this.btnNoWrapText.Click += new System.EventHandler(this.BtnNoWrapText_Click);
+            // this.btnNoWrapText.Visible = false;
             // 
             // divider8
             // 
@@ -2192,6 +2209,7 @@ namespace my_addin
         private System.Windows.Forms.Button btnCenterTopLeft;
         private System.Windows.Forms.Button btnSavePosition;
         private System.Windows.Forms.Button btnApplyPosition;
+        private System.Windows.Forms.Button btnRemoveMarginObjects;
         
         // Size section
         private System.Windows.Forms.FlowLayoutPanel sizePanel;

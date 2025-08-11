@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using my_addin.Core;
 
@@ -8,13 +9,15 @@ namespace my_addin
 {
     public class ColorPaletteEditorDialog : Form
     {
-        // Left list: custom panel with rows (delete, drag, swatch)
-        private FlowLayoutPanel leftList;
+        // Left list: custom owner-drawn, draggable list
+        private ReorderableColorList leftList;
         // Right: picker and numeric inputs
         private Panel rightPanel;
         private Panel colorPreview;
         private TextBox txtHex;
         private TextBox txtH, txtS, txtL, txtR, txtG, txtB;
+        private HueSlider hueSlider;  // advanced hue slider
+        private ColorCanvas colorCanvas; // 2D saturation/lightness canvas
         private Button btnAdd;
         private Button btnResetTemplate;
         private Button btnOK, btnCancel;
@@ -40,50 +43,61 @@ namespace my_addin
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false; this.MinimizeBox = false;
 
-            leftList = new FlowLayoutPanel { Location = new Point(10, 10), Size = new Size(240, 430), AutoScroll = true, FlowDirection = FlowDirection.TopDown, WrapContents = false, BorderStyle = BorderStyle.FixedSingle, Padding = new Padding(0) };
+            leftList = new ReorderableColorList { Location = new Point(10, 10), Size = new Size(240, 430) };
+            leftList.DeleteRequested += (idx) => { if (idx >= 0 && idx < Palette.Colors.Count) { Palette.Colors.RemoveAt(idx); RebuildLeftList(); if (Palette.Colors.Count > 0) SelectIndex(Math.Min(idx, Palette.Colors.Count - 1)); } };
+            leftList.ReorderRequested += (from, to) => { if (from == to) return; var c = Palette.Colors[from]; Palette.Colors.RemoveAt(from); if (to < 0) to = 0; if (to > Palette.Colors.Count) to = Palette.Colors.Count; Palette.Colors.Insert(to, c); RebuildLeftList(); SelectIndex(to); };
+            leftList.SelectedIndexChanged += (s, e) => { if (leftList.SelectedIndex >= 0) SelectIndex(leftList.SelectedIndex); };
             Controls.Add(leftList);
 
             rightPanel = new Panel { Location = new Point(260, 10), Size = new Size(340, 430), BorderStyle = BorderStyle.None };
             Controls.Add(rightPanel);
 
-            // Top row: preview swatch + hex entry (color pick area at top)
-            colorPreview = new Panel { Location = new Point(0, 0), Size = new Size(38, 24), BorderStyle = BorderStyle.FixedSingle };
-            txtHex = new TextBox { Location = new Point(46, 0), Width = 100 };
+            // Color canvas (top) + hue slider below
+            colorCanvas = new ColorCanvas { Location = new Point(0, 0), Size = new Size(320, 200) };
+            colorCanvas.SelectionChanged += (s, e) => { if (!updatingControls) { sVal = colorCanvas.Saturation; lVal = colorCanvas.Lightness; UpdateFromHslFields(); } };
+            rightPanel.Controls.Add(colorCanvas);
+            hueSlider = new HueSlider { Location = new Point(0, 205), Size = new Size(320, 24) };
+            hueSlider.ValueChanged += (s, e) => { if (!updatingControls) { hVal = hueSlider.Value; UpdateFromHslFields(); } };
+            rightPanel.Controls.Add(hueSlider);
+
+            // Hex + preview row with margin under picker area
+            colorPreview = new Panel { Location = new Point(0, 236), Size = new Size(38, 24), BorderStyle = BorderStyle.FixedSingle };
+            txtHex = new TextBox { Location = new Point(46, 236), Width = 100 };
             txtHex.TextChanged += (s, e) => { if (!updatingControls) UpdateFromHex(); };
             rightPanel.Controls.Add(colorPreview);
             rightPanel.Controls.Add(txtHex);
 
             // HSL and RGB as three rows of text inputs: H/R, S/G, L/B
-            var hr = new TableLayoutPanel { Location = new Point(0, 36), Size = new Size(330, 28), ColumnCount = 4, RowCount = 1 };
+            var hr = new TableLayoutPanel { Location = new Point(0, 268), Size = new Size(330, 28), ColumnCount = 4, RowCount = 1 };            
             hr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20));
             hr.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
             hr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20));
             hr.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
-            txtH = new TextBox { Width = 120 }; txtR = new TextBox { Width = 120 };
+            txtH = new TextBox { Width = 80, TextAlign = HorizontalAlignment.Center }; txtR = new TextBox { Width = 80, TextAlign = HorizontalAlignment.Center };
             txtH.TextChanged += (s, e) => { if (!updatingControls && int.TryParse(txtH.Text, out var v)) { hVal = Clamp(v, 0, 359); UpdateFromHslFields(); } };
             txtR.TextChanged += (s, e) => { if (!updatingControls && int.TryParse(txtR.Text, out var v)) { rVal = Clamp(v, 0, 255); UpdateFromRgbFields(); } };
             hr.Controls.Add(new Label { Text = "H", AutoSize = true }, 0, 0); hr.Controls.Add(txtH, 1, 0);
             hr.Controls.Add(new Label { Text = "R", AutoSize = true }, 2, 0); hr.Controls.Add(txtR, 3, 0);
             rightPanel.Controls.Add(hr);
 
-            var sg = new TableLayoutPanel { Location = new Point(0, 68), Size = new Size(330, 28), ColumnCount = 4, RowCount = 1 };
+            var sg = new TableLayoutPanel { Location = new Point(0, 300), Size = new Size(330, 28), ColumnCount = 4, RowCount = 1 };
             sg.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20));
             sg.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
             sg.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20));
             sg.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
-            txtS = new TextBox { Width = 120 }; txtG = new TextBox { Width = 120 };
+            txtS = new TextBox { Width = 80, TextAlign = HorizontalAlignment.Center }; txtG = new TextBox { Width = 80, TextAlign = HorizontalAlignment.Center };
             txtS.TextChanged += (s, e) => { if (!updatingControls && int.TryParse(txtS.Text, out var v)) { sVal = Clamp(v, 0, 100); UpdateFromHslFields(); } };
             txtG.TextChanged += (s, e) => { if (!updatingControls && int.TryParse(txtG.Text, out var v)) { gVal = Clamp(v, 0, 255); UpdateFromRgbFields(); } };
             sg.Controls.Add(new Label { Text = "S", AutoSize = true }, 0, 0); sg.Controls.Add(txtS, 1, 0);
             sg.Controls.Add(new Label { Text = "G", AutoSize = true }, 2, 0); sg.Controls.Add(txtG, 3, 0);
             rightPanel.Controls.Add(sg);
 
-            var lb = new TableLayoutPanel { Location = new Point(0, 100), Size = new Size(330, 28), ColumnCount = 4, RowCount = 1 };
+            var lb = new TableLayoutPanel { Location = new Point(0, 332), Size = new Size(330, 28), ColumnCount = 4, RowCount = 1 };
             lb.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20));
             lb.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
             lb.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20));
             lb.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
-            txtL = new TextBox { Width = 120 }; txtB = new TextBox { Width = 120 };
+            txtL = new TextBox { Width = 80, TextAlign = HorizontalAlignment.Center }; txtB = new TextBox { Width = 80, TextAlign = HorizontalAlignment.Center };
             txtL.TextChanged += (s, e) => { if (!updatingControls && int.TryParse(txtL.Text, out var v)) { lVal = Clamp(v, 0, 100); UpdateFromHslFields(); } };
             txtB.TextChanged += (s, e) => { if (!updatingControls && int.TryParse(txtB.Text, out var v)) { bVal = Clamp(v, 0, 255); UpdateFromRgbFields(); } };
             lb.Controls.Add(new Label { Text = "L", AutoSize = true }, 0, 0); lb.Controls.Add(txtL, 1, 0);
@@ -91,9 +105,9 @@ namespace my_addin
             rightPanel.Controls.Add(lb);
 
             // Add + reset template
-            btnAdd = new Button { Text = "Add", Location = new Point(0, 140), Width = 80 };
+            btnAdd = new Button { Text = "Add", Location = new Point(0, 364), Width = 80 };
             btnAdd.Click += (s, e) => AddColor();
-            btnResetTemplate = new Button { Text = "Add from template", Location = new Point(90, 140), Width = 140 };
+            btnResetTemplate = new Button { Text = "Add from template", Location = new Point(90, 364), Width = 140 };
             btnResetTemplate.Click += (s, e) => { this.Palette = ColorPaletteDefinition.Default(); RebuildLeftList(); if (Palette.Colors.Count > 0) SelectIndex(0); };
             rightPanel.Controls.Add(btnAdd);
             rightPanel.Controls.Add(btnResetTemplate);
@@ -106,45 +120,146 @@ namespace my_addin
             Controls.Add(btnCancel);
         }
 
+        // Advanced hue slider (rounded rainbow) control
+        private class HueSlider : Control
+        {
+            private int value; // 0..359
+            public int Value
+            {
+                get => value;
+                set { int v = Math.Max(0, Math.Min(359, value)); if (v != this.value) { this.value = v; Invalidate(); ValueChanged?.Invoke(this, EventArgs.Empty); } }
+            }
+            public event EventHandler ValueChanged;
+
+            public HueSlider()
+            {
+                SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
+                this.Height = 24; this.Width = 320;
+            }
+
+            protected override void OnMouseDown(MouseEventArgs e) { base.OnMouseDown(e); UpdateFromMouse(e); }
+            protected override void OnMouseMove(MouseEventArgs e) { base.OnMouseMove(e); if (e.Button == MouseButtons.Left) UpdateFromMouse(e); }
+
+            private void UpdateFromMouse(MouseEventArgs e)
+            {
+                int x = Math.Max(0, Math.Min(Width - 1, e.X));
+                int v = (int)Math.Round((x / (double)(Width - 1)) * 359);
+                Value = v;
+            }
+
+            protected override void OnPaint(PaintEventArgs e)
+            {
+                base.OnPaint(e);
+                var g = e.Graphics; g.SmoothingMode = SmoothingMode.AntiAlias;
+                var rect = new Rectangle(0, 0, Width - 1, Height - 1);
+
+                using (var gp = new GraphicsPath())
+                {
+                    int r = rect.Height; // full rounded ends
+                    gp.AddArc(rect.X, rect.Y, r, r, 90, 180);
+                    gp.AddArc(rect.Right - r, rect.Y, r, r, 270, 180);
+                    gp.CloseFigure();
+
+                    using (var bmp = new Bitmap(rect.Width, rect.Height))
+                    {
+                        using (var gBmp = Graphics.FromImage(bmp))
+                        {
+                            for (int x = 0; x < bmp.Width; x++)
+                            {
+                                int h = (int)Math.Round((x / (double)(bmp.Width - 1)) * 359);
+                                var c = HslToColor(h, 100, 50);
+                                using (var pen = new Pen(c))
+                                {
+                                    gBmp.DrawLine(pen, x, 0, x, bmp.Height);
+                                }
+                            }
+                        }
+                        g.SetClip(gp);
+                        g.DrawImageUnscaled(bmp, rect.X, rect.Y);
+                        g.ResetClip();
+                    }
+
+                    using (var penShadow = new Pen(Color.FromArgb(60, 0, 0, 0))) g.DrawPath(penShadow, gp);
+                    using (var penBorder = new Pen(Color.FromArgb(160, 160, 160))) g.DrawPath(penBorder, gp);
+                }
+
+                int cx = (int)Math.Round((value / 359.0) * (rect.Width - 1)) + rect.X;
+                int radius = rect.Height + 6;
+                var thumbRect = new Rectangle(cx - radius / 2, rect.Y - (radius - rect.Height) / 2, radius, radius);
+                using (var shadow = new SolidBrush(Color.FromArgb(60, 0, 0, 0))) g.FillEllipse(shadow, thumbRect.X + 1, thumbRect.Y + 1, thumbRect.Width, thumbRect.Height);
+                using (var br = new SolidBrush(Color.White)) g.FillEllipse(br, thumbRect);
+                using (var pen = new Pen(Color.FromArgb(140, 140, 140))) g.DrawEllipse(pen, thumbRect);
+            }
+        }
+
+        // 2D color canvas for saturation/lightness selection
+        private class ColorCanvas : Control
+        {
+            public int Hue { get; set; } = 0;        // 0..359
+            public int Saturation { get; set; } = 100; // 0..100
+            public int Lightness { get; set; } = 50;   // 0..100
+            public event EventHandler SelectionChanged;
+
+            public ColorCanvas()
+            {
+                SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
+                Cursor = Cursors.Cross;
+            }
+
+            protected override void OnPaint(PaintEventArgs e)
+            {
+                base.OnPaint(e);
+                using (var bmp = new Bitmap(Width, Height))
+                using (var gBmp = Graphics.FromImage(bmp))
+                {
+                    for (int y = 0; y < bmp.Height; y++)
+                    {
+                        for (int x = 0; x < bmp.Width; x++)
+                        {
+                            int s = (int)Math.Round((x / (double)(bmp.Width - 1)) * 100);
+                            int l = (int)Math.Round((1 - y / (double)(bmp.Height - 1)) * 100);
+                            var col = HslToColor(Hue, s, l);
+                            bmp.SetPixel(x, y, col);
+                        }
+                    }
+                    e.Graphics.DrawImageUnscaled(bmp, 0, 0);
+                }
+
+                // Draw indicator
+                int ix = (int)Math.Round((Saturation / 100.0) * (Width - 1));
+                int iy = (int)Math.Round((1 - Lightness / 100.0) * (Height - 1));
+                Rectangle r = new Rectangle(ix - 6, iy - 6, 12, 12);
+                using (var pen = new Pen(Color.White, 2)) e.Graphics.DrawEllipse(pen, r);
+            }
+
+            protected override void OnMouseDown(MouseEventArgs e) { base.OnMouseDown(e); UpdateFromMouse(e); }
+            protected override void OnMouseMove(MouseEventArgs e) { base.OnMouseMove(e); if (e.Button == MouseButtons.Left) UpdateFromMouse(e); }
+            private void UpdateFromMouse(MouseEventArgs e)
+            {
+                int x = Math.Max(0, Math.Min(Width - 1, e.X));
+                int y = Math.Max(0, Math.Min(Height - 1, e.Y));
+                Saturation = (int)Math.Round((x / (double)(Width - 1)) * 100);
+                Lightness = (int)Math.Round((1 - y / (double)(Height - 1)) * 100);
+                Invalidate();
+                SelectionChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
         private void RebuildLeftList()
         {
-            leftList.SuspendLayout();
-            leftList.Controls.Clear();
-            for (int i = 0; i < Palette.Colors.Count; i++)
+            leftList.BeginUpdate();
+            leftList.Items.Clear();
+            foreach (var hex in Palette.Colors)
             {
-                int index = i;
-                var row = new Panel { Width = 220, Height = 24, Margin = new Padding(0, 2, 0, 2), Tag = index, AllowDrop = true };
-
-                // Delete button (X)
-                var btnDel = new Label { Text = "X", ForeColor = Color.Red, TextAlign = ContentAlignment.MiddleCenter, Width = 20, Height = 20, Location = new Point(2, 2), Cursor = Cursors.Hand };
-                btnDel.Click += (s, e) => { Palette.Colors.RemoveAt(index); RebuildLeftList(); if (Palette.Colors.Count > 0) SelectIndex(Math.Min(index, Palette.Colors.Count - 1)); };
-
-                // Drag handle
-                var handle = new Label { Text = "⋮⋮", ForeColor = Color.Gray, TextAlign = ContentAlignment.MiddleCenter, Width = 20, Height = 20, Location = new Point(24, 2), Cursor = Cursors.SizeAll };
-                handle.MouseDown += (s, e) => row.DoDragDrop(index, DragDropEffects.Move);
-                row.DragEnter += (s, e) => { if (e.Data.GetDataPresent(typeof(int))) e.Effect = DragDropEffects.Move; };
-                row.DragDrop += (s, e) => { var from = (int)e.Data.GetData(typeof(int)); var to = index; if (from != to) { var c = Palette.Colors[from]; Palette.Colors.RemoveAt(from); Palette.Colors.Insert(to, c); RebuildLeftList(); SelectIndex(to); } };
-
-                // Swatch with hex text
-                var hex = Palette.Colors[i];
-                var swatch = new Panel { Width = 160, Height = 20, Location = new Point(46, 2), BackColor = ColorPaletteDefinition.FromHex(hex), BorderStyle = BorderStyle.FixedSingle, Cursor = Cursors.Hand };
-                var lbl = new Label { Text = hex, AutoSize = false, Width = 150, Height = 18, Location = new Point(4, 1), ForeColor = Color.White };
-                swatch.Controls.Add(lbl);
-                swatch.Click += (s, e) => SelectIndex(index);
-
-                if (index == selectedIndex) row.BackColor = Color.FromArgb(230, 230, 230);
-
-                row.Controls.AddRange(new Control[] { btnDel, handle, swatch });
-                leftList.Controls.Add(row);
+                leftList.Items.Add(hex);
             }
-            leftList.ResumeLayout(true);
+            if (selectedIndex >= 0 && selectedIndex < leftList.Items.Count) leftList.SelectedIndex = selectedIndex; else if (leftList.Items.Count > 0) leftList.SelectedIndex = 0;
+            leftList.EndUpdate();
         }
 
         private void SelectIndex(int index)
         {
-            if (index < 0 || index >= Palette.Colors.Count) return;
             selectedIndex = index;
-            RebuildLeftList();
             var c = ColorPaletteDefinition.FromHex(Palette.Colors[index]);
             updatingControls = true;
             colorPreview.BackColor = c;
@@ -153,7 +268,10 @@ namespace my_addin
             rVal = c.R; gVal = c.G; bVal = c.B;
             txtH.Text = hVal.ToString(); txtS.Text = sVal.ToString(); txtL.Text = lVal.ToString();
             txtR.Text = rVal.ToString(); txtG.Text = gVal.ToString(); txtB.Text = bVal.ToString();
+            hueSlider.Value = hVal;
+            colorCanvas.Hue = hVal; colorCanvas.Saturation = sVal; colorCanvas.Lightness = lVal; colorCanvas.Invalidate();
             updatingControls = false;
+            if (leftList.SelectedIndex != index) leftList.SelectedIndex = index;
         }
 
         private void UpdateFromHex()
@@ -167,7 +285,8 @@ namespace my_addin
             rVal = c.R; gVal = c.G; bVal = c.B;
             txtH.Text = hVal.ToString(); txtS.Text = sVal.ToString(); txtL.Text = lVal.ToString();
             txtR.Text = rVal.ToString(); txtG.Text = gVal.ToString(); txtB.Text = bVal.ToString();
-            txtHex.Text = ColorPaletteDefinition.ToHex(c);
+            hueSlider.Value = hVal;
+            colorCanvas.Hue = hVal; colorCanvas.Saturation = sVal; colorCanvas.Lightness = lVal; colorCanvas.Invalidate();
             updatingControls = false;
             if (selectedIndex >= 0) { Palette.Colors[selectedIndex] = hex; RebuildLeftList(); }
         }
@@ -180,6 +299,8 @@ namespace my_addin
             txtR.Text = rVal.ToString(); txtG.Text = gVal.ToString(); txtB.Text = bVal.ToString();
             txtHex.Text = ColorPaletteDefinition.ToHex(c);
             colorPreview.BackColor = c;
+            hueSlider.Value = hVal;
+            colorCanvas.Hue = hVal; colorCanvas.Saturation = sVal; colorCanvas.Lightness = lVal; colorCanvas.Invalidate();
             updatingControls = false;
         }
 
@@ -191,6 +312,8 @@ namespace my_addin
             txtH.Text = hVal.ToString(); txtS.Text = sVal.ToString(); txtL.Text = lVal.ToString();
             txtHex.Text = ColorPaletteDefinition.ToHex(c);
             colorPreview.BackColor = c;
+            hueSlider.Value = hVal;
+            colorCanvas.Hue = hVal; colorCanvas.Saturation = sVal; colorCanvas.Lightness = lVal; colorCanvas.Invalidate();
             updatingControls = false;
         }
 
@@ -241,6 +364,138 @@ namespace my_addin
         }
 
         private static int Clamp(int value, int min, int max) => value < min ? min : (value > max ? max : value);
+    }
+}
+
+// Custom owner-drawn reorderable list for palette colors
+namespace my_addin
+{
+    using System;
+    using System.Drawing;
+    using System.Windows.Forms;
+
+    internal class ReorderableColorList : ListBox
+    {
+        public event Action<int> DeleteRequested;
+        public event Action<int, int> ReorderRequested; // from, to
+
+        private int dragIndex = -1;
+        private int insertionIndex = -1;
+        private Point mouseDown;
+        private bool dragging = false;
+
+        public ReorderableColorList()
+        {
+            DrawMode = DrawMode.OwnerDrawFixed;
+            ItemHeight = 24;
+            BorderStyle = BorderStyle.FixedSingle;
+            IntegralHeight = false;
+            AllowDrop = true;
+        }
+
+        public new void BeginUpdate() => base.BeginUpdate();
+        public new void EndUpdate() => base.EndUpdate();
+
+        protected override void OnDrawItem(DrawItemEventArgs e)
+        {
+            e.DrawBackground();
+            if (e.Index < 0 || e.Index >= Items.Count) return;
+
+            string hex = Items[e.Index].ToString();
+            Color c = Core.ColorPaletteDefinition.FromHex(hex);
+            Rectangle bounds = e.Bounds;
+
+            // Delete icon area
+            Rectangle del = new Rectangle(bounds.X + 6, bounds.Y + 5, 12, 12);
+            using (var penX = new Pen(Color.Red, 2)) { e.Graphics.DrawLine(penX, del.Left, del.Top, del.Right, del.Bottom); e.Graphics.DrawLine(penX, del.Right, del.Top, del.Left, del.Bottom); }
+
+            // Handle dots area
+            Rectangle grip = new Rectangle(del.Right + 6, bounds.Y + 4, 10, bounds.Height - 8);
+            using (var brush = new SolidBrush(Color.Gray))
+            {
+                for (int y = grip.Top; y < grip.Bottom; y += 4)
+                    for (int x = grip.Left; x < grip.Right; x += 4)
+                        e.Graphics.FillEllipse(brush, x, y, 2, 2);
+            }
+
+            // Swatch area fills remainder
+            Rectangle swatch = new Rectangle(grip.Right + 6, bounds.Y + 2, bounds.Right - (grip.Right + 12), bounds.Height - 4);
+            using (var br = new SolidBrush(c)) e.Graphics.FillRectangle(br, swatch);
+            using (var pen = new Pen(Color.DarkGray)) e.Graphics.DrawRectangle(pen, swatch);
+
+            // Hex text with contrast color
+            double luminance = 0.2126 * c.R + 0.7152 * c.G + 0.0722 * c.B;
+            Color textColor = luminance < 140 ? Color.White : Color.Black;
+            TextRenderer.DrawText(e.Graphics, hex, SystemFonts.DefaultFont, new Point(swatch.X + 6, swatch.Y + 5), textColor);
+
+            // Focus rectangle
+            if ((e.State & DrawItemState.Focus) == DrawItemState.Focus)
+                e.DrawFocusRectangle();
+
+            // Insertion line
+            if (dragging && insertionIndex >= 0)
+            {
+                int y = e.Bounds.Top - 1;
+                if (e.Index == insertionIndex) { using (var penIns = new Pen(Color.DeepSkyBlue, 2)) e.Graphics.DrawLine(penIns, bounds.Left + 2, y, bounds.Right - 2, y); }
+                if (insertionIndex == Items.Count && e.Index == Items.Count - 1) { using (var penIns = new Pen(Color.DeepSkyBlue, 2)) e.Graphics.DrawLine(penIns, bounds.Left + 2, bounds.Bottom - 1, bounds.Right - 2, bounds.Bottom - 1); }
+            }
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            dragIndex = IndexFromPoint(e.Location);
+            mouseDown = e.Location;
+            dragging = false;
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            if (!dragging && dragIndex >= 0)
+            {
+                // Check if clicked delete icon
+                Rectangle itemBounds = GetItemRectangle(dragIndex);
+                Rectangle del = new Rectangle(itemBounds.X + 6, itemBounds.Y + 5, 12, 12);
+                if (del.Contains(e.Location)) DeleteRequested?.Invoke(dragIndex);
+            }
+            dragging = false; dragIndex = -1; insertionIndex = -1; Invalidate();
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (e.Button == MouseButtons.Left && dragIndex >= 0)
+            {
+                if (!dragging && (Math.Abs(e.X - mouseDown.X) + Math.Abs(e.Y - mouseDown.Y) > 4))
+                {
+                    dragging = true;
+                    DoDragDrop(Items[dragIndex], DragDropEffects.Move);
+                }
+            }
+        }
+
+        protected override void OnDragOver(DragEventArgs drgevent)
+        {
+            base.OnDragOver(drgevent);
+            drgevent.Effect = DragDropEffects.Move;
+            Point pt = PointToClient(new Point(drgevent.X, drgevent.Y));
+            int idx = IndexFromPoint(pt);
+            if (idx < 0) idx = Items.Count; // after last
+            insertionIndex = idx;
+            Invalidate();
+        }
+
+        protected override void OnDragDrop(DragEventArgs drgevent)
+        {
+            base.OnDragDrop(drgevent);
+            if (!dragging || dragIndex < 0) return;
+            int to = insertionIndex;
+            if (to > dragIndex) to--; // adjusting for removal
+            if (to < 0) to = 0; if (to > Items.Count - 1) to = Items.Count - 1;
+            ReorderRequested?.Invoke(dragIndex, to);
+            dragging = false; dragIndex = -1; insertionIndex = -1; Invalidate();
+        }
     }
 }
 

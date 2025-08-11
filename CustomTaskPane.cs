@@ -35,11 +35,12 @@ namespace my_addin
                 // Create the custom task pane
                 _taskPane = Globals.ThisAddIn.CustomTaskPanes.Add(_taskPaneControl, "PowerPoint Tools");
                 System.Diagnostics.Debug.WriteLine("Task pane added to collection");
+                Core.PaneManager.Register(_taskPane);
                 
                 // Set task pane properties
                 _taskPane.Width = 320;
                 _taskPane.DockPosition = Microsoft.Office.Core.MsoCTPDockPosition.msoCTPDockPositionRight;
-                _taskPane.Visible = false; // Start hidden, show only when clicked
+                _taskPane.Visible = true; // Start visible at startup
                 System.Diagnostics.Debug.WriteLine($"Task pane properties set - Width: {_taskPane.Width}, Dock: {_taskPane.DockPosition}, Visible: {_taskPane.Visible}");
                 
                 // Handle visibility events
@@ -118,6 +119,7 @@ namespace my_addin
                 // Refresh slide list when task pane becomes visible
                 // This is handled in the TaskPaneControl itself
             }
+            try { Core.PaneManager.OnPaneVisibilityChanged(); } catch { }
         }
 
         /// <summary>
@@ -155,6 +157,7 @@ namespace my_addin
             if (_taskPane != null)
             {
                 _taskPane.VisibleChanged -= TaskPane_VisibleChanged;
+                Core.PaneManager.Unregister(_taskPane);
                 
                 // Remove the task pane from the collection
                 if (Globals.ThisAddIn != null && Globals.ThisAddIn.CustomTaskPanes != null)

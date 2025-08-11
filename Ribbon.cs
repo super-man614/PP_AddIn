@@ -34,9 +34,9 @@ namespace my_addin
 
         public string GetCustomUI(string ribbonID)
         {
-            System.Diagnostics.Debug.WriteLine("GetCustomUI called - returning simplified ribbon XML");
+            System.Diagnostics.Debug.WriteLine("GetCustomUI called - returning ribbon XML with presets");
             
-            // Return simplified ribbon XML directly
+            // Return ribbon XML with presets
             return @"<?xml version='1.0' encoding='UTF-8'?>
 <customUI xmlns='http://schemas.microsoft.com/office/2009/07/customui' onLoad='Ribbon_Load'>
   <ribbon>
@@ -57,6 +57,55 @@ namespace my_addin
                   onAction='ToggleTaskPane_Click'
                   imageMso='TaskPane'
                   screentip='Toggle the PowerPoint Tools task pane' />
+        </group>
+        <group id='PresetsGroup' label='Presets'>
+          <splitButton id='Preset1Split'>
+            <button id='Preset1Apply' label='Preset 1' imageMso='StyleGallery' onAction='Preset1_Apply'/>
+            <menu id='Preset1Menu'>
+              <button id='Preset1Save' label='Save from Selection' imageMso='Save' onAction='Preset1_Save'/>
+              <button id='Preset1Clear' label='Clear' imageMso='Cancel' onAction='Preset1_Clear'/>
+            </menu>
+          </splitButton>
+          <splitButton id='Preset2Split'>
+            <button id='Preset2Apply' label='Preset 2' imageMso='StyleGallery' onAction='Preset2_Apply'/>
+            <menu id='Preset2Menu'>
+              <button id='Preset2Save' label='Save from Selection' imageMso='Save' onAction='Preset2_Save'/>
+              <button id='Preset2Clear' label='Clear' imageMso='Cancel' onAction='Preset2_Clear'/>
+            </menu>
+          </splitButton>
+          <splitButton id='Preset3Split'>
+            <button id='Preset3Apply' label='Preset 3' imageMso='StyleGallery' onAction='Preset3_Apply'/>
+            <menu id='Preset3Menu'>
+              <button id='Preset3Save' label='Save from Selection' imageMso='Save' onAction='Preset3_Save'/>
+              <button id='Preset3Clear' label='Clear' imageMso='Cancel' onAction='Preset3_Clear'/>
+            </menu>
+          </splitButton>
+        </group>
+        <group id='FormatToolsGroup' label='Format Tools'>
+          <splitButton id='UniformSizesSplit'>
+            <button id='UniformSizesButton' label='Uniform Sizes' imageMso='SizeToFit' onAction='UniformSizes_Click'/>
+            <menu id='UniformSizesMenu'>
+              <button id='MatchWidthButton' label='Width' imageMso='Width' onAction='MatchWidth_Click'/>
+              <button id='MatchHeightButton' label='Height' imageMso='Height' onAction='MatchHeight_Click'/>
+              <button id='MatchSizeButton' label='Size' imageMso='SizeToFit' onAction='MatchSize_Click'/>
+            </menu>
+          </splitButton>
+          <splitButton id='MatchColorsSplit'>
+            <button id='MatchColorsButton' label='Match Colors' imageMso='FontColorPicker' onAction='MatchColors_Click'/>
+            <menu id='MatchColorsMenu'>
+              <button id='MatchFillButton' label='Fill' imageMso='FillColor' onAction='MatchFill_Click'/>
+              <button id='MatchFontButton' label='Font' imageMso='FontColor' onAction='MatchFont_Click'/>
+              <button id='MatchOutlineButton' label='Outline' imageMso='LineColor' onAction='MatchOutline_Click'/>
+            </menu>
+          </splitButton>
+          <splitButton id='AlignFontsSplit'>
+            <button id='AlignFontsButton' label='Align Fonts' imageMso='FontDialog' onAction='AlignFonts_Click'/>
+            <menu id='AlignFontsMenu'>
+              <button id='MatchFontSizeButton' label='Size' imageMso='FontSize' onAction='MatchFontSize_Click'/>
+              <button id='MatchFontFamilyButton' label='Family' imageMso='FontFamily' onAction='MatchFontFamily_Click'/>
+              <button id='MatchFontColorButton' label='Color' imageMso='FontColor' onAction='MatchFontColor_Click'/>
+            </menu>
+          </splitButton>
         </group>
         <group id='ColorGroup' label='Colors'>
           <toggleButton id='ColorPaletteToggleButton' 
@@ -115,6 +164,7 @@ namespace my_addin
 
                 // Ensure Color Palette sits left-most among right-docked panes
                 try { Core.PaneOrdering.EnsureColorPaletteLeftMost(_colorPaletteInstance); } catch { }
+                try { Core.PaneManager.OnPaneVisibilityChanged(); } catch { }
 
                 // Update the toggle button state
                 if (ribbon != null)
@@ -170,6 +220,7 @@ namespace my_addin
                 {
                     try { Core.PaneOrdering.EnsureColorPaletteLeftMost(_colorPaletteInstance); } catch { }
                 }
+                try { Core.PaneManager.OnPaneVisibilityChanged(); } catch { }
 
                 // Update the toggle button state
                 if (ribbon != null)
@@ -186,6 +237,66 @@ namespace my_addin
             return _colorPaletteInstance != null && !_colorPaletteInstance.IsDisposed && _colorPaletteInstance.Visible;
         }
 
-        // Additional methods can be added here as needed
+        // Preset callbacks
+        public void Preset1_Apply(Office.IRibbonControl control) { ShapePresetStorage.ApplyPreset(1); }
+        public void Preset1_Save(Office.IRibbonControl control) { ShapePresetStorage.SavePreset(1); }
+        public void Preset1_Clear(Office.IRibbonControl control) { ShapePresetStorage.ClearPreset(1); }
+        public void Preset2_Apply(Office.IRibbonControl control) { ShapePresetStorage.ApplyPreset(2); }
+        public void Preset2_Save(Office.IRibbonControl control) { ShapePresetStorage.SavePreset(2); }
+        public void Preset2_Clear(Office.IRibbonControl control) { ShapePresetStorage.ClearPreset(2); }
+        public void Preset3_Apply(Office.IRibbonControl control) { ShapePresetStorage.ApplyPreset(3); }
+        public void Preset3_Save(Office.IRibbonControl control) { ShapePresetStorage.SavePreset(3); }
+        public void Preset3_Clear(Office.IRibbonControl control) { ShapePresetStorage.ClearPreset(3); }
+
+        // Format Tools callbacks
+        public void UniformSizes_Click(Office.IRibbonControl control) { FormatTools.MatchSize(); }
+        public void MatchWidth_Click(Office.IRibbonControl control) { FormatTools.MatchWidth(); }
+        public void MatchHeight_Click(Office.IRibbonControl control) { FormatTools.MatchHeight(); }
+        public void MatchSize_Click(Office.IRibbonControl control) { FormatTools.MatchSize(); }
+        
+        public void MatchColors_Click(Office.IRibbonControl control) { FormatTools.MatchFill(); }
+        public void MatchFill_Click(Office.IRibbonControl control) { FormatTools.MatchFill(); }
+        public void MatchFont_Click(Office.IRibbonControl control) { FormatTools.MatchFontColor(); }
+        public void MatchOutline_Click(Office.IRibbonControl control) { FormatTools.MatchOutline(); }
+        
+        public void AlignFonts_Click(Office.IRibbonControl control) { FormatTools.MatchFontSize(); }
+        public void MatchFontSize_Click(Office.IRibbonControl control) { FormatTools.MatchFontSize(); }
+        public void MatchFontFamily_Click(Office.IRibbonControl control) { FormatTools.MatchFontFamily(); }
+        public void MatchFontColor_Click(Office.IRibbonControl control) { FormatTools.MatchFontColor(); }
+
+        // Wrap toggle
+        public void WrapToggle_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                var selection = app?.ActiveWindow?.Selection;
+                if (selection?.Type != PowerPoint.PpSelectionType.ppSelectionShapes || selection.ShapeRange == null || selection.ShapeRange.Count < 1)
+                    return;
+
+                // Determine current wrap setting from first shape with text
+                Office.MsoTriState? current = null;
+                for (int i = 1; i <= selection.ShapeRange.Count; i++)
+                {
+                    var sh = selection.ShapeRange[i];
+                    if (sh.HasTextFrame == Office.MsoTriState.msoTrue)
+                    {
+                        current = sh.TextFrame2.WordWrap;
+                        break;
+                    }
+                }
+                var newVal = (current == Office.MsoTriState.msoTrue) ? Office.MsoTriState.msoFalse : Office.MsoTriState.msoTrue;
+
+                for (int i = 1; i <= selection.ShapeRange.Count; i++)
+                {
+                    var sh = selection.ShapeRange[i];
+                    if (sh.HasTextFrame == Office.MsoTriState.msoTrue)
+                    {
+                        sh.TextFrame2.WordWrap = newVal;
+                    }
+                }
+            }
+            catch { }
+        }
     }
 }

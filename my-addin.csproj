@@ -326,7 +326,16 @@
     	<Compile Include="Core\PaneOrdering.cs">
       	<SubType>Code</SubType>
     	</Compile>
+        <Compile Include="Core\PaneManager.cs">
+          <SubType>Code</SubType>
+        </Compile>
         <Compile Include="Core\ColorPalette.cs">
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Include="Core\ShapePresetStorage.cs">
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Include="Core\FormatTools.cs">
           <SubType>Code</SubType>
         </Compile>
         <Compile Include="ColorPaletteEditorDialog.cs">

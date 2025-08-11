@@ -60,6 +60,61 @@
                   supertip="Share the presentation" />
         </group>
         
+        <!-- Presets Group -->
+        <group id="PresetsGroup" label="Presets">
+          <splitButton id="Preset1Split">
+            <button id="Preset1Apply" label="Preset 1" imageMso="StyleGallery" onAction="Preset1_Apply"/>
+            <menu id="Preset1Menu">
+              <button id="Preset1Save" label="Save from Selection" imageMso="Save" onAction="Preset1_Save"/>
+              <button id="Preset1Clear" label="Clear" imageMso="Cancel" onAction="Preset1_Clear"/>
+            </menu>
+          </splitButton>
+          <splitButton id="Preset2Split">
+            <button id="Preset2Apply" label="Preset 2" imageMso="StyleGallery" onAction="Preset2_Apply"/>
+            <menu id="Preset2Menu">
+              <button id="Preset2Save" label="Save from Selection" imageMso="Save" onAction="Preset2_Save"/>
+              <button id="Preset2Clear" label="Clear" imageMso="Cancel" onAction="Preset2_Clear"/>
+            </menu>
+          </splitButton>
+          <splitButton id="Preset3Split">
+            <button id="Preset3Apply" label="Preset 3" imageMso="StyleGallery" onAction="Preset3_Apply"/>
+            <menu id="Preset3Menu">
+              <button id="Preset3Save" label="Save from Selection" imageMso="Save" onAction="Preset3_Save"/>
+              <button id="Preset3Clear" label="Clear" imageMso="Cancel" onAction="Preset3_Clear"/>
+            </menu>
+          </splitButton>
+        </group>
+        
+        <!-- Format Tools Group -->
+        <!--
+        <group id="FormatToolsGroup" label="Format Tools">
+          <splitButton id="UniformSizesSplit">
+            <button id="UniformSizesButton" label="Uniform Sizes" imageMso="SizeToFit" onAction="UniformSizes_Click"/>
+            <menu id="UniformSizesMenu">
+              <button id="MatchWidthButton" label="Width" imageMso="Width" onAction="MatchWidth_Click"/>
+              <button id="MatchHeightButton" label="Height" imageMso="Height" onAction="MatchHeight_Click"/>
+              <button id="MatchSizeButton" label="Size" imageMso="SizeToFit" onAction="MatchSize_Click"/>
+            </menu>
+          </splitButton>
+          <splitButton id="MatchColorsSplit">
+            <button id="MatchColorsButton" label="Match Colors" imageMso="FontColorPicker" onAction="MatchColors_Click"/>
+            <menu id="MatchColorsMenu">
+              <button id="MatchFillButton" label="Fill" imageMso="FillColor" onAction="MatchFill_Click"/>
+              <button id="MatchFontButton" label="Font" imageMso="FontColor" onAction="MatchFont_Click"/>
+              <button id="MatchOutlineButton" label="Outline" imageMso="LineColor" onAction="MatchOutline_Click"/>
+            </menu>
+          </splitButton>
+          <splitButton id="AlignFontsSplit">
+            <button id="AlignFontsButton" label="Align Fonts" imageMso="FontDialog" onAction="AlignFonts_Click"/>
+            <menu id="AlignFontsMenu">
+              <button id="MatchFontSizeButton" label="Size" imageMso="FontSize" onAction="MatchFontSize_Click"/>
+              <button id="MatchFontFamilyButton" label="Family" imageMso="FontFamily" onAction="MatchFontFamily_Click"/>
+              <button id="MatchFontColorButton" label="Color" imageMso="FontColor" onAction="MatchFontColor_Click"/>
+            </menu>
+          </splitButton>
+        </group>
+        -->
+        
         <!-- Wizards Group -->
         <group id="WizardsGroup" label="Wizards">
           <button id="AgendaButton"
@@ -348,17 +403,11 @@
                   imageMso="BulletsList"
                   supertip="Add bullet points" />
           <button id="WrapTextButton"
-                  label="Wrap Text"
+                  label="Wrap Toggle"
                   size="normal"
-                  onAction="WrapText_Click"
+                  onAction="WrapToggle_Click"
                   imageMso="WrapText"
-                  supertip="Wrap text in shape" />
-          <button id="NoWrapTextButton"
-                  label="No Wrap"
-                  size="normal"
-                  onAction="NoWrapText_Click"
-                  imageMso="WrapNone"
-                  supertip="Disable text wrapping" />
+                  supertip="Toggle text wrapping" />
         </group>
         
         <!-- Navigation Group -->

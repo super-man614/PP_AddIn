@@ -22,5 +22,29 @@ namespace my_addin.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Preset1 {
+            get { return ((string)(this["Preset1"])); }
+            set { this["Preset1"] = value; }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Preset2 {
+            get { return ((string)(this["Preset2"])); }
+            set { this["Preset2"] = value; }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Preset3 {
+            get { return ((string)(this["Preset3"])); }
+            set { this["Preset3"] = value; }
+        }
     }
 }

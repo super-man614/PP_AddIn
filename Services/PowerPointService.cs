@@ -47,12 +47,19 @@ namespace PowerPointAddIn.Services
             {
                 try
                 {
-                    var selection = my_addin.Globals.ThisAddIn.Application?.ActiveWindow?.Selection;
-                    if (selection?.Type == PowerPoint.PpSelectionType.ppSelectionSlides && selection.SlideRange.Count > 0)
-                    {
+                    var app = my_addin.Globals.ThisAddIn?.Application;
+                    if (app == null || app.ActivePresentation == null || app.ActiveWindow == null)
+                        return null;
+
+                    var selection = app.ActiveWindow.Selection;
+                    if (selection != null && selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides && selection.SlideRange != null && selection.SlideRange.Count > 0)
                         return selection.SlideRange[1];
-                    }
-                    return ActivePresentation?.Slides[my_addin.Globals.ThisAddIn.Application.ActiveWindow.View.Slide.SlideIndex];
+
+                    var viewSlide = app.ActiveWindow.View?.Slide;
+                    if (viewSlide != null)
+                        return viewSlide;
+
+                    return app.ActivePresentation.Slides?.Count > 0 ? app.ActivePresentation.Slides[1] : null;
                 }
                 catch (Exception ex)
                 {

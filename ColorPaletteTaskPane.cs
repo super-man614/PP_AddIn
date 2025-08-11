@@ -36,6 +36,7 @@ namespace my_addin
                 // Create the custom task pane
                 _taskPane = Globals.ThisAddIn.CustomTaskPanes.Add(_colorPaletteControl, "Color Palette");
                 System.Diagnostics.Debug.WriteLine("Color Palette task pane added to collection");
+                Core.PaneManager.Register(_taskPane);
                 
                 // Set task pane properties
                 _taskPane.Width = 140;
@@ -116,6 +117,7 @@ namespace my_addin
             try
             {
                 Core.PaneOrdering.EnsureColorPaletteLeftMost(this);
+                Core.PaneManager.OnPaneVisibilityChanged();
             }
             catch { }
 
@@ -157,6 +159,7 @@ namespace my_addin
             if (_taskPane != null)
             {
                 _taskPane.VisibleChanged -= TaskPane_VisibleChanged;
+                Core.PaneManager.Unregister(_taskPane);
                 
                 // Remove the task pane from the collection
                 if (Globals.ThisAddIn != null && Globals.ThisAddIn.CustomTaskPanes != null)

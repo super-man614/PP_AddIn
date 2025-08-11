@@ -21,6 +21,7 @@ namespace my_addin
                 // Delay image loading until after control is fully loaded
                 this.Load += TaskPaneControl_LoadImages;
             SetupTooltips(); // Setup tooltips for all buttons
+            this.KeyDown += TaskPaneControl_KeyDown;
             }
             catch (Exception ex)
             {
@@ -51,6 +52,37 @@ namespace my_addin
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error loading images: {ex.Message}");
+            }
+        }
+
+        private PowerPoint.Slide GetActiveSlideOrNull()
+        {
+            try
+            {
+                var app = Globals.ThisAddIn?.Application;
+                if (app == null || app.ActivePresentation == null || app.ActiveWindow == null)
+                {
+                    return null;
+                }
+
+                var selection = app.ActiveWindow.Selection;
+                if (selection != null && selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides && selection.SlideRange != null && selection.SlideRange.Count > 0)
+                {
+                    return selection.SlideRange[1];
+                }
+
+                var viewSlide = app.ActiveWindow.View?.Slide;
+                if (viewSlide != null)
+                {
+                    return viewSlide;
+                }
+
+                var pres = app.ActivePresentation;
+                return pres?.Slides?.Count > 0 ? pres.Slides[1] : null;
+            }
+            catch
+            {
+                return null;
             }
         }
 
@@ -580,6 +612,7 @@ namespace my_addin
                 if (btnCenterTopLeft != null) tooltip.SetToolTip(btnCenterTopLeft, "Center on Top Left\nCenter objects on master's top-left corner");
                 if (btnSavePosition != null) tooltip.SetToolTip(btnSavePosition, "Save Position\nSave position and size of selected objects");
                 if (btnApplyPosition != null) tooltip.SetToolTip(btnApplyPosition, "Apply Position\nApply saved position and size to selected objects");
+                if (btnRemoveMarginObjects != null) tooltip.SetToolTip(btnRemoveMarginObjects, "Remove Margin Objects\nRemove objects outside the main slide layout");
 
                 // Shape section tooltips - with null checks
                 if (btnAlignProcessChain != null) tooltip.SetToolTip(btnAlignProcessChain, "Align Process Chain");
@@ -1317,7 +1350,6 @@ namespace my_addin
                 if (app.ActivePresentation != null)
                 {
                     app.ActivePresentation.PrintOut();
-                    MessageBox.Show("Print dialog opened!", "Print", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -1357,7 +1389,6 @@ namespace my_addin
                     var slide = app.ActivePresentation.Slides.Add(app.ActivePresentation.Slides.Count + 1, PowerPoint.PpSlideLayout.ppLayoutText);
                     slide.Shapes.Title.TextFrame.TextRange.Text = "Agenda";
                     slide.Shapes.Placeholders[2].TextFrame.TextRange.Text = "• Introduction\n• Main Topics\n• Discussion\n• Next Steps";
-                    MessageBox.Show("Agenda slide created!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
@@ -1374,7 +1405,6 @@ namespace my_addin
                 if (app.ActivePresentation != null)
                 {
                     app.ActiveWindow.ViewType = PowerPoint.PpViewType.ppViewSlideMaster;
-                    MessageBox.Show("Switched to Slide Master view!", "Master", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
@@ -1388,7 +1418,8 @@ namespace my_addin
             try
             {
                 var app = Globals.ThisAddIn.Application;
-                if (app.ActivePresentation != null && app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                var slideForElement = GetActiveSlideOrNull();
+                if (slideForElement != null)
                 {
                     // Show element selection options
                     var elementDialog = new Form();
@@ -1428,15 +1459,14 @@ namespace my_addin
                     
                     if (elementDialog.ShowDialog() == DialogResult.OK && listBox.SelectedIndex >= 0)
                     {
-                        var slide = app.ActiveWindow.Selection.SlideRange[1];
-                        CreateSmartElement(slide, listBox.SelectedIndex);
-                        MessageBox.Show("Smart element created successfully!", "Element Wizard", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        var slide = GetActiveSlideOrNull();
+                        if (slide != null)
+                        {
+                            CreateSmartElement(slide, listBox.SelectedIndex);
+                        }
                     }
                 }
-                else
-                {
-                    MessageBox.Show("Please select a slide first to add smart elements.", "Element Wizard", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                
             }
             catch (Exception ex)
             {
@@ -1662,7 +1692,6 @@ namespace my_addin
                 {
                     var slide = app.ActivePresentation.Slides.Add(app.ActivePresentation.Slides.Count + 1, PowerPoint.PpSlideLayout.ppLayoutText);
                     slide.Shapes.Title.TextFrame.TextRange.Text = "Text Content";
-                    MessageBox.Show("Text slide created! You can now add your content.", "Text Wizard", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
@@ -1724,7 +1753,6 @@ namespace my_addin
                     if (formatDialog.ShowDialog() == DialogResult.OK && listBox.SelectedIndex >= 0)
                     {
                         ApplyFormatting(app.ActivePresentation, listBox.SelectedIndex);
-                        MessageBox.Show("Formatting applied successfully!", "Format Wizard", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 else
@@ -1992,7 +2020,8 @@ namespace my_addin
             try
             {
                 var app = Globals.ThisAddIn.Application;
-                if (app.ActivePresentation != null && app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                var slide = GetActiveSlideOrNull();
+                if (slide != null)
                 {
                     // Show map options dialog
                     var mapDialog = new Form();
@@ -2038,14 +2067,12 @@ namespace my_addin
                     
                     if (mapDialog.ShowDialog() == DialogResult.OK && listBox.SelectedIndex >= 0)
                     {
-                        var slide = app.ActiveWindow.Selection.SlideRange[1];
-                        CreateMapTemplate(slide, listBox.SelectedIndex);
-                        MessageBox.Show("Map template created successfully!\n\nYou can customize colors, add labels, and modify as needed.", "Map Wizard", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        var targetSlide = GetActiveSlideOrNull();
+                        if (targetSlide != null)
+                        {
+                            CreateMapTemplate(targetSlide, listBox.SelectedIndex);
+                        }
                     }
-                }
-                else
-                {
-                    MessageBox.Show("Please select a slide first to insert a map.", "Map Wizard", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
@@ -2301,15 +2328,10 @@ namespace my_addin
             try
             {
                 var app = Globals.ThisAddIn.Application;
-                if (app.ActivePresentation != null && app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                var slide = GetActiveSlideOrNull();
+                if (slide != null)
                 {
-                    var slide = app.ActiveWindow.Selection.SlideRange[1];
                     slide.Shapes.AddChart2(Style: -1, Type: Office.XlChartType.xlColumnClustered);
-                    MessageBox.Show("Chart added successfully!", "Chart", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Please select a slide first, then insert chart from Insert > Chart.", "Chart", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
@@ -2336,7 +2358,8 @@ namespace my_addin
             try
             {
                 var app = Globals.ThisAddIn.Application;
-                if (app.ActivePresentation != null && app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                var slide = GetActiveSlideOrNull();
+                if (slide != null)
                 {
                     // Show table dropdown control
                     var tableDropdown = new TableDropdownControl();
@@ -2347,8 +2370,6 @@ namespace my_addin
                     
                     if (tableDropdown.ShowDialog() == DialogResult.OK)
                     {
-                        var slide = app.ActiveWindow.Selection.SlideRange[1];
-                        
                         switch (tableDropdown.ActionType)
                         {
                             case "GridSelect":
@@ -2362,10 +2383,6 @@ namespace my_addin
                                 break;
                         }
                     }
-                }
-                else
-                {
-                    MessageBox.Show("Please select a slide first to insert a table.", "Table", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
@@ -2397,8 +2414,6 @@ namespace my_addin
                 // Apply basic styling and clear any default header text
                 ApplyBasicStyling(table, false); // No header by default for grid selection
                 ClearTableHeaderText(table);
-                
-                MessageBox.Show($"Table ({rows}x{columns}) created successfully!", "Table", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -2435,8 +2450,6 @@ namespace my_addin
                      // Apply basic styling and clear any default header text
                      ApplyBasicStyling(table, false);
                      ClearTableHeaderText(table);
-                     
-                     MessageBox.Show($"Table ({rows}x{columns}) created successfully!", "Table", MessageBoxButtons.OK, MessageBoxIcon.Information);
                  }
             }
             catch (Exception ex)
@@ -2466,8 +2479,6 @@ namespace my_addin
                     Office.MsoTriState.msoFalse);
                 
                 excelObject.Name = "ExcelSpreadsheet";
-                
-                MessageBox.Show("Excel spreadsheet inserted successfully!\n\nDouble-click the object to edit in Excel.", "Excel Spreadsheet", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -2480,7 +2491,8 @@ namespace my_addin
             try
             {
                 var app = Globals.ThisAddIn.Application;
-                if (app.ActivePresentation != null && app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                var slide = GetActiveSlideOrNull();
+                if (slide != null)
                 {
                     // Get user input for rows and columns
                     var matrixDialog = new MatrixTableDialog();
@@ -2490,16 +2502,14 @@ namespace my_addin
                         int columns = matrixDialog.Columns;
                         bool hasHeader = matrixDialog.HasHeader;
                         
-                        var slide = app.ActiveWindow.Selection.SlideRange[1];
-                        CreateMatrixTable(slide, rows, columns, hasHeader);
-                        
-                        MessageBox.Show($"✅ Matrix table ({rows}x{columns}) created successfully!\n\n🎯 Matrix tables are perfect for:\n• Decision-making matrices\n• Feature comparisons\n• Structured analysis\n• SWOT analysis\n\n💡 All cells are filled with 'XXXX' placeholder text.\n✏️ Click on any cell to replace with your content.\n🎨 Clean uniform design with transparent cells and gray borders.", "Matrix Table Created", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        var targetSlide = GetActiveSlideOrNull();
+                        if (targetSlide != null)
+                        {
+                            CreateMatrixTable(targetSlide, rows, columns, hasHeader);
+                        }
                     }
                 }
-                else
-                {
-                    MessageBox.Show("Please select a slide first to insert matrix table.", "Matrix Table", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                
             }
             catch (Exception ex)
             {
@@ -2602,6 +2612,15 @@ namespace my_addin
 
                         // Track cell
                         allCells.Add(cell);
+
+                        try
+                        {
+                            // Tag as matrix cell with row/col for paste handling
+                            cell.Tags.Add("MATRIX", "1");
+                            cell.Tags.Add("MATRIX_ROW", row.ToString());
+                            cell.Tags.Add("MATRIX_COL", col.ToString());
+                        }
+                        catch { /* ignore tag failures */ }
                     }
                 }
 
@@ -2857,7 +2876,8 @@ namespace my_addin
             try
             {
                 var app = Globals.ThisAddIn.Application;
-                if (app.ActivePresentation != null && app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                var slideForSticky = GetActiveSlideOrNull();
+                if (slideForSticky != null)
                 {
                     // Get user input for sticky note
                     var stickyDialog = new StickyNoteDialog();
@@ -2866,16 +2886,14 @@ namespace my_addin
                         string noteText = stickyDialog.NoteText;
                         Color noteColor = stickyDialog.NoteColor;
                         
-                        var slide = app.ActiveWindow.Selection.SlideRange[1];
-                        CreateStickyNote(slide, noteText, noteColor);
-                        
-                        MessageBox.Show("Sticky note added successfully!\n\nYou can move, resize, or edit the note as needed.", "Sticky Note", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        var slide = GetActiveSlideOrNull();
+                        if (slide != null)
+                        {
+                            CreateStickyNote(slide, noteText, noteColor);
+                        }
                     }
                 }
-                else
-                {
-                    MessageBox.Show("Please select a slide first to add a sticky note.", "Sticky Note", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                
             }
             catch (Exception ex)
             {
@@ -2984,7 +3002,8 @@ namespace my_addin
             try
             {
                 var app = Globals.ThisAddIn.Application;
-                if (app.ActivePresentation != null && app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                var slide = GetActiveSlideOrNull();
+                if (slide != null)
                 {
                     // Simple input dialog for citation text
                     string citationText = Microsoft.VisualBasic.Interaction.InputBox(
@@ -2994,16 +3013,14 @@ namespace my_addin
                     
                     if (!string.IsNullOrEmpty(citationText))
                     {
-                        var slide = app.ActiveWindow.Selection.SlideRange[1];
-                        CreateCitation(slide, citationText);
-                        
-                        MessageBox.Show("Citation added to bottom left!\n\nYou can move, resize, or edit the citation as needed.", "Citation", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        var targetSlide = GetActiveSlideOrNull();
+                        if (targetSlide != null)
+                        {
+                            CreateCitation(targetSlide, citationText);
+                        }
                     }
                 }
-                else
-                {
-                    MessageBox.Show("Please select a slide first to add a citation.", "Citation", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                
             }
             catch (Exception ex)
             {
@@ -3085,7 +3102,8 @@ namespace my_addin
             try
             {
                 var app = Globals.ThisAddIn.Application;
-                if (app.ActivePresentation != null && app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionSlides)
+                var slide = GetActiveSlideOrNull();
+                if (slide != null)
                 {
                     // Show standard objects dialog
                     var objectsDialog = new StandardObjectsDialog();
@@ -3095,17 +3113,15 @@ namespace my_addin
                         
                         if (!string.IsNullOrEmpty(selectedObject))
                         {
-                            var slide = app.ActiveWindow.Selection.SlideRange[1];
-                            CreateStandardObject(slide, selectedObject);
-                            
-                            MessageBox.Show($"Standard object added successfully!\n\nYou can move, resize, or edit the object as needed.", "Standard Objects", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            var targetSlide = GetActiveSlideOrNull();
+                            if (targetSlide != null)
+                            {
+                                CreateStandardObject(targetSlide, selectedObject);
+                            }
                         }
                     }
                 }
-                else
-                {
-                    MessageBox.Show("Please select a slide first to add a standard object.", "Standard Objects", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                
             }
             catch (Exception ex)
             {
@@ -3316,7 +3332,6 @@ namespace my_addin
                 if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
                 {
                     app.ActiveWindow.Selection.ShapeRange.Align(Office.MsoAlignCmd.msoAlignLefts, Office.MsoTriState.msoFalse);
-                    MessageBox.Show("Objects aligned to the left!", "Align", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -3337,7 +3352,6 @@ namespace my_addin
                 if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
                 {
                     app.ActiveWindow.Selection.ShapeRange.Align(Office.MsoAlignCmd.msoAlignCenters, Office.MsoTriState.msoFalse);
-                    MessageBox.Show("Objects aligned to center!", "Align", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -3358,7 +3372,6 @@ namespace my_addin
                 if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
                 {
                     app.ActiveWindow.Selection.ShapeRange.Align(Office.MsoAlignCmd.msoAlignRights, Office.MsoTriState.msoFalse);
-                    MessageBox.Show("Objects aligned to the right!", "Align", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -3379,7 +3392,6 @@ namespace my_addin
                 if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
                 {
                     app.ActiveWindow.Selection.ShapeRange.Distribute(Office.MsoDistributeCmd.msoDistributeHorizontally, Office.MsoTriState.msoFalse);
-                    MessageBox.Show("Objects distributed evenly!", "Distribute", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -3493,8 +3505,7 @@ namespace my_addin
                         shapes[i].Rotation = 90f;
                         count++;
                     }
-                    
-                    MessageBox.Show($"Rotated {count} shape(s) to vertical (90°)!", "Make Vertical", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                 }
                 else
                 {
@@ -3522,8 +3533,7 @@ namespace my_addin
                         shapes[i].Rotation = 0f;
                         count++;
                     }
-                    
-                    MessageBox.Show($"Rotated {count} shape(s) to horizontal (0°)!", "Make Horizontal", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                 }
                 else
                 {
@@ -4060,9 +4070,7 @@ namespace my_addin
                             }
                         }
                     }
-                    
-                    MessageBox.Show($"Auto-fitted {adjustedShapes} shapes to slide bounds!", 
-                        "Content Auto-Fit", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                 }
             }
             catch (Exception ex)
@@ -4099,8 +4107,7 @@ namespace my_addin
                             shape.Left = currentX;
                             currentX += shape.Width + spacing;
                         }
-                        
-                        MessageBox.Show("Process chain aligned!", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                     }
                     else
                     {
@@ -4136,8 +4143,7 @@ namespace my_addin
                         {
                             shape.Rotation = targetAngle;
                         }
-                        
-                        MessageBox.Show("Shapes aligned at angles!", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                     }
                     else
                     {
@@ -4189,8 +4195,7 @@ namespace my_addin
                                     shape.Top = arrowShape.Top + (arrowShape.Height - shape.Height) / 2;
                                 }
                             }
-                            
-                            MessageBox.Show("Shapes aligned to process arrow!", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                         }
                         else
                         {
@@ -4239,8 +4244,7 @@ namespace my_addin
                             }
                         }
                     }
-                    
-                    MessageBox.Show("Pentagon headers adjusted!", "Shape Adjustment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                 }
                 else
                 {
@@ -4286,8 +4290,7 @@ namespace my_addin
                             {
                                 arrow.Top = centerY - arrow.Height / 2;
                             }
-                            
-                            MessageBox.Show("Block arrows aligned!", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                         }
                         else
                         {
@@ -4357,8 +4360,7 @@ namespace my_addin
                                     }
                                 }
                             }
-                            
-                            MessageBox.Show("Rounded rectangle radius aligned!", "Shape Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                         }
                         else
                         {
@@ -4459,7 +4461,6 @@ namespace my_addin
                     app.ActiveWindow.Selection.TextRange.Font.Bold = 
                         app.ActiveWindow.Selection.TextRange.Font.Bold == Office.MsoTriState.msoTrue ? 
                         Office.MsoTriState.msoFalse : Office.MsoTriState.msoTrue;
-                    MessageBox.Show("Bold formatting toggled!", "Text", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -4482,7 +4483,6 @@ namespace my_addin
                     app.ActiveWindow.Selection.TextRange.Font.Italic = 
                         app.ActiveWindow.Selection.TextRange.Font.Italic == Office.MsoTriState.msoTrue ? 
                         Office.MsoTriState.msoFalse : Office.MsoTriState.msoTrue;
-                    MessageBox.Show("Italic formatting toggled!", "Text", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -4505,7 +4505,6 @@ namespace my_addin
                     app.ActiveWindow.Selection.TextRange.Font.Underline = 
                         app.ActiveWindow.Selection.TextRange.Font.Underline == Office.MsoTriState.msoTrue ? 
                         Office.MsoTriState.msoFalse : Office.MsoTriState.msoTrue;
-                    MessageBox.Show("Underline formatting toggled!", "Text", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -4627,22 +4626,30 @@ namespace my_addin
                 if (app.ActiveWindow.Selection.Type == PowerPoint.PpSelectionType.ppSelectionShapes)
                 {
                     var shapes = app.ActiveWindow.Selection.ShapeRange;
-                    int count = 0;
-                    
+
+                    // Determine current wrap setting from first text shape
+                    Office.MsoTriState? current = null;
                     for (int i = 1; i <= shapes.Count; i++)
                     {
                         if (shapes[i].HasTextFrame == Office.MsoTriState.msoTrue)
                         {
-                            shapes[i].TextFrame2.WordWrap = Office.MsoTriState.msoTrue;
+                            current = shapes[i].TextFrame2.WordWrap;
+                            break;
+                        }
+                    }
+                    var newVal = (current == Office.MsoTriState.msoTrue) ? Office.MsoTriState.msoFalse : Office.MsoTriState.msoTrue;
+
+                    int count = 0;
+                    for (int i = 1; i <= shapes.Count; i++)
+                    {
+                        if (shapes[i].HasTextFrame == Office.MsoTriState.msoTrue)
+                        {
+                            shapes[i].TextFrame2.WordWrap = newVal;
                             count++;
                         }
                     }
-                    
-                    if (count > 0)
-                    {
-                        MessageBox.Show($"Text wrapping enabled for {count} shape(s)!", "Text Wrap", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    else
+
+                    if (count == 0)
                     {
                         MessageBox.Show("No text shapes found in selection.", "Text Wrap", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -4658,7 +4665,7 @@ namespace my_addin
             }
         }
 
-        private void BtnNoWrapText_Click(object sender, EventArgs e)
+        private void BtnNoWrapText_Click(object sender, EventArgs e) // deprecated
         {
             try
             {
@@ -4709,7 +4716,6 @@ namespace my_addin
                 if (app.ActiveWindow.View.Zoom < 400)
                 {
                     app.ActiveWindow.View.Zoom = app.ActiveWindow.View.Zoom + 10;
-                    MessageBox.Show($"Zoom: {app.ActiveWindow.View.Zoom}%", "Zoom", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
@@ -4726,7 +4732,6 @@ namespace my_addin
                 if (app.ActiveWindow.View.Zoom > 10)
                 {
                     app.ActiveWindow.View.Zoom = app.ActiveWindow.View.Zoom - 10;
-                    MessageBox.Show($"Zoom: {app.ActiveWindow.View.Zoom}%", "Zoom", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
@@ -4741,7 +4746,6 @@ namespace my_addin
             {
                 var app = Globals.ThisAddIn.Application;
                 app.ActiveWindow.View.ZoomToFit = Office.MsoTriState.msoTrue;
-                MessageBox.Show("Zoom fit to window!", "Zoom", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -4828,13 +4832,11 @@ namespace my_addin
                     {
                         // Align to slide top edge
                         shapes.Align(Office.MsoAlignCmd.msoAlignTops, Office.MsoTriState.msoTrue);
-                        MessageBox.Show("Objects aligned to the top edge of the slide!", "Align Top", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
                         // Align to master object (last selected)
                         shapes.Align(Office.MsoAlignCmd.msoAlignTops, Office.MsoTriState.msoFalse);
-                        MessageBox.Show("Objects aligned to the top edge of the master object!", "Align Top", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 else
@@ -4863,13 +4865,11 @@ namespace my_addin
                     {
                         // Align to slide bottom edge
                         shapes.Align(Office.MsoAlignCmd.msoAlignBottoms, Office.MsoTriState.msoTrue);
-                        MessageBox.Show("Objects aligned to the bottom edge of the slide!", "Align Bottom", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
                         // Align to master object (last selected)
                         shapes.Align(Office.MsoAlignCmd.msoAlignBottoms, Office.MsoTriState.msoFalse);
-                        MessageBox.Show("Objects aligned to the bottom edge of the master object!", "Align Bottom", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 else
@@ -4898,13 +4898,11 @@ namespace my_addin
                     {
                         // Align to slide middle
                         shapes.Align(Office.MsoAlignCmd.msoAlignMiddles, Office.MsoTriState.msoTrue);
-                        MessageBox.Show("Objects aligned to the middle of the slide!", "Align Middle", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
                         // Align to master object (last selected)
                         shapes.Align(Office.MsoAlignCmd.msoAlignMiddles, Office.MsoTriState.msoFalse);
-                        MessageBox.Show("Objects aligned to the middle of the master object!", "Align Middle", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 else
@@ -4937,7 +4935,6 @@ namespace my_addin
                         {
                             shape.Left = 0;
                         }
-                        MessageBox.Show("Objects moved to the left edge of the slide!", "Dock Left", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
@@ -4949,7 +4946,6 @@ namespace my_addin
                         {
                             shapes[i].Left = masterLeftEdge - shapes[i].Width;
                         }
-                        MessageBox.Show("Objects moved to touch the master object on the left!", "Dock Left", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 else
@@ -4985,7 +4981,6 @@ namespace my_addin
                         {
                             shape.Left = slideWidth - shape.Width;
                         }
-                        MessageBox.Show("Objects moved to the right edge of the slide!", "Dock Right", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -5002,7 +4997,6 @@ namespace my_addin
                         {
                             shapes[i].Left = masterRightEdge;
                         }
-                        MessageBox.Show("Objects moved to touch the master object on the right!", "Dock Right", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 else
@@ -5034,7 +5028,6 @@ namespace my_addin
                         {
                             shape.Top = 0;
                         }
-                        MessageBox.Show("Objects moved to the top edge of the slide!", "Dock Top", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
@@ -5046,7 +5039,6 @@ namespace my_addin
                         {
                             shapes[i].Top = masterTopEdge - shapes[i].Height;
                         }
-                        MessageBox.Show("Objects moved to touch the master object at the top!", "Dock Top", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 else
@@ -5082,7 +5074,6 @@ namespace my_addin
                         {
                             shape.Top = slideHeight - shape.Height;
                         }
-                        MessageBox.Show("Objects moved to the bottom edge of the slide!", "Dock Bottom", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -5099,7 +5090,6 @@ namespace my_addin
                         {
                             shapes[i].Top = masterBottomEdge;
                         }
-                        MessageBox.Show("Objects moved to touch the master object at the bottom!", "Dock Bottom", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 else
@@ -5140,7 +5130,6 @@ namespace my_addin
                             {
                                 sortedShapes[i].Left = spacing * (i + 1) - sortedShapes[i].Width / 2;
                             }
-                            MessageBox.Show("Objects distributed horizontally across the entire slide!", "Distribute Horizontal", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             else
                             {
@@ -5151,7 +5140,6 @@ namespace my_addin
                         {
                             // Standard distribution (keeping leftmost and rightmost in place)
                             shapes.Distribute(Office.MsoDistributeCmd.msoDistributeHorizontally, Office.MsoTriState.msoFalse);
-                            MessageBox.Show("Objects distributed horizontally evenly!", "Distribute Horizontal", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                     }
                     else
@@ -5196,7 +5184,6 @@ namespace my_addin
                             {
                                 sortedShapes[i].Top = spacing * (i + 1) - sortedShapes[i].Height / 2;
                             }
-                            MessageBox.Show("Objects distributed vertically across the entire slide!", "Distribute Vertical", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             else
                             {
@@ -5207,7 +5194,6 @@ namespace my_addin
                         {
                             // Standard distribution (keeping topmost and bottommost in place)
                             shapes.Distribute(Office.MsoDistributeCmd.msoDistributeVertically, Office.MsoTriState.msoFalse);
-                            MessageBox.Show("Objects distributed vertically evenly!", "Distribute Vertical", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                     }
                     else
@@ -5263,8 +5249,6 @@ namespace my_addin
                                 shape.Top = masterBottom - bottomMargin - shape.Height;
                             }
                         }
-                        
-                        MessageBox.Show($"Objects aligned in Golden Canon relative to master!\n\nThe golden canon creates a 1:2 ratio where the bottom margin is twice the top margin.", "Golden Canon", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
@@ -5306,7 +5290,6 @@ namespace my_addin
                             if (parts.Length == 2 && int.TryParse(parts[0], out int rows) && int.TryParse(parts[1], out int columns))
                             {
                                 AlignInMatrix(shapes, rows, columns);
-                                MessageBox.Show($"Objects aligned in {rows}x{columns} matrix!\n\nObjects are filled row-wise from top to bottom in selection order.", "Matrix Alignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             else
                             {
@@ -5395,7 +5378,6 @@ namespace my_addin
                                 }
                                 
                                 SliceOrMultiplyShape(shapes[1], rows, columns, spacing);
-                                MessageBox.Show($"Shape sliced into {rows}x{columns} = {rows * columns} shapes!\n\nSpacing: {spacing}pt between shapes.", "Slice Shape", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             else
                             {
@@ -5473,8 +5455,7 @@ namespace my_addin
                         duplicate.Left = shape.Left + shape.Width + 10; // 10pt spacing
                         duplicate.Top = shape.Top;
                     }
-                    
-                    MessageBox.Show($"Duplicated {shapes.Count} object(s) to the right!", "Duplicate Right", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                 }
                 else
                 {
@@ -5511,8 +5492,7 @@ namespace my_addin
                             shape.Left = masterTopLeftX - (shape.Width / 2);
                             shape.Top = masterTopLeftY - (shape.Height / 2);
                         }
-                        
-                        MessageBox.Show("Objects centered on the top-left corner of the master object!", "Center on Top Left", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                     }
                     else
                     {
@@ -5563,8 +5543,7 @@ namespace my_addin
                             Height = shape.Height
                         });
                     }
-                    
-                    MessageBox.Show($"Saved position and size of {shapes.Count} object(s)!\n\nUse 'Apply Position and Size' to apply these to other objects.", "Save Position", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                 }
                 else
                 {
@@ -5603,8 +5582,7 @@ namespace my_addin
                         shape.Width = savedPos.Width;
                         shape.Height = savedPos.Height;
                     }
-                    
-                    MessageBox.Show($"Applied saved position and size to {Math.Min(shapes.Count, savedPositions.Count)} object(s)!\n\nPositions and sizes are applied in the order of selection.", "Apply Position", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                 }
                 else
                 {
@@ -5614,6 +5592,108 @@ namespace my_addin
             catch (Exception ex)
             {
                 MessageBox.Show($"Error applying positions: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnRemoveMarginObjects_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var slide = GetActiveSlideOrNull();
+                if (slide == null)
+                {
+                    MessageBox.Show("No active slide found.", "Remove Margin Objects", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                var shapes = slide.Shapes;
+                var shapesToDelete = new List<PowerPoint.Shape>();
+                
+                // Get the actual slide dimensions
+                float slideWidth, slideHeight;
+                try
+                {
+                    // Try to get from custom layout first
+                    slideWidth = slide.CustomLayout.Width;
+                    slideHeight = slide.CustomLayout.Height;
+                    
+                    // If that fails, use presentation page setup
+                    if (slideWidth <= 0 || slideHeight <= 0)
+                    {
+                        slideWidth = slide.Parent.PageSetup.SlideWidth;
+                        slideHeight = slide.Parent.PageSetup.SlideHeight;
+                    }
+                    
+                    // If still fails, use master slide as fallback
+                    if (slideWidth <= 0 || slideHeight <= 0)
+                    {
+                        slideWidth = slide.Master.Width;
+                        slideHeight = slide.Master.Height;
+                    }
+                }
+                catch
+                {
+                    // Final fallback to master slide
+                    slideWidth = slide.Master.Width;
+                    slideHeight = slide.Master.Height;
+                }
+
+                // Define margin threshold (objects outside this area will be removed)
+                // Use a smaller threshold to be more sensitive to objects outside the main layout
+                float marginThreshold = 20; // 20 points margin (reduced from 50)
+                float safeLeft = -marginThreshold;
+                float safeTop = -marginThreshold;
+                float safeRight = slideWidth + marginThreshold;
+                float safeBottom = slideHeight + marginThreshold;
+
+                System.Diagnostics.Debug.WriteLine($"Slide dimensions: {slideWidth} x {slideHeight}");
+                System.Diagnostics.Debug.WriteLine($"Safe area: Left={safeLeft}, Top={safeTop}, Right={safeRight}, Bottom={safeBottom}");
+
+                // Check each shape
+                for (int i = 1; i <= shapes.Count; i++)
+                {
+                    var shape = shapes[i];
+                    
+                    // Check if shape is completely outside the safe area
+                    bool isOutside = shape.Left + shape.Width < safeLeft || 
+                                   shape.Left > safeRight || 
+                                   shape.Top + shape.Height < safeTop || 
+                                   shape.Top > safeBottom;
+
+                    System.Diagnostics.Debug.WriteLine($"Shape {i}: Left={shape.Left}, Top={shape.Top}, Width={shape.Width}, Height={shape.Height}, IsOutside={isOutside}");
+
+                    if (isOutside)
+                    {
+                        shapesToDelete.Add(shape);
+                        System.Diagnostics.Debug.WriteLine($"Added shape {i} to deletion list");
+                    }
+                }
+
+                if (shapesToDelete.Count == 0)
+                {
+                    // No margin objects found - work silently
+                    return;
+                }
+
+                // Delete shapes (in reverse order to avoid index issues)
+                for (int i = shapesToDelete.Count - 1; i >= 0; i--)
+                {
+                    try
+                    {
+                        shapesToDelete[i].Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error deleting shape: {ex.Message}");
+                    }
+                }
+
+                // Log success silently
+                System.Diagnostics.Debug.WriteLine($"Successfully removed {shapesToDelete.Count} margin object(s)");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error removing margin objects: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -5810,8 +5890,7 @@ namespace my_addin
                             shp.TextFrame2.TextRange.Font.Size *= 1.1f;
                         }
                     }
-                    
-                    MessageBox.Show($"Magic Resizer applied to {shapes.Count} shape(s)!\nAll elements increased by 10%.", "Magic Resizer", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                 }
                 else
                 {
@@ -6029,6 +6108,22 @@ namespace my_addin
                 System.Diagnostics.Debug.WriteLine($"Error loading image for button {button.Name}: {ex.Message}");
                 button.BackgroundImage = null;
             }
+        }
+
+        private void TaskPaneControl_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.Control && e.KeyCode == Keys.V)
+                {
+                    var addin = Globals.ThisAddIn;
+                    if (addin != null && addin.TryPasteIntoMatrix())
+                    {
+                        e.Handled = true;
+                    }
+                }
+            }
+            catch { }
         }
     }
 }
