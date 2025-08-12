@@ -23,6 +23,18 @@ namespace PowerPointAddIn.Services
         void LogError(Exception exception, string context);
 
         /// <summary>
+        /// Logs informational messages
+        /// </summary>
+        /// <param name="message">Information message to log</param>
+        void LogInfo(string message);
+
+        /// <summary>
+        /// Logs warning messages
+        /// </summary>
+        /// <param name="message">Warning message to log</param>
+        void LogWarning(string message);
+
+        /// <summary>
         /// Shows warning message to user
         /// </summary>
         /// <param name="message">Warning message</param>
@@ -35,6 +47,17 @@ namespace PowerPointAddIn.Services
         /// <param name="message">Information message</param>
         /// <param name="title">Information dialog title</param>
         void ShowInfo(string message, string title = "Information");
+
+        /// <summary>
+        /// Gets the current log file path
+        /// </summary>
+        /// <returns>Path to the current log file</returns>
+        string GetLogFilePath();
+
+        /// <summary>
+        /// Cleans up old log files (keeps last 30 days)
+        /// </summary>
+        void CleanupOldLogs();
 
         /// <summary>
         /// Executes an action with error handling

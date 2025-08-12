@@ -2,11 +2,38 @@
 
 A comprehensive PowerPoint VSTO add-in that provides advanced tools for presentation creation and editing.
 
-## Features
+## ✨ **What's New in Version 1.0.0.3**
+
+### 🔧 **Enhanced Error Handling & Logging**
+- **Comprehensive Logging System**: File-based logging with automatic cleanup
+- **Smart Error Recovery**: Better error handling with user-friendly messages
+- **Debug Information**: Detailed logging for troubleshooting and development
+- **Log Management**: Automatic log rotation and cleanup (30-day retention)
+
+### ⚙️ **Configuration Management**
+- **JSON Configuration**: Flexible configuration via `appsettings.json`
+- **User Settings**: Personalized settings stored in user's AppData folder
+- **Runtime Configuration**: Hot-reloadable configuration without restart
+- **Default Presets**: Sensible defaults with easy customization
+
+### 🚀 **Performance Improvements**
+- **COM Object Management**: Proper disposal of Office COM objects
+- **Memory Optimization**: Better resource management and cleanup
+- **Async Operations**: Support for background operations
+- **Operation Timeouts**: Configurable timeouts for long-running operations
+
+### 🎯 **Enhanced Matrix Operations**
+- **Improved Paste Functionality**: Better clipboard handling and error recovery
+- **Cell Validation**: Robust matrix cell detection and validation
+- **Progress Tracking**: Success/failure reporting for matrix operations
+- **COM Safety**: Safe COM object handling with proper cleanup
+
+## 🚀 **Features**
 
 ### 📋 File Operations
 - New, Open, Save, Save As, Print presentations
 - Smart file handling with automatic error recovery
+- Support for multiple document formats (PPTX, PPT, PDF, HTML)
 
 ### 🎨 Wizards
 - **Agenda Wizard**: Create structured agenda slides
@@ -44,29 +71,120 @@ A comprehensive PowerPoint VSTO add-in that provides advanced tools for presenta
 - Zoom controls
 - Fit to window functionality
 
-## Installation
+## ⚙️ **Configuration**
 
-1. Build the project in Visual Studio
-2. Install the generated VSTO file
-3. Open PowerPoint - you'll see a "PowerPoint Add in Tools" tab in the ribbon
+The add-in now supports extensive configuration through `appsettings.json`:
 
-## Usage
+```json
+{
+  "logging": {
+    "enableFileLogging": true,
+    "enableDebugLogging": true,
+    "logRetentionDays": 30,
+    "maxLogFileSizeMB": 10
+  },
+  "ui": {
+    "defaultTaskPaneWidth": 300,
+    "defaultTaskPaneHeight": 600,
+    "autoShowTaskPanes": true,
+    "rememberTaskPanePositions": true
+  },
+  "matrix": {
+    "defaultText": "XXXX",
+    "maxRows": 100,
+    "maxColumns": 100,
+    "autoResizeCells": true
+  },
+  "colorPalette": {
+    "maxColors": 50,
+    "defaultColorSize": 24,
+    "autoSave": true
+  }
+}
+```
+
+## 📁 **Installation**
+
+1. **Build the project** in Visual Studio 2019 or later
+2. **Install the generated VSTO file** (`my-addin.vsto`)
+3. **Open PowerPoint** - you'll see a "PowerPoint Add in Tools" tab in the ribbon
+
+### **System Requirements**
+- Windows 10/11
+- Microsoft Office 2016 or later
+- .NET Framework 4.7.2 or later
+- PowerPoint application
+
+## 🔧 **Development & Customization**
+
+### **Project Structure**
+```
+PP_AddIn/
+├── Core/                    # Core business logic
+├── Services/               # Service layer (error handling, etc.)
+├── Constants/              # Application constants and configuration
+├── Models/                 # Data models
+├── icons/                  # Icon resources
+└── bin/Debug/             # Build output
+```
+
+### **Key Components**
+- **ErrorHandlerService**: Centralized error handling and logging
+- **ConfigurationManager**: Application configuration management
+- **PaneManager**: Task pane lifecycle management
+- **ServiceContainer**: Dependency injection container
+
+### **Building from Source**
+1. Clone the repository
+2. Open `my-addin.sln` in Visual Studio
+3. Restore NuGet packages
+4. Build the solution
+5. The VSTO file will be generated in `bin/Debug/`
+
+## 📝 **Usage**
 
 - **Ribbon Access**: Use the "PowerPoint Add in Tools" tab for quick access to all features
 - **Task Pane**: Click "Show Tools" to open the comprehensive task pane with all tools
-- **Images**: The add-in automatically handles image loading with emoji fallbacks for maximum compatibility
+- **Keyboard Shortcuts**: Ctrl+V for matrix paste operations
+- **Context Menus**: Right-click on shapes for additional options
 
-## Technical Details
+## 🐛 **Troubleshooting**
 
-- **Framework**: .NET Framework 4.7.2
-- **Office Version**: Compatible with PowerPoint 2016+
-- **Deployment**: VSTO Click-Once deployment
-- **Architecture**: Clean separation with services layer for maintainability
+### **Log Files**
+Logs are stored in: `%APPDATA%\PowerPointAddIn\Logs\`
+- Check the latest log file for error details
+- Logs are automatically rotated and cleaned up
 
-## Development
+### **Common Issues**
+1. **Add-in not loading**: Check Office version compatibility
+2. **Task panes not showing**: Verify Office trust center settings
+3. **Matrix operations failing**: Ensure shapes have proper matrix tags
 
-The add-in follows clean architecture principles:
-- **Services**: Business logic separation
-- **Models**: Data structures for shapes and slides
-- **UI**: Task pane and ribbon integration
-- **Error Handling**: Comprehensive error management with graceful degradation
+### **Error Reporting**
+- All errors are logged with detailed information
+- User-friendly error messages are displayed
+- Debug information is available in log files
+
+## 🤝 **Contributing**
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📄 **License**
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🔗 **Support**
+
+- **Issues**: Report bugs and feature requests via GitHub Issues
+- **Documentation**: Check the IMPLEMENTATION_GUIDE.md for detailed technical information
+- **Configuration**: Modify `appsettings.json` for customization
+
+---
+
+**Version**: 1.0.0.3  
+**Last Updated**: December 2024  
+**Compatibility**: PowerPoint 2016+ / Office 365

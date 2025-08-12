@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.IO;
+using System.Text;
 using PowerPointAddIn.Constants;
 
 namespace PowerPointAddIn.Services
@@ -10,6 +12,29 @@ namespace PowerPointAddIn.Services
     /// </summary>
     public class ErrorHandlerService : IErrorHandlerService
     {
+        private readonly string _logFilePath;
+        private readonly object _logLock = new object();
+
+        public ErrorHandlerService()
+        {
+            try
+            {
+                // Create logs directory in user's AppData folder
+                string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                string logsDir = Path.Combine(appDataPath, "PowerPointAddIn", "Logs");
+                Directory.CreateDirectory(logsDir);
+                
+                // Create log file with date stamp
+                string logFileName = $"PowerPointAddIn_{DateTime.Now:yyyy-MM-dd}.log";
+                _logFilePath = Path.Combine(logsDir, logFileName);
+            }
+            catch
+            {
+                // Fallback to temp directory if AppData fails
+                _logFilePath = Path.Combine(Path.GetTempPath(), "PowerPointAddIn.log");
+            }
+        }
+
         /// <summary>
         /// Handles exceptions with user-friendly error messages
         /// </summary>
@@ -37,7 +62,28 @@ namespace PowerPointAddIn.Services
             // Write to debug output
             Debug.WriteLine(errorMessage);
 
-            // TODO: Add file logging or other logging mechanisms
+            // Write to file log
+            WriteToLogFile(errorMessage);
+        }
+
+        /// <summary>
+        /// Logs informational messages
+        /// </summary>
+        public void LogInfo(string message)
+        {
+            var infoMessage = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] INFO: {message}";
+            Debug.WriteLine(infoMessage);
+            WriteToLogFile(infoMessage);
+        }
+
+        /// <summary>
+        /// Logs warning messages
+        /// </summary>
+        public void LogWarning(string message)
+        {
+            var warningMessage = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] WARNING: {message}";
+            Debug.WriteLine(warningMessage);
+            WriteToLogFile(warningMessage);
         }
 
         /// <summary>
@@ -45,6 +91,7 @@ namespace PowerPointAddIn.Services
         /// </summary>
         public void ShowWarning(string message, string title = "Warning")
         {
+            LogWarning(message);
             MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
@@ -119,6 +166,70 @@ namespace PowerPointAddIn.Services
                 var message = userMessage ?? CreateErrorMessage(operationName, ex);
                 HandleError(ex, message);
                 return defaultValue;
+            }
+        }
+
+        /// <summary>
+        /// Writes message to log file with thread safety
+        /// </summary>
+        private void WriteToLogFile(string message)
+        {
+            try
+            {
+                lock (_logLock)
+                {
+                    File.AppendAllText(_logFilePath, message + Environment.NewLine, Encoding.UTF8);
+                }
+            }
+            catch (Exception ex)
+            {
+                // If file logging fails, fall back to debug output only
+                Debug.WriteLine($"Failed to write to log file: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Gets the current log file path
+        /// </summary>
+        public string GetLogFilePath()
+        {
+            return _logFilePath;
+        }
+
+        /// <summary>
+        /// Cleans up old log files (keeps last 30 days)
+        /// </summary>
+        public void CleanupOldLogs()
+        {
+            try
+            {
+                string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                string logsDir = Path.Combine(appDataPath, "PowerPointAddIn", "Logs");
+                
+                if (!Directory.Exists(logsDir)) return;
+
+                var cutoffDate = DateTime.Now.AddDays(-30);
+                var logFiles = Directory.GetFiles(logsDir, "PowerPointAddIn_*.log");
+
+                foreach (var logFile in logFiles)
+                {
+                    try
+                    {
+                        var fileInfo = new FileInfo(logFile);
+                        if (fileInfo.CreationTime < cutoffDate)
+                        {
+                            File.Delete(logFile);
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore individual file deletion errors
+                    }
+                }
+            }
+            catch
+            {
+                // Ignore cleanup errors
             }
         }
     }

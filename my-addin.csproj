@@ -30,10 +30,10 @@
     <DefineConstants>VSTO40;UseOfficeInterop</DefineConstants>
     <ResolveComReferenceSilent>true</ResolveComReferenceSilent>
     <StartAction>Program</StartAction>
-    <StartProgram>C:\Program Files\Microsoft Office\Office16\POWERPNT.EXE</StartProgram>
+    <StartProgram>$(ProgramFiles)\Microsoft Office\root\Office16\POWERPNT.EXE</StartProgram>
     <IsWebBootstrapper>False</IsWebBootstrapper>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <PublishUrl>C:\Users\Administrator\Pictures\</PublishUrl>
+    <PublishUrl>$(ProjectDir)bin\$(Configuration)\</PublishUrl>
     <InstallUrl />
     <TargetCulture>en</TargetCulture>
     <ApplicationVersion>1.0.0.3</ApplicationVersion>
