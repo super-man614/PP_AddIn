@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
@@ -247,7 +248,17 @@ namespace my_addin
                 // Load position button images
                 LoadPositionButtonImages();
 
-                // Shape, Color, and Text sections use emoji text instead of images
+                // Load navigation button images
+                LoadNavigationButtonImages();
+
+                // Load text button images
+                LoadTextButtonImages();
+
+                // Load color and shape button images
+                LoadColorButtonImages();
+                LoadShapeButtonImages();
+
+                // Ensure emoji fallbacks only where images are missing
                 SetupEmojiButtons();
             }
             catch (Exception ex)
@@ -263,48 +274,8 @@ namespace my_addin
         /// </summary>
         private void LoadImageForButton(Button button, string imageName, string subfolder = "")
         {
-            try
-            {
-                // Add null check for button
-                if (button == null)
-                {
-                    System.Diagnostics.Debug.WriteLine($"Button is null when trying to load image {imageName}");
-                    return;
-                }
-
-                string imagePath = FindImagePath(imageName, subfolder);
-                if (!string.IsNullOrEmpty(imagePath) && System.IO.File.Exists(imagePath))
-                {
-                    try
-                    {
-                        // Successfully load the image
-                        button.BackgroundImage = Image.FromFile(imagePath);
-                        button.BackgroundImageLayout = ImageLayout.Stretch;
-                        button.Text = ""; // Clear text to show image
-                        System.Diagnostics.Debug.WriteLine($"Loaded image: {imageName}");
-                    }
-                    catch (Exception imgEx)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Failed to load image file {imagePath}: {imgEx.Message}");
-                        // Keep any existing text/emoji as fallback
-                    }
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine($"Image not found: {imageName} in {subfolder} - keeping text/emoji fallback");
-                    // Image not found - button will use its designed text/emoji
-                    button.BackgroundImage = null; // Ensure no background image
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error in LoadImageForButton for {imageName}: {ex.Message}");
-                // Ensure button remains functional with text fallback
-                if (button != null)
-                {
-                    button.BackgroundImage = null;
-                }
-            }
+            // Delegate to overload that supports embedded resources with a sensible default
+            LoadImageForButton(button, imageName, subfolder, true);
         }
 
         /// <summary>
@@ -412,22 +383,23 @@ namespace my_addin
         {
             try
             {
-                // Wizard button images mapping
-                var wizardButtons = new Dictionary<Button, string>
+                // Use simpler, clearer icons with consistent visual style
+                var wizardButtons = new List<(Button button, string file, string folder)>
                 {
-                    { btnAgenda, "agenda.png" },
-                    { btnMaster, "master.png" },
-                    { btnElement, "element.png" },
-                    { btnText, "text.png" },
-                    { btnFormat, "format.png" },
-                    { btnMap, "map.png" }
+                    (btnAgenda, "icons8-agenda-67.png", "wizzards"),
+                    (btnMaster, "icons8-color-palette-48.png", "elements"),
+                    (btnElement, "icons8-object-50.png", "elements"),
+                    (btnText, "icons8-bold.png", "text"),
+                    (btnFormat, "icons8-apply-64.png", "position"),
+                    (btnMap, "map.png", "wizzards")
                 };
 
-                foreach (var button in wizardButtons)
+                foreach (var (button, file, folder) in wizardButtons)
                 {
-                    if (button.Key != null)
+                    if (button != null)
                     {
-                        LoadImageForButton(button.Key, button.Value, "wizzards", true);
+                        LoadImageForButton(button, file, folder, true);
+                        button.Text = string.Empty; // ensure no overlay text
                     }
                 }
             }
@@ -444,41 +416,34 @@ namespace my_addin
         {
             try
             {
-                // Shape section buttons - ensure emoji text is visible and no background image
-                // (Text already set in Designer, just ensure no background images)
+                // Shape section buttons - only set fallback emoji if no image is present
                 var shapeButtons = new Button[]
                 {
-                    btnAlignProcessChain,    // "🔗"
-                    btnAlignAngles,          // "📐"
-                    btnAlignToProcessArrow,  // "➡️"
-                    btnAdjustPentagonHeader, // "🔷"
-                    btnAlignBlockArrows,     // "▶️"
-                    btnAlignRoundedRectangleRadius // "🔲"
+                    btnAlignProcessChain,
+                    btnAlignAngles,
+                    btnAlignToProcessArrow,
+                    btnAdjustPentagonHeader,
+                    btnAlignBlockArrows,
+                    btnAlignRoundedRectangleRadius
                 };
 
                 foreach (var button in shapeButtons)
                 {
-                    if (button != null)
+                    if (button != null && button.BackgroundImage == null)
                     {
-                        button.BackgroundImage = null; // Remove any background image
                         button.UseVisualStyleBackColor = false;
-                        
-                        // Ensure emoji font is set correctly
                         if (button.Font == null || !button.Font.Name.Contains("Emoji"))
                         {
                             button.Font = new System.Drawing.Font("Segoe UI Emoji", 7F);
                         }
-                        
-                        // Ensure text is visible and not empty
                         if (string.IsNullOrEmpty(button.Text))
                         {
-                            // Set default emoji if text is missing
                             switch (button.Name)
                             {
                                 case "btnAlignProcessChain":
                                     button.Text = "📐";
                                     break;
-                                case "btnAlignAngles": 
+                                case "btnAlignAngles":
                                     button.Text = "📐";
                                     break;
                                 case "btnAlignToProcessArrow":
@@ -495,53 +460,88 @@ namespace my_addin
                                     break;
                             }
                         }
-                        
-                        System.Diagnostics.Debug.WriteLine($"✅ Shape button {button.Name}: text='{button.Text}', font={button.Font.Name}");
                     }
                 }
 
-                // Color section buttons - ensure emoji text is visible
-                // (Text already set in Designer, just ensure no background images)
+                // Color section buttons - only fallback if no image
                 var colorButtons = new Button[]
                 {
-                    btnFillColor,    // "🎨"
-                    btnTextColor,    // "A"
-                    btnOutlineColor  // "◯"
+                    btnFillColor,
+                    btnTextColor,
+                    btnOutlineColor
                 };
 
                 foreach (var button in colorButtons)
                 {
-                    if (button != null)
+                    if (button != null && button.BackgroundImage == null)
                     {
-                        button.BackgroundImage = null; // Remove any background image
-                        button.UseVisualStyleBackColor = false;
-                        // Text is already set in Designer file
-                    }
-                }
-
-                // Text section buttons - ensure emoji text is visible
-                // (Text already set in Designer, just ensure no background images)
-                    var textButtons = new Button[] 
-                    { 
-                    btnBold,        // "B"
-                    btnItalic,      // "I"
-                    btnUnderline,   // "U"
-                    btnBullets,     // "•"
-                    btnWrapText,    // "📦"
-                    btnNoWrapText   // "📄"
-                    };
-
-                    foreach (var button in textButtons)
-                    {
-                        if (button != null)
+                        if (button.Font == null || !button.Font.Name.Contains("Emoji"))
                         {
-                        button.BackgroundImage = null; // Remove any background image
-                        button.UseVisualStyleBackColor = false;
-                        // Text is already set in Designer file
+                            button.Font = new System.Drawing.Font("Segoe UI Emoji", 7F);
+                        }
+                        if (string.IsNullOrEmpty(button.Text))
+                        {
+                            switch (button.Name)
+                            {
+                                case "btnFillColor":
+                                    button.Text = "🎨";
+                                    break;
+                                case "btnTextColor":
+                                    button.Text = "A";
+                                    break;
+                                case "btnOutlineColor":
+                                    button.Text = "◯";
+                                    break;
+                            }
+                        }
                     }
                 }
 
-                System.Diagnostics.Debug.WriteLine("Emoji buttons setup completed for Shape, Color, and Text sections");
+                // Text section buttons - only fallback if no image
+                var textButtons = new Button[]
+                {
+                    btnBold,
+                    btnItalic,
+                    btnUnderline,
+                    btnBullets,
+                    btnWrapText,
+                    btnNoWrapText
+                };
+
+                foreach (var button in textButtons)
+                {
+                    if (button != null && button.BackgroundImage == null)
+                    {
+                        if (button.Font == null || !button.Font.Name.Contains("Emoji"))
+                        {
+                            button.Font = new System.Drawing.Font("Segoe UI Emoji", 7F);
+                        }
+                        if (string.IsNullOrEmpty(button.Text))
+                        {
+                            switch (button.Name)
+                            {
+                                case "btnBold":
+                                    button.Text = "B";
+                                    break;
+                                case "btnItalic":
+                                    button.Text = "I";
+                                    break;
+                                case "btnUnderline":
+                                    button.Text = "U";
+                                    break;
+                                case "btnBullets":
+                                    button.Text = "•";
+                                    break;
+                                case "btnWrapText":
+                                    button.Text = "↩";
+                                    break;
+                                case "btnNoWrapText":
+                                    button.Text = "↪";
+                                    break;
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -5972,13 +5972,63 @@ namespace my_addin
         }
 
         /// <summary>
+        /// Loads images for navigation buttons
+        /// </summary>
+        private void LoadNavigationButtonImages()
+        {
+            try
+            {
+                // Zoom icons from navigation folder
+                LoadImageForButton(btnZoomIn, "icons8-zoom-in.png", "navigation", true);
+                LoadImageForButton(btnZoomOut, "icons8-zoom-out.png", "navigation", true);
+                // Fit to window icon is in the position folder
+                LoadImageForButton(btnFitToWindow, "icons8-fit-to-page-50.png", "position", true);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading navigation button images: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Loads images for text buttons
+        /// </summary>
+        private void LoadTextButtonImages()
+        {
+            try
+            {
+                // Map to existing files in icons/text
+                var textButtons = new Dictionary<Button, string>
+                {
+                    { btnBold, "icons8-bold.png" },
+                    { btnItalic, "icons8-italic.png" },
+                    { btnUnderline, "icons8-underline.png" },
+                    { btnBullets, "icons8-bullet.png" },
+                    { btnWrapText, "icons8-word-wrap.png" },
+                    { btnNoWrapText, "icons8-no-wrap.png" }
+                };
+
+                foreach (var button in textButtons)
+                {
+                    if (button.Key != null)
+                    {
+                        LoadImageForButton(button.Key, button.Value, "text", true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading text button images: {ex.Message}");
+            }
+        }
+
+        /// <summary>
         /// Loads images for position buttons
         /// </summary>
         private void LoadPositionButtonImages()
         {
             try
             {
-                // Position button images mapping
                 var positionButtons = new Dictionary<Button, string>
                 {
                     { btnAlignLeft, "icons8-align-left-64.png" },
@@ -5996,17 +6046,18 @@ namespace my_addin
                     { btnDistributeVertical, "icons8-align-justify-64.png" },
                     { btnMatchBoth, "icons8-enlarge-50.png" },
                     { btnMatchHeight, "icons8-height-50.png" },
-                    { btnMatchWidth, "icons8-width-50.png" },
+                    { btnMatchWidth, "icons8-width-48.png" },
                     { btnMakeVertical, "icons8-rotate-left-48.png" },
                     { btnMakeHorizontal, "icons8-rotate-right-48.png" },
                     { btnSwapLocations, "icons8-swap-50.png" },
-                    { btnGoldenCanon, "icons8-swap-50.png" },
+                    { btnGoldenCanon, "icons8-bed-size-48.png" },
                     { btnAlignMatrix, "icons8-matrix-50.png" },
                     { btnSliceShape, "icons8-slice-50.png" },
                     { btnDuplicateRight, "icons8-duplicate-50.png" },
                     { btnCenterTopLeft, "icons8-snap-to-center-48.png" },
                     { btnSavePosition, "icons8-save-50.png" },
-                    { btnApplyPosition, "icons8-apply-64.png" }
+                    { btnApplyPosition, "icons8-apply-64.png" },
+                    { btnRemoveMarginObjects, "icons8-fit-to-page-50.png" }
                 };
 
                 foreach (var button in positionButtons)
@@ -6020,6 +6071,61 @@ namespace my_addin
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error loading position button images: {ex.Message}");
+            }
+        }
+
+        // Load icons for color buttons from icons/color
+        private void LoadColorButtonImages()
+        {
+            try
+            {
+                var colorButtons = new Dictionary<Button, string>
+                {
+                    { btnFillColor, "icons8-fill.png" },
+                    { btnTextColor, "icons8-text.png" },
+                    { btnOutlineColor, "icons8-outline.png" }
+                };
+
+                foreach (var button in colorButtons)
+                {
+                    if (button.Key != null)
+                    {
+                        LoadImageForButton(button.Key, button.Value, "color", true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading color button images: {ex.Message}");
+            }
+        }
+
+        // Load icons for shape buttons from icons/shape
+        private void LoadShapeButtonImages()
+        {
+            try
+            {
+                var shapeButtons = new Dictionary<Button, string>
+                {
+                    { btnAlignProcessChain, "icons8-alignProcessChain.png" },
+                    { btnAlignAngles, "icons8-alignAngles.png" },
+                    { btnAlignToProcessArrow, "icons8-alignToProcessArrow.png" },
+                    { btnAdjustPentagonHeader, "icons8-pentagonHeader.png" },
+                    { btnAlignBlockArrows, "icons8-alignBlockArrows.png" },
+                    { btnAlignRoundedRectangleRadius, "icons8-roundedRectangleRadius.png" }
+                };
+
+                foreach (var button in shapeButtons)
+                {
+                    if (button.Key != null)
+                    {
+                        LoadImageForButton(button.Key, button.Value, "shape", true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading shape button images: {ex.Message}");
             }
         }
 
@@ -6094,11 +6200,20 @@ namespace my_addin
 
                 if (loadedImage != null)
                 {
-                    button.BackgroundImage = loadedImage;
+                    // Scale to 16x16 for crispness inside a 20x20 button
+                    var scaled = new Bitmap(loadedImage, new Size(16, 16));
+                    scaled.SetResolution(96, 96);
+                    button.Image = scaled;
+                    button.ImageAlign = ContentAlignment.MiddleCenter;
+                    button.BackgroundImage = null;
                     button.BackgroundImageLayout = ImageLayout.Zoom;
+                    button.Text = string.Empty;
+                    button.FlatAppearance.BorderSize = 0;
+                    button.UseVisualStyleBackColor = false;
                 }
                 else
                 {
+                    button.Image = null;
                     button.BackgroundImage = null;
                     System.Diagnostics.Debug.WriteLine($"❌ Image not found: {imageName} in {subfolder}");
                 }

@@ -41,16 +41,22 @@ namespace my_addin
 <customUI xmlns='http://schemas.microsoft.com/office/2009/07/customui' onLoad='Ribbon_Load'>
   <ribbon>
     <tabs>
-      <tab id='PowerPointToolsTab' label='PowerPoint Tools'>
-        <group id='TestGroup' label='Test'>
-          <button id='TestRibbonButton' 
-                  label='Test Ribbon' 
-                  size='large'
-                  onAction='TestRibbon_Click'
-                  imageMso='HappyFace'
-                  screentip='Test if ribbon is working' />
-        </group>
-        <group id='TaskPaneGroup' label='Task Pane'>
+             <tab id='PowerPointToolsTab' label='PowerPoint Tools'>
+         <group id='TestGroup' label='Test'>
+           <button id='TestRibbonButton' 
+                   label='Test Ribbon' 
+                   size='large'
+                   onAction='TestRibbon_Click'
+                   imageMso='HappyFace'
+                   screentip='Test if ribbon is working' />
+           <button id='ObjectTemplatesButton'
+                   label='Object Templates'
+                   size='large'
+                   onAction='ObjectTemplates_Click'
+                   imageMso='ObjectsSelect'
+                   screentip='Browse and insert from object templates' />
+         </group>
+         <group id='TaskPaneGroup' label='Task Pane'>
           <button id='ToggleTaskPaneButton' 
                   label='Show Tools' 
                   size='large'
@@ -189,6 +195,28 @@ namespace my_addin
             }
         }
 
+        // Object Templates
+        public void ObjectTemplates_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                using (var dlg = new ObjectTemplatesDialog())
+                {
+                    var result = dlg.ShowDialog();
+                    if (result == DialogResult.OK)
+                    {
+                        var chosen = dlg.SelectedTemplateName;
+                        System.Diagnostics.Debug.WriteLine($"Template chosen: {chosen}");
+                        // TODO: Insert the chosen template into the slide
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error opening ObjectTemplatesDialog: {ex.Message}");
+            }
+        }
+
         public void ColorPaletteToggle_Click(Office.IRibbonControl control)
         {
             try
@@ -253,7 +281,6 @@ namespace my_addin
         public void MatchWidth_Click(Office.IRibbonControl control) { FormatTools.MatchWidth(); }
         public void MatchHeight_Click(Office.IRibbonControl control) { FormatTools.MatchHeight(); }
         public void MatchSize_Click(Office.IRibbonControl control) { FormatTools.MatchSize(); }
-        
         public void MatchColors_Click(Office.IRibbonControl control) { FormatTools.MatchFill(); }
         public void MatchFill_Click(Office.IRibbonControl control) { FormatTools.MatchFill(); }
         public void MatchFont_Click(Office.IRibbonControl control) { FormatTools.MatchFontColor(); }

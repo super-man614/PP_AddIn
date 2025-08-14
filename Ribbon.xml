@@ -155,14 +155,20 @@
                   supertip="Insert maps and diagrams" />
         </group>
         
-        <!-- Smart Elements Group -->
-        <group id="SmartElementsGroup" label="Smart Elements">
-          <button id="ChartButton"
-                  label="Chart"
-                  size="normal"
-                  onAction="Chart_Click"
-                  imageMso="ChartInsert"
-                  supertip="Insert charts and graphs" />
+                 <!-- Smart Elements Group -->
+         <group id="SmartElementsGroup" label="Smart Elements">
+           <button id="ObjectTemplatesButton"
+                   label="Object Templates"
+                   size="large"
+                   onAction="ObjectTemplates_Click"
+                   imageMso="ObjectsSelect"
+                   supertip="Browse and insert from object templates" />
+           <button id="ChartButton"
+                   label="Chart"
+                   size="normal"
+                   onAction="Chart_Click"
+                   imageMso="ChartInsert"
+                   supertip="Insert charts and graphs" />
           <button id="DiagramButton"
                   label="Diagram"
                   size="normal"

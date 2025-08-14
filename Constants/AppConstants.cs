@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
+using PowerPointAddIn.Models;
 
 namespace PowerPointAddIn.Constants
 {
@@ -27,8 +29,8 @@ namespace PowerPointAddIn.Constants
         
         // Office Integration
         public const string OFFICE_APP_NAME = "POWERPNT.EXE";
-        public const string OFFICE_ROOT_PATH = @"C:\Program Files\Microsoft Office\root\Office16";
-        public const string OFFICE_ALTERNATE_PATH = @"C:\Program Files\Microsoft Office\Office16";
+        public const string OFFICE_ROOT_PATH = @"C:\\Program Files\\Microsoft Office\\root\\Office16";
+        public const string OFFICE_ALTERNATE_PATH = @"C:\\Program Files\\Microsoft Office\\Office16";
         
         // UI Configuration
         public const int DEFAULT_TASKPANE_WIDTH = 300;
@@ -60,14 +62,52 @@ namespace PowerPointAddIn.Constants
         public const int OPERATION_TIMEOUT_MS = 30000;
         
         // File Operations
-        public const string[] SUPPORTED_IMAGE_FORMATS = { ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".ico" };
-        public const string[] SUPPORTED_DOCUMENT_FORMATS = { ".pptx", ".ppt", ".pdf", ".html" };
+        public static readonly string[] SUPPORTED_IMAGE_FORMATS = { ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".ico" };
+        public static readonly string[] SUPPORTED_DOCUMENT_FORMATS = { ".pptx", ".ppt", ".pdf", ".html" };
         public const int MAX_FILE_SIZE_MB = 100;
         
         // Network and Updates
         public const bool CHECK_FOR_UPDATES = true;
         public const int UPDATE_CHECK_INTERVAL_DAYS = 7;
         public const string UPDATE_CHECK_URL = "https://api.example.com/updates";
+
+        // User messages used across services
+        public static class Messages
+        {
+            public const string NoActivePresentation = "No active presentation. Please open or create a presentation first.";
+            public const string NoSelectedShapes = "Please select one or more shapes to perform this action.";
+            public const string InsufficientShapes = "Please select at least {0} shapes to perform this action.";
+            public const string SuccessTitle = "Success";
+        }
+
+        // Measurement-related constants
+        public static class Measurements
+        {
+            public const float PointsPerInch = 72f;
+            public const double ClosestPresetTolerance = 0.5; // inches
+        }
+
+        // Common slide size presets mapped by type
+        public static readonly Dictionary<SlideSizeType, SlideSizeInfo> SlideSizePresets = new Dictionary<SlideSizeType, SlideSizeInfo>
+        {
+            { SlideSizeType.Standard,         new SlideSizeInfo(10m,    7.5m,  "4:3 Standard",       SlideSizeType.Standard) },
+            { SlideSizeType.Widescreen16x9,    new SlideSizeInfo(13.3m,  7.5m,  "16:9 Widescreen",     SlideSizeType.Widescreen16x9) },
+            { SlideSizeType.Widescreen16x10,   new SlideSizeInfo(12.8m,  8m,    "16:10 Widescreen",    SlideSizeType.Widescreen16x10) },
+            { SlideSizeType.A4Portrait,        new SlideSizeInfo(8.27m, 11.69m, "A4 Portrait",         SlideSizeType.A4Portrait) },
+            { SlideSizeType.A4Landscape,       new SlideSizeInfo(11.69m, 8.27m, "A4 Landscape",        SlideSizeType.A4Landscape) },
+            { SlideSizeType.A3Portrait,        new SlideSizeInfo(11.69m, 16.54m, "A3 Portrait",        SlideSizeType.A3Portrait) },
+            { SlideSizeType.A3Landscape,       new SlideSizeInfo(16.54m, 11.69m, "A3 Landscape",       SlideSizeType.A3Landscape) },
+            { SlideSizeType.LetterPortrait,    new SlideSizeInfo(8.5m,  11m,    "Letter Portrait",     SlideSizeType.LetterPortrait) },
+            { SlideSizeType.LetterLandscape,   new SlideSizeInfo(11m,    8.5m,  "Letter Landscape",    SlideSizeType.LetterLandscape) },
+            { SlideSizeType.Banner,            new SlideSizeInfo(8m,     1m,    "Banner",              SlideSizeType.Banner) },
+            { SlideSizeType.SocialMedia,       new SlideSizeInfo(1.91m,  1m,    "Social Media",        SlideSizeType.SocialMedia) },
+            { SlideSizeType.InstagramPost,     new SlideSizeInfo(1m,     1m,    "Instagram Post",      SlideSizeType.InstagramPost) },
+            { SlideSizeType.InstagramStory,    new SlideSizeInfo(1m,     1.78m, "Instagram Story",     SlideSizeType.InstagramStory) },
+            { SlideSizeType.YouTubeThumbnail,  new SlideSizeInfo(1.78m,  1m,    "YouTube Thumbnail",   SlideSizeType.YouTubeThumbnail) },
+            { SlideSizeType.LinkedInPost,      new SlideSizeInfo(1.91m,  1m,    "LinkedIn Post",       SlideSizeType.LinkedInPost) },
+            { SlideSizeType.TwitterPost,       new SlideSizeInfo(1.91m,  1m,    "Twitter Post",        SlideSizeType.TwitterPost) },
+            { SlideSizeType.FacebookPost,      new SlideSizeInfo(1.91m,  1m,    "Facebook Post",       SlideSizeType.FacebookPost) }
+        };
         
         /// <summary>
         /// Gets the Office executable path, trying multiple possible locations
@@ -86,12 +126,12 @@ namespace PowerPointAddIn.Constants
             
             // Try to find in Program Files
             string[] possiblePaths = {
-                @"C:\Program Files\Microsoft Office\root\Office16\POWERPNT.EXE",
-                @"C:\Program Files\Microsoft Office\Office16\POWERPNT.EXE",
-                @"C:\Program Files (x86)\Microsoft Office\root\Office16\POWERPNT.EXE",
-                @"C:\Program Files (x86)\Microsoft Office\Office16\POWERPNT.EXE",
-                @"C:\Program Files\Microsoft Office\root\Office15\POWERPNT.EXE",
-                @"C:\Program Files\Microsoft Office\Office15\POWERPNT.EXE"
+                @"C:\\Program Files\\Microsoft Office\\root\\Office16\\POWERPNT.EXE",
+                @"C:\\Program Files\\Microsoft Office\\Office16\\POWERPNT.EXE",
+                @"C:\\Program Files (x86)\\Microsoft Office\\root\\Office16\\POWERPNT.EXE",
+                @"C:\\Program Files (x86)\\Microsoft Office\\Office16\\POWERPNT.EXE",
+                @"C:\\Program Files\\Microsoft Office\\root\\Office15\\POWERPNT.EXE",
+                @"C:\\Program Files\\Microsoft Office\\Office15\\POWERPNT.EXE"
             };
             
             foreach (string path in possiblePaths)

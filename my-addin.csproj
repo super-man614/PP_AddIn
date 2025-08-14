@@ -33,10 +33,10 @@
     <StartProgram>$(ProgramFiles)\Microsoft Office\root\Office16\POWERPNT.EXE</StartProgram>
     <IsWebBootstrapper>False</IsWebBootstrapper>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <PublishUrl>$(ProjectDir)bin\$(Configuration)\</PublishUrl>
+    <PublishUrl>publish\</PublishUrl>
     <InstallUrl />
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.0.3</ApplicationVersion>
+    <ApplicationVersion>1.0.0.5</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
@@ -72,6 +72,11 @@
     <EmbeddedResource Include="icons\position\*.png" />
     <!-- Embed smart elements icons as resources -->
     <EmbeddedResource Include="icons\elements\*.png" />
+    <!-- Embed additional icon folders -->
+    <EmbeddedResource Include="icons\text\*.png" />
+    <EmbeddedResource Include="icons\color\*.png" />
+    <EmbeddedResource Include="icons\navigation\*.png" />
+    <EmbeddedResource Include="icons\shape\*.png" />
   </ItemGroup>
   <PropertyGroup>
     <!--
@@ -232,6 +237,7 @@
       <DependentUpon>TaskPaneControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="my-addin_1_TemporaryKey.pfx" />
+    <None Include="my-addin_2_TemporaryKey.pfx" />
     <None Include="my-addin_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -286,6 +292,9 @@
     <Compile Include="ButtonHoverUtility.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ObjectTemplatesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <!-- Clean Architecture Files -->
     <Compile Include="Constants\AppConstants.cs">
       <SubType>Code</SubType>
@@ -320,28 +329,28 @@
     <Compile Include="Services\ShapeService.cs">
       <SubType>Code</SubType>
     </Compile>
-    	<Compile Include="Core\ServiceContainer.cs">
-      	<SubType>Code</SubType>
-      	</Compile>
-    	<Compile Include="Core\PaneOrdering.cs">
-      	<SubType>Code</SubType>
-    	</Compile>
-        <Compile Include="Core\PaneManager.cs">
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Include="Core\ColorPalette.cs">
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Include="Core\ShapePresetStorage.cs">
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Include="Core\FormatTools.cs">
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Include="ColorPaletteEditorDialog.cs">
-          <SubType>Form</SubType>
-        </Compile>
-      	<EmbeddedResource Include="Ribbon.xml" />
+    <Compile Include="Core\ServiceContainer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\PaneOrdering.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\PaneManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\ColorPalette.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\ShapePresetStorage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\FormatTools.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ColorPaletteEditorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <EmbeddedResource Include="Ribbon.xml" />
     <!-- Icon files are loaded from the output directory at runtime -->
     <!-- Removed icon content references to prevent build errors -->
     <AppDesigner Include="Properties\" />
@@ -354,13 +363,19 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>my-addin_1_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>my-addin_2_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>81F21B3DFB7FED35A8F3F7D39BDA987CCB58B15A</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>B7892F6A6A8959CA7F35C711B52A39D85095CC49</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>my-addin_2_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DelaySign>false</DelaySign>
   </PropertyGroup>
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

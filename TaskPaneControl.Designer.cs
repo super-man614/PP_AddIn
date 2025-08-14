@@ -142,6 +142,7 @@ namespace my_addin
             this.btnBullets = new System.Windows.Forms.Button();
             this.btnWrapText = new System.Windows.Forms.Button();
             this.btnNoWrapText = new System.Windows.Forms.Button();
+            
             this.divider8 = new System.Windows.Forms.Panel();
             this.navigationPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.lblNavigationSection = new System.Windows.Forms.Label();
@@ -1729,9 +1730,8 @@ namespace my_addin
             this.btnFillColor.Name = "btnFillColor";
             this.btnFillColor.Size = new System.Drawing.Size(20, 20);
             this.btnFillColor.TabIndex = 1;
-            this.btnFillColor.Text = "🎨";
+            this.btnFillColor.Text = "";
             this.btnFillColor.UseVisualStyleBackColor = false;
-            this.btnFillColor.Click += new System.EventHandler(this.BtnFillColor_Click);
             // btnTextColor
             this.btnTextColor.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.btnTextColor.FlatAppearance.BorderSize = 0;
@@ -1744,9 +1744,8 @@ namespace my_addin
             this.btnTextColor.Name = "btnTextColor";
             this.btnTextColor.Size = new System.Drawing.Size(20, 20);
             this.btnTextColor.TabIndex = 2;
-            this.btnTextColor.Text = "A";
+            this.btnTextColor.Text = "";
             this.btnTextColor.UseVisualStyleBackColor = false;
-            this.btnTextColor.Click += new System.EventHandler(this.BtnTextColor_Click);
             // btnOutlineColor
             this.btnOutlineColor.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.btnOutlineColor.FlatAppearance.BorderSize = 0;
@@ -1760,9 +1759,8 @@ namespace my_addin
             this.btnOutlineColor.Name = "btnOutlineColor";
             this.btnOutlineColor.Size = new System.Drawing.Size(20, 20);
             this.btnOutlineColor.TabIndex = 3;
-            this.btnOutlineColor.Text = "◯";
+            this.btnOutlineColor.Text = "";
             this.btnOutlineColor.UseVisualStyleBackColor = false;
-            this.btnOutlineColor.Click += new System.EventHandler(this.BtnOutlineColor_Click);
             // divider7
             this.divider7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -1821,7 +1819,7 @@ namespace my_addin
             this.btnBold.Name = "btnBold";
             this.btnBold.Size = new System.Drawing.Size(20, 20);
             this.btnBold.TabIndex = 1;
-            this.btnBold.Text = "B";
+            this.btnBold.Text = "";
             this.btnBold.UseVisualStyleBackColor = false;
             this.btnBold.Click += new System.EventHandler(this.BtnBold_Click);
             // 
@@ -1839,7 +1837,7 @@ namespace my_addin
             this.btnItalic.Name = "btnItalic";
             this.btnItalic.Size = new System.Drawing.Size(20, 20);
             this.btnItalic.TabIndex = 2;
-            this.btnItalic.Text = "I";
+            this.btnItalic.Text = "";
             this.btnItalic.UseVisualStyleBackColor = false;
             this.btnItalic.Click += new System.EventHandler(this.BtnItalic_Click);
             // 
@@ -1857,7 +1855,7 @@ namespace my_addin
             this.btnUnderline.Name = "btnUnderline";
             this.btnUnderline.Size = new System.Drawing.Size(20, 20);
             this.btnUnderline.TabIndex = 3;
-            this.btnUnderline.Text = "U";
+            this.btnUnderline.Text = "";
             this.btnUnderline.UseVisualStyleBackColor = false;
             this.btnUnderline.Click += new System.EventHandler(this.BtnUnderline_Click);
             // 
@@ -1875,7 +1873,7 @@ namespace my_addin
             this.btnBullets.Name = "btnBullets";
             this.btnBullets.Size = new System.Drawing.Size(20, 20);
             this.btnBullets.TabIndex = 4;
-            this.btnBullets.Text = "•";
+            this.btnBullets.Text = "";
             this.btnBullets.UseVisualStyleBackColor = false;
             this.btnBullets.Click += new System.EventHandler(this.BtnBullets_Click);
             // 
@@ -1892,7 +1890,7 @@ namespace my_addin
             this.btnWrapText.Name = "btnWrapText";
             this.btnWrapText.Size = new System.Drawing.Size(20, 20);
             this.btnWrapText.TabIndex = 5;
-            this.btnWrapText.Text = "📦";
+            this.btnWrapText.Text = "";
             this.btnWrapText.UseVisualStyleBackColor = false;
             this.btnWrapText.Click += new System.EventHandler(this.BtnWrapText_Click);
             // 
@@ -1909,7 +1907,7 @@ namespace my_addin
             this.btnNoWrapText.Name = "btnNoWrapText";
             this.btnNoWrapText.Size = new System.Drawing.Size(20, 20);
             this.btnNoWrapText.TabIndex = 6;
-            this.btnNoWrapText.Text = "📄";
+            this.btnNoWrapText.Text = "";
             this.btnNoWrapText.UseVisualStyleBackColor = false;
             // this.btnNoWrapText.Visible = false;
             // 
@@ -1977,7 +1975,7 @@ namespace my_addin
             this.btnZoomIn.Name = "btnZoomIn";
             this.btnZoomIn.Size = new System.Drawing.Size(20, 20);
             this.btnZoomIn.TabIndex = 1;
-            this.btnZoomIn.Text = "➕";
+            this.btnZoomIn.Text = "";
             this.btnZoomIn.UseVisualStyleBackColor = false;
             this.btnZoomIn.Click += new System.EventHandler(this.BtnZoomIn_Click);
             // 
@@ -1995,7 +1993,7 @@ namespace my_addin
             this.btnZoomOut.Name = "btnZoomOut";
             this.btnZoomOut.Size = new System.Drawing.Size(20, 20);
             this.btnZoomOut.TabIndex = 2;
-            this.btnZoomOut.Text = "➖";
+            this.btnZoomOut.Text = "";
             this.btnZoomOut.UseVisualStyleBackColor = false;
             this.btnZoomOut.Click += new System.EventHandler(this.BtnZoomOut_Click);
             // 
@@ -2013,7 +2011,7 @@ namespace my_addin
             this.btnFitToWindow.Name = "btnFitToWindow";
             this.btnFitToWindow.Size = new System.Drawing.Size(20, 20);
             this.btnFitToWindow.TabIndex = 3;
-            this.btnFitToWindow.Text = "⛶";
+            this.btnFitToWindow.Text = "";
             this.btnFitToWindow.UseVisualStyleBackColor = false;
             this.btnFitToWindow.Click += new System.EventHandler(this.BtnFitToWindow_Click);
             // 

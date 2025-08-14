@@ -112,7 +112,24 @@ namespace my_addin
                 // Log selection changes for debugging
                 if (Sel != null)
                 {
-                    _errorHandler?.LogInfo($"Selection changed: Type={Sel.Type}, Count={Sel.Count}");
+                    int count = 0;
+                    switch (Sel.Type)
+                    {
+                        case PowerPoint.PpSelectionType.ppSelectionShapes:
+                            count = Sel.ShapeRange?.Count ?? 0;
+                            break;
+                        case PowerPoint.PpSelectionType.ppSelectionText:
+                            count = Sel.TextRange2 != null ? 1 : 0;
+                            break;
+                        case PowerPoint.PpSelectionType.ppSelectionSlides:
+                            count = Sel.SlideRange?.Count ?? 0;
+                            break;
+                        default:
+                            count = 0;
+                            break;
+                    }
+
+                    _errorHandler?.LogInfo($"Selection changed: Type={Sel.Type}, Count={count}");
                 }
             }
             catch (Exception ex)
@@ -125,7 +142,7 @@ namespace my_addin
         public bool TryPasteIntoMatrix()
         {
             PowerPoint.Application app = null;
-            PowerPoint.Window wnd = null;
+            PowerPoint.DocumentWindow wnd = null;
             PowerPoint.Selection sel = null;
             PowerPoint.ShapeRange range = null;
 
