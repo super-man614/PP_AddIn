@@ -15,6 +15,16 @@ namespace my_addin
         {
             try
             {
+                // Global exception handling
+                AppDomain.CurrentDomain.UnhandledException += (s, exArgs) =>
+                {
+                    try { (_errorHandler ?? new PowerPointAddIn.Services.ErrorHandlerService()).HandleError(exArgs.ExceptionObject as Exception ?? new Exception("Unknown unhandled exception"), "An unexpected error occurred"); } catch {}
+                };
+                System.Threading.Tasks.TaskScheduler.UnobservedTaskException += (s, exArgs) =>
+                {
+                    try { (_errorHandler ?? new PowerPointAddIn.Services.ErrorHandlerService()).HandleError(exArgs.Exception, "An unexpected task error occurred"); exArgs.SetObserved(); } catch {}
+                };
+
                 // Initialize error handler
                 _errorHandler = new ErrorHandlerService();
                 _errorHandler.LogInfo("=== PowerPoint Add-in Started ===");

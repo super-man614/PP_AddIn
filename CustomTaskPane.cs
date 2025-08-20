@@ -10,6 +10,55 @@ namespace my_addin
         private TaskPaneControl _taskPaneControl;
         private bool _isDisposed = false;
 
+        // File operation methods
+        public void ExecuteNewFile()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteNewFile();
+            }
+        }
+
+        public void ExecuteOpenFile()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteOpenFile();
+            }
+        }
+
+        public void ExecuteSaveFile()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteSaveFile();
+            }
+        }
+
+        public void ExecuteSaveAsFile()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteSaveAsFile();
+            }
+        }
+
+        public void ExecutePrint()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecutePrint();
+            }
+        }
+
+        public void ExecuteShare()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteShare();
+            }
+        }
+
         public CustomTaskPane()
         {
             try
@@ -146,6 +195,111 @@ namespace my_addin
             get { return _isDisposed; }
         }
 
+        // Wizard execution methods
+        public void ExecuteAgendaWizard()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteAgendaWizard();
+            }
+        }
+
+        public void ExecuteElementWizard()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteElementWizard();
+            }
+        }
+
+        public void ExecuteMasterWizard()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteMasterWizard();
+            }
+        }
+
+        public void ExecuteTextWizard()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteTextWizard();
+            }
+        }
+
+        public void ExecuteFormatWizard()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteFormatWizard();
+            }
+        }
+
+        public void ExecuteMapWizard()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteMapWizard();
+            }
+        }
+
+        public void ExecuteChartWizard()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteChartWizard();
+            }
+        }
+
+        public void ExecuteDiagramWizard()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteDiagramWizard();
+            }
+        }
+
+        public void ExecuteTableWizard()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteTableWizard();
+            }
+        }
+
+        public void ExecuteMatrixTableWizard()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteMatrixTableWizard();
+            }
+        }
+
+        public void ExecuteStickyNoteWizard()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteStickyNoteWizard();
+            }
+        }
+
+        public void ExecuteCitationWizard()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteCitationWizard();
+            }
+        }
+
+        public void ExecuteStandardObjectsWizard()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteStandardObjectsWizard();
+            }
+        }
+
         /// <summary>
         /// Disposes of the task pane resources
         /// </summary>
@@ -184,4 +338,4 @@ namespace my_addin
             _isDisposed = true;
         }
     }
-} 
+}

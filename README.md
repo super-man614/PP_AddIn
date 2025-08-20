@@ -188,3 +188,23 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 **Version**: 1.0.0.3  
 **Last Updated**: December 2024  
 **Compatibility**: PowerPoint 2016+ / Office 365
+
+
+## ✅ Ribbon UI now defined in XML
+
+- The add-in now uses **`Ribbon.xml` (embedded resource)** for the UI layout.
+- All callbacks and logic stay in `Ribbon.cs`.
+- To change the UI, edit `Ribbon.xml` and rebuild — no code changes required.
+- Example: the **File** group uses a vertical box layout:
+```xml
+<group id="FileGroup" label="File">
+  <box boxStyle="vertical">
+    <!-- buttons here -->
+  </box>
+</group>
+```
+
+## 🧰 Configurable Settings
+
+Default settings are shipped in `Config/appsettings.json`. At runtime, a user-specific copy is managed under:
+`%AppData%/PowerPointAddIn/Config/appsettings.json`.

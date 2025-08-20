@@ -77,6 +77,8 @@
     <EmbeddedResource Include="icons\color\*.png" />
     <EmbeddedResource Include="icons\navigation\*.png" />
     <EmbeddedResource Include="icons\shape\*.png" />
+    <!-- Embed Ribbon XML -->
+    <EmbeddedResource Include="Ribbon.xml" />
   </ItemGroup>
   <PropertyGroup>
     <!--
@@ -292,9 +294,6 @@
     <Compile Include="ButtonHoverUtility.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ObjectTemplatesDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <!-- Clean Architecture Files -->
     <Compile Include="Constants\AppConstants.cs">
       <SubType>Code</SubType>
@@ -350,7 +349,7 @@
     <Compile Include="ColorPaletteEditorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <EmbeddedResource Include="Ribbon.xml" />
+    <!-- <EmbeddedResource Include="Ribbon.xml" /> -->
     <!-- Icon files are loaded from the output directory at runtime -->
     <!-- Removed icon content references to prevent build errors -->
     <AppDesigner Include="Properties\" />
@@ -394,4 +393,9 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <ItemGroup>
+    <Content Include="Config\appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

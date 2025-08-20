@@ -11,6 +11,103 @@ namespace my_addin
 {
     public partial class TaskPaneControl : UserControl
     {
+        // Public methods to execute file operations from ribbon
+        public void ExecuteNewFile()
+        {
+            BtnNew_Click(this, EventArgs.Empty);
+        }
+
+        public void ExecuteOpenFile()
+        {
+            BtnOpen_Click(this, EventArgs.Empty);
+        }
+
+        public void ExecuteSaveFile()
+        {
+            BtnSave_Click(this, EventArgs.Empty);
+        }
+
+        public void ExecuteSaveAsFile()
+        {
+            BtnSaveAs_Click(this, EventArgs.Empty);
+        }
+
+        public void ExecutePrint()
+        {
+            BtnPrint_Click(this, EventArgs.Empty);
+        }
+
+        public void ExecuteShare()
+        {
+            BtnShare_Click(this, EventArgs.Empty);
+        }
+
+        // Public methods to execute wizards from ribbon
+        public void ExecuteAgendaWizard()
+        {
+            BtnAgenda_Click(this, EventArgs.Empty);
+        }
+
+        public void ExecuteElementWizard()
+        {
+            BtnElement_Click(this, EventArgs.Empty);
+        }
+
+        public void ExecuteMasterWizard()
+        {
+            BtnMaster_Click(this, EventArgs.Empty);
+        }
+
+        public void ExecuteTextWizard()
+        {
+            BtnTextWizard_Click(this, EventArgs.Empty);
+        }
+
+        public void ExecuteFormatWizard()
+        {
+            BtnFormat_Click(this, EventArgs.Empty);
+        }
+
+        public void ExecuteMapWizard()
+        {
+            BtnMap_Click(this, EventArgs.Empty);
+        }
+
+        public void ExecuteChartWizard()
+        {
+            BtnChart_Click(this, EventArgs.Empty);
+        }
+
+        public void ExecuteDiagramWizard()
+        {
+            BtnDiagram_Click(this, EventArgs.Empty);
+        }
+
+        public void ExecuteTableWizard()
+        {
+            BtnTable_Click(this, EventArgs.Empty);
+        }
+
+        public void ExecuteMatrixTableWizard()
+        {
+            BtnMatrixTable_Click(this, EventArgs.Empty);
+        }
+
+        public void ExecuteStickyNoteWizard()
+        {
+            BtnStickyNote_Click(this, EventArgs.Empty);
+        }
+
+        public void ExecuteCitationWizard()
+        {
+            BtnCitation_Click(this, EventArgs.Empty);
+        }
+
+        public void ExecuteStandardObjectsWizard()
+        {
+            BtnStandardObjects_Click(this, EventArgs.Empty);
+        }
+
         public TaskPaneControl()
         {
             try

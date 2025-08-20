@@ -1,10 +1,12 @@
 using System;
+using System.IO;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Office = Microsoft.Office.Core;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 using my_addin.Core;
+using System.Reflection; // For Missing.Value
 
 namespace my_addin
 {
@@ -32,101 +34,46 @@ namespace my_addin
             System.Diagnostics.Debug.WriteLine("Ribbon constructor called - Ribbon instance created");
         }
 
+        
         public string GetCustomUI(string ribbonID)
         {
-            System.Diagnostics.Debug.WriteLine("GetCustomUI called - returning ribbon XML with presets");
-            
-            // Return ribbon XML with presets
-            return @"<?xml version='1.0' encoding='UTF-8'?>
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("GetCustomUI called - loading Ribbon.xml embedded resource");
+                var asm = System.Reflection.Assembly.GetExecutingAssembly();
+                // Debug resource names to find the correct one
+                System.Diagnostics.Debug.WriteLine("Available resources:");
+                foreach (var resourceName in asm.GetManifestResourceNames())
+                {
+                    System.Diagnostics.Debug.WriteLine($"Resource: {resourceName}");
+                }
+                using (var stream = asm.GetManifestResourceStream("my_addin.Ribbon.xml"))
+                using (var reader = new System.IO.StreamReader(stream ?? throw new InvalidOperationException("Ribbon.xml not found as embedded resource")))
+                {
+                    // Log success
+                    System.Diagnostics.Debug.WriteLine("Successfully loaded Ribbon.xml");
+                    return reader.ReadToEnd();
+                }
+            }
+            catch (Exception ex)
+            {
+                // As a fallback, return a minimal ribbon with a single Test button
+                System.Diagnostics.Debug.WriteLine($"Failed to load Ribbon.xml: {ex.Message}");
+                return @"<?xml version='1.0' encoding='UTF-8'?>
 <customUI xmlns='http://schemas.microsoft.com/office/2009/07/customui' onLoad='Ribbon_Load'>
   <ribbon>
     <tabs>
-             <tab id='PowerPointToolsTab' label='PowerPoint Tools'>
-         <group id='TestGroup' label='Test'>
-           <button id='TestRibbonButton' 
-                   label='Test Ribbon' 
-                   size='large'
-                   onAction='TestRibbon_Click'
-                   imageMso='HappyFace'
-                   screentip='Test if ribbon is working' />
-           <button id='ObjectTemplatesButton'
-                   label='Object Templates'
-                   size='large'
-                   onAction='ObjectTemplates_Click'
-                   imageMso='ObjectsSelect'
-                   screentip='Browse and insert from object templates' />
-         </group>
-         <group id='TaskPaneGroup' label='Task Pane'>
-          <button id='ToggleTaskPaneButton' 
-                  label='Show Tools' 
-                  size='large'
-                  onAction='ToggleTaskPane_Click'
-                  imageMso='TaskPane'
-                  screentip='Toggle the PowerPoint Tools task pane' />
-        </group>
-        <group id='PresetsGroup' label='Presets'>
-          <splitButton id='Preset1Split'>
-            <button id='Preset1Apply' label='Preset 1' imageMso='StyleGallery' onAction='Preset1_Apply'/>
-            <menu id='Preset1Menu'>
-              <button id='Preset1Save' label='Save from Selection' imageMso='Save' onAction='Preset1_Save'/>
-              <button id='Preset1Clear' label='Clear' imageMso='Cancel' onAction='Preset1_Clear'/>
-            </menu>
-          </splitButton>
-          <splitButton id='Preset2Split'>
-            <button id='Preset2Apply' label='Preset 2' imageMso='StyleGallery' onAction='Preset2_Apply'/>
-            <menu id='Preset2Menu'>
-              <button id='Preset2Save' label='Save from Selection' imageMso='Save' onAction='Preset2_Save'/>
-              <button id='Preset2Clear' label='Clear' imageMso='Cancel' onAction='Preset2_Clear'/>
-            </menu>
-          </splitButton>
-          <splitButton id='Preset3Split'>
-            <button id='Preset3Apply' label='Preset 3' imageMso='StyleGallery' onAction='Preset3_Apply'/>
-            <menu id='Preset3Menu'>
-              <button id='Preset3Save' label='Save from Selection' imageMso='Save' onAction='Preset3_Save'/>
-              <button id='Preset3Clear' label='Clear' imageMso='Cancel' onAction='Preset3_Clear'/>
-            </menu>
-          </splitButton>
-        </group>
-        <group id='FormatToolsGroup' label='Format Tools'>
-          <splitButton id='UniformSizesSplit'>
-            <button id='UniformSizesButton' label='Uniform Sizes' imageMso='SizeToFit' onAction='UniformSizes_Click'/>
-            <menu id='UniformSizesMenu'>
-              <button id='MatchWidthButton' label='Width' imageMso='Width' onAction='MatchWidth_Click'/>
-              <button id='MatchHeightButton' label='Height' imageMso='Height' onAction='MatchHeight_Click'/>
-              <button id='MatchSizeButton' label='Size' imageMso='SizeToFit' onAction='MatchSize_Click'/>
-            </menu>
-          </splitButton>
-          <splitButton id='MatchColorsSplit'>
-            <button id='MatchColorsButton' label='Match Colors' imageMso='FontColorPicker' onAction='MatchColors_Click'/>
-            <menu id='MatchColorsMenu'>
-              <button id='MatchFillButton' label='Fill' imageMso='FillColor' onAction='MatchFill_Click'/>
-              <button id='MatchFontButton' label='Font' imageMso='FontColor' onAction='MatchFont_Click'/>
-              <button id='MatchOutlineButton' label='Outline' imageMso='LineColor' onAction='MatchOutline_Click'/>
-            </menu>
-          </splitButton>
-          <splitButton id='AlignFontsSplit'>
-            <button id='AlignFontsButton' label='Align Fonts' imageMso='FontDialog' onAction='AlignFonts_Click'/>
-            <menu id='AlignFontsMenu'>
-              <button id='MatchFontSizeButton' label='Size' imageMso='FontSize' onAction='MatchFontSize_Click'/>
-              <button id='MatchFontFamilyButton' label='Family' imageMso='FontFamily' onAction='MatchFontFamily_Click'/>
-              <button id='MatchFontColorButton' label='Color' imageMso='FontColor' onAction='MatchFontColor_Click'/>
-            </menu>
-          </splitButton>
-        </group>
-        <group id='ColorGroup' label='Colors'>
-          <toggleButton id='ColorPaletteToggleButton' 
-                        label='Color Palette' 
-                        size='large'
-                        onAction='ColorPaletteToggle_Click'
-                        getPressed='GetColorPalettePressed'
-                        imageMso='FontColorPicker'
-                        screentip='Toggle Color Palette task pane' />
+      <tab id='PowerPointToolsTab' label='PowerPoint Tools'>
+        <group id='FallbackGroup' label='Fallback'>
+          <button id='TestRibbonButton' label='Test Ribbon' size='large' onAction='TestRibbon_Click' imageMso='HappyFace' screentip='Fallback ribbon loaded'/>
         </group>
       </tab>
     </tabs>
   </ribbon>
 </customUI>";
+            }
         }
+
 
         public void Ribbon_Load(Office.IRibbonUI ribbonUI)
         {
@@ -195,28 +142,6 @@ namespace my_addin
             }
         }
 
-        // Object Templates
-        public void ObjectTemplates_Click(Office.IRibbonControl control)
-        {
-            try
-            {
-                using (var dlg = new ObjectTemplatesDialog())
-                {
-                    var result = dlg.ShowDialog();
-                    if (result == DialogResult.OK)
-                    {
-                        var chosen = dlg.SelectedTemplateName;
-                        System.Diagnostics.Debug.WriteLine($"Template chosen: {chosen}");
-                        // TODO: Insert the chosen template into the slide
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error opening ObjectTemplatesDialog: {ex.Message}");
-            }
-        }
-
         public void ColorPaletteToggle_Click(Office.IRibbonControl control)
         {
             try
@@ -281,6 +206,7 @@ namespace my_addin
         public void MatchWidth_Click(Office.IRibbonControl control) { FormatTools.MatchWidth(); }
         public void MatchHeight_Click(Office.IRibbonControl control) { FormatTools.MatchHeight(); }
         public void MatchSize_Click(Office.IRibbonControl control) { FormatTools.MatchSize(); }
+        
         public void MatchColors_Click(Office.IRibbonControl control) { FormatTools.MatchFill(); }
         public void MatchFill_Click(Office.IRibbonControl control) { FormatTools.MatchFill(); }
         public void MatchFont_Click(Office.IRibbonControl control) { FormatTools.MatchFontColor(); }
@@ -325,5 +251,411 @@ namespace my_addin
             }
             catch { }
         }
+
+        // File operation callbacks
+        public void New_Click(Office.IRibbonControl control)
+    {
+        try
+        {
+            if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+            {
+                _taskPaneInstance.ExecuteNewFile();
+            }
+            else
+            {
+                var app = Globals.ThisAddIn.Application;
+                app.Presentations.Add(Office.MsoTriState.msoTrue);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in New_Click: {ex.Message}");
+        }
+    }
+
+        public void Open_Click(Office.IRibbonControl control)
+    {
+        try
+        {
+            if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+            {
+                _taskPaneInstance.ExecuteOpenFile();
+            }
+            else
+            {
+                var app = Globals.ThisAddIn.Application;
+                app.Presentations.Open(Missing.Value, Office.MsoTriState.msoFalse, Office.MsoTriState.msoFalse, Office.MsoTriState.msoTrue);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in Open_Click: {ex.Message}");
+        }
+    }
+
+        public void Save_Click(Office.IRibbonControl control)
+    {
+        try
+        {
+            if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+            {
+                _taskPaneInstance.ExecuteSaveFile();
+            }
+            else
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActivePresentation != null)
+                {
+                    app.ActivePresentation.Save();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in Save_Click: {ex.Message}");
+        }
+    }
+
+        public void SaveAs_Click(Office.IRibbonControl control)
+    {
+        try
+        {
+            if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+            {
+                _taskPaneInstance.ExecuteSaveAsFile();
+            }
+            else
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActivePresentation != null)
+                {
+                    app.ActivePresentation.SaveAs();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in SaveAs_Click: {ex.Message}");
+        }
+    }
+
+        public void Print_Click(Office.IRibbonControl control)
+    {
+        try
+        {
+            if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+            {
+                _taskPaneInstance.ExecutePrint();
+            }
+            else
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActivePresentation != null)
+                {
+                    app.ActivePresentation.PrintOut();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in Print_Click: {ex.Message}");
+        }
+    }
+
+        public void Share_Click(Office.IRibbonControl control)
+    {
+        try
+        {
+            if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+            {
+                _taskPaneInstance.ExecuteShare();
+            }
+            else
+            {
+                // Fallback to message if task pane is not available
+                MessageBox.Show("Task pane is not available. Please open the task pane first.", "Share Presentation", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in Share_Click: {ex.Message}");
+        }
+    }
+
+        // Wizards callbacks
+        public void Agenda_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                // Delegate to task pane implementation
+                if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+                {
+                    _taskPaneInstance.ExecuteAgendaWizard();
+                }
+                else
+                {
+                    MessageBox.Show("Task pane is not available. Please open the task pane first.", "Agenda Wizard",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in Agenda_Click: {ex.Message}");
+            }
+        }
+
+        public void Master_Click(Office.IRibbonControl control)
+    {
+        try
+        {
+            // Delegate to task pane implementation
+            if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+            {
+                _taskPaneInstance.ExecuteMasterWizard();
+            }
+            else
+            {
+                MessageBox.Show("Task pane is not available. Please open the task pane first.", "Master Wizard",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in Master_Click: {ex.Message}");
+        }
+    }
+
+        public void Element_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                // Delegate to task pane implementation
+                if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+                {
+                    _taskPaneInstance.ExecuteElementWizard();
+                }
+                else
+                {
+                    MessageBox.Show("Task pane is not available. Please open the task pane first.", "Element Wizard",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in Element_Click: {ex.Message}");
+            }
+        }
+
+        public void TextWizard_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                // Delegate to task pane implementation
+                if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+                {
+                    _taskPaneInstance.ExecuteTextWizard();
+                }
+                else
+                {
+                    MessageBox.Show("Task pane is not available. Please open the task pane first.", "Text Wizard",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in TextWizard_Click: {ex.Message}");
+            }
+        }
+
+        public void Format_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                // Delegate to task pane implementation
+                if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+                {
+                    _taskPaneInstance.ExecuteFormatWizard();
+                }
+                else
+                {
+                    MessageBox.Show("Task pane is not available. Please open the task pane first.", "Format Wizard",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in Format_Click: {ex.Message}");
+            }
+        }
+
+        public void Map_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                // Delegate to task pane implementation
+                if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+                {
+                    _taskPaneInstance.ExecuteMapWizard();
+                }
+                else
+                {
+                    MessageBox.Show("Task pane is not available. Please open the task pane first.", "Map Wizard",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in Map_Click: {ex.Message}");
+            }
+        }
+
+        // Smart Elements callbacks
+        public void Chart_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                // Delegate to task pane implementation
+                if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+                {
+                    _taskPaneInstance.ExecuteChartWizard();
+                }
+                else
+                {
+                    MessageBox.Show("Task pane is not available. Please open the task pane first.", "Chart Wizard",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in Chart_Click: {ex.Message}");
+            }
+        }
+
+        public void Diagram_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                // Delegate to task pane implementation
+                if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+                {
+                    _taskPaneInstance.ExecuteDiagramWizard();
+                }
+                else
+                {
+                    MessageBox.Show("Task pane is not available. Please open the task pane first.", "Diagram Wizard",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in Diagram_Click: {ex.Message}");
+            }
+        }
+
+        public void Table_Click(Office.IRibbonControl control)
+    {
+        try
+        {
+            // Delegate to task pane implementation
+            if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+            {
+                _taskPaneInstance.ExecuteTableWizard();
+            }
+            else
+            {
+                MessageBox.Show("Task pane is not available. Please open the task pane first.", "Table Wizard",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in Table_Click: {ex.Message}");
+        }
+    }
+
+        public void MatrixTable_Click(Office.IRibbonControl control)
+    {
+        try
+        {
+            // Delegate to task pane implementation
+            if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+            {
+                _taskPaneInstance.ExecuteMatrixTableWizard();
+            }
+            else
+            {
+                MessageBox.Show("Task pane is not available. Please open the task pane first.", "Matrix Table Wizard",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in MatrixTable_Click: {ex.Message}");
+        }
+    }
+
+        public void StickyNote_Click(Office.IRibbonControl control)
+    {
+        try
+        {
+            // Delegate to task pane implementation
+            if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+            {
+                _taskPaneInstance.ExecuteStickyNoteWizard();
+            }
+            else
+            {
+                MessageBox.Show("Task pane is not available. Please open the task pane first.", "Sticky Note Wizard",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in StickyNote_Click: {ex.Message}");
+        }
+    }
+
+        public void Citation_Click(Office.IRibbonControl control)
+    {
+        try
+        {
+            // Delegate to task pane implementation
+            if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+            {
+                _taskPaneInstance.ExecuteCitationWizard();
+            }
+            else
+            {
+                MessageBox.Show("Task pane is not available. Please open the task pane first.", "Citation Wizard",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in Citation_Click: {ex.Message}");
+        }
+    }
+
+        public void StandardObjects_Click(Office.IRibbonControl control)
+    {
+        try
+        {
+            // Delegate to task pane implementation
+            if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+            {
+                _taskPaneInstance.ExecuteStandardObjectsWizard();
+            }
+            else
+            {
+                MessageBox.Show("Task pane is not available. Please open the task pane first.", "Standard Objects Wizard",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in StandardObjects_Click: {ex.Message}");
+        }
+    }
     }
 }
