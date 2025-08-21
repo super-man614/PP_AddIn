@@ -50,9 +50,22 @@ namespace my_addin
                 using (var stream = asm.GetManifestResourceStream("my_addin.Ribbon.xml"))
                 using (var reader = new System.IO.StreamReader(stream ?? throw new InvalidOperationException("Ribbon.xml not found as embedded resource")))
                 {
+                    string xmlContent = reader.ReadToEnd();
+                    // Define the output directory and file path
+                    string directory = @"C:\RibbnTest";
+                    string filePath = Path.Combine(directory, "Ribbon.xml");
+
+                    // Ensure the directory exists
+                    if(!Directory.Exists(directory))
+                    Directory.CreateDirectory(directory);
+
+                    // Write the XML content to the file
+                    File.WriteAllText(filePath, xmlContent);
+
                     // Log success
-                    System.Diagnostics.Debug.WriteLine("Successfully loaded Ribbon.xml");
-                    return reader.ReadToEnd();
+                    System.Diagnostics.Debug.WriteLine("Successfully loaded and saved Ribbon.xml to " + filePath);
+
+                    return xmlContent;
                 }
             }
             catch (Exception ex)
@@ -60,17 +73,17 @@ namespace my_addin
                 // As a fallback, return a minimal ribbon with a single Test button
                 System.Diagnostics.Debug.WriteLine($"Failed to load Ribbon.xml: {ex.Message}");
                 return @"<?xml version='1.0' encoding='UTF-8'?>
-<customUI xmlns='http://schemas.microsoft.com/office/2009/07/customui' onLoad='Ribbon_Load'>
-  <ribbon>
-    <tabs>
-      <tab id='PowerPointToolsTab' label='PowerPoint Tools'>
-        <group id='FallbackGroup' label='Fallback'>
-          <button id='TestRibbonButton' label='Test Ribbon' size='large' onAction='TestRibbon_Click' imageMso='HappyFace' screentip='Fallback ribbon loaded'/>
-        </group>
-      </tab>
-    </tabs>
-  </ribbon>
-</customUI>";
+    <customUI xmlns='http://schemas.microsoft.com/office/2009/07/customui' onLoad='Ribbon_Load'>
+      <ribbon>
+        <tabs>
+          <tab id='PowerPointToolsTab' label='PowerPoint Tools'>
+            <group id='FallbackGroup' label='Fallback'>
+              <button id='TestRibbonButton' label='Test Ribbon' size='large' onAction='TestRibbon_Click' imageMso='HappyFace' screentip='Fallback ribbon loaded'/>
+            </group>
+          </tab>
+        </tabs>
+      </ribbon>
+    </customUI>";
             }
         }
 
@@ -284,7 +297,8 @@ namespace my_addin
             else
             {
                 var app = Globals.ThisAddIn.Application;
-                app.Presentations.Open(Missing.Value, Office.MsoTriState.msoFalse, Office.MsoTriState.msoFalse, Office.MsoTriState.msoTrue);
+                    //app.Presentations.Open(Missing.Value, Office.MsoTriState.msoFalse, Office.MsoTriState.msoFalse, Office.MsoTriState.msoTrue);
+                    app.Presentations.Open(Missing.Value.ToString(), Office.MsoTriState.msoFalse, Office.MsoTriState.msoFalse, Office.MsoTriState.msoTrue);
             }
         }
         catch (Exception ex)
@@ -329,7 +343,7 @@ namespace my_addin
                 var app = Globals.ThisAddIn.Application;
                 if (app.ActivePresentation != null)
                 {
-                    app.ActivePresentation.SaveAs();
+                    app.ActivePresentation.Save();
                 }
             }
         }
@@ -594,6 +608,27 @@ namespace my_addin
             System.Diagnostics.Debug.WriteLine($"Error in MatrixTable_Click: {ex.Message}");
         }
     }
+
+        public void ExcelPaste_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                // Delegate to task pane implementation
+                if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+                {
+                    _taskPaneInstance.ExecuteExcelPaste();
+                }
+                else
+                {
+                    MessageBox.Show("Task pane is not available. Please open the task pane first.", "Excel Paste",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in ExcelPaste_Click: {ex.Message}");
+            }
+        }
 
         public void StickyNote_Click(Office.IRibbonControl control)
     {

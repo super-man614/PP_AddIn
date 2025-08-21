@@ -12,3 +12,17 @@ C:\Users\Administrator\Downloads\PP_AddIn\bin\Debug\Microsoft.Office.Tools.Commo
 C:\Users\Administrator\Downloads\PP_AddIn\obj\Debug\my-addin.csproj.CopyComplete
 C:\Users\Administrator\Downloads\PP_AddIn\obj\Debug\my-addin.dll
 C:\Users\Administrator\Downloads\PP_AddIn\obj\Debug\my-addin.pdb
+C:\Users\Administrator\Music\Projects\PP_AddIn\obj\Debug\my-addin.csproj.AssemblyReference.cache
+C:\Users\Administrator\Music\Projects\PP_AddIn\obj\Debug\my_addin.Properties.Resources.resources
+C:\Users\Administrator\Music\Projects\PP_AddIn\obj\Debug\my_addin.TaskPaneControl.resources
+C:\Users\Administrator\Music\Projects\PP_AddIn\obj\Debug\my-addin.csproj.GenerateResource.cache
+C:\Users\Administrator\Music\Projects\PP_AddIn\obj\Debug\my-addin.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Music\Projects\PP_AddIn\obj\Debug\my-addin.dll
+C:\Users\Administrator\Music\Projects\PP_AddIn\obj\Debug\my-addin.pdb
+C:\Users\Administrator\Music\Projects\PP_AddIn\bin\Debug\Config\appsettings.json
+C:\Users\Administrator\Music\Projects\PP_AddIn\bin\Debug\my-addin.dll
+C:\Users\Administrator\Music\Projects\PP_AddIn\bin\Debug\my-addin.pdb
+C:\Users\Administrator\Music\Projects\PP_AddIn\bin\Debug\my-addin.dll.manifest
+C:\Users\Administrator\Music\Projects\PP_AddIn\bin\Debug\my-addin.vsto
+C:\Users\Administrator\Music\Projects\PP_AddIn\bin\Debug\Microsoft.Office.Tools.Common.v4.0.Utilities.dll
+C:\Users\Administrator\Music\Projects\PP_AddIn\obj\Debug\my-addin.csproj.CopyComplete

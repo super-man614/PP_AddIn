@@ -276,6 +276,14 @@ namespace my_addin
             }
         }
 
+        public void ExecuteExcelPaste()
+        {
+            if (_taskPaneControl != null && !_isDisposed)
+            {
+                _taskPaneControl.ExecuteExcelPaste();
+            }
+        }
+
         public void ExecuteStickyNoteWizard()
         {
             if (_taskPaneControl != null && !_isDisposed)

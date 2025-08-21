@@ -1,450 +1,161 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load">
-  <ribbon>
-    <tabs>
-      <tab id="PowerPointToolsTab" label="PowerPoint Add in Tools">
-        
-        <!-- Task Pane Group -->
-        <group id="TaskPaneGroup" label="Task Pane">
-          <button id="ToggleTaskPaneButton" 
-                  label="Show Tools" 
-                  size="large"
-                  onAction="ToggleTaskPane_Click"
-                  imageMso="TaskPane"
-                  supertip="Toggle the PowerPoint Tools task pane on or off" />
-          <button id="TestRibbonButton" 
-                  label="Test Ribbon" 
-                  size="normal"
-                  onAction="TestRibbon_Click"
-                  imageMso="HappyFace"
-                  supertip="Test if ribbon is working" />
-        </group>
-        
-        <!-- File Operations Group -->
-        <group id="FileGroup" label="File">
-          <box boxStyle="vertical">
-<button id="NewButton"
-                  label="New"
-                  size="normal"
-                  onAction="New_Click"
-                  imageMso="FileNew"
-                  supertip="Create a new presentation" />
-          <button id="OpenButton"
-                  label="Open"
-                  size="normal"
-                  onAction="Open_Click"
-                  imageMso="FileOpenDialog"
-                  supertip="Open an existing presentation" />
-          <button id="SaveButton"
-                  label="Save"
-                  size="normal"
-                  onAction="Save_Click"
-                  imageMso="FileSave"
-                  supertip="Save the current presentation" />
-          <button id="SaveAsButton"
-                  label="Save As"
-                  size="normal"
-                  onAction="SaveAs_Click"
-                  imageMso="FileSaveAs"
-                  supertip="Save the presentation with a new name" />
-          <button id="PrintButton"
-                  label="Print"
-                  size="normal"
-                  onAction="Print_Click"
-                  imageMso="FilePrint"
-                  supertip="Print the presentation" />
-          <button id="ShareButton"
-                  label="Share"
-                  size="normal"
-                  onAction="Share_Click"
-                  imageMso="ShareWorkspace"
-                  supertip="Share the presentation" />
-          </box>
-        </group>
-        
-        <!-- Presets Group -->
-        <group id="PresetsGroup" label="Presets">
-          <splitButton id="Preset1Split">
-            <button id="Preset1Apply" label="Preset 1" imageMso="StyleGallery" onAction="Preset1_Apply"/>
-            <menu id="Preset1Menu">
-              <button id="Preset1Save" label="Save from Selection" imageMso="Save" onAction="Preset1_Save"/>
-              <button id="Preset1Clear" label="Clear" imageMso="Cancel" onAction="Preset1_Clear"/>
-            </menu>
-          </splitButton>
-          <splitButton id="Preset2Split">
-            <button id="Preset2Apply" label="Preset 2" imageMso="StyleGallery" onAction="Preset2_Apply"/>
-            <menu id="Preset2Menu">
-              <button id="Preset2Save" label="Save from Selection" imageMso="Save" onAction="Preset2_Save"/>
-              <button id="Preset2Clear" label="Clear" imageMso="Cancel" onAction="Preset2_Clear"/>
-            </menu>
-          </splitButton>
-          <splitButton id="Preset3Split">
-            <button id="Preset3Apply" label="Preset 3" imageMso="StyleGallery" onAction="Preset3_Apply"/>
-            <menu id="Preset3Menu">
-              <button id="Preset3Save" label="Save from Selection" imageMso="Save" onAction="Preset3_Save"/>
-              <button id="Preset3Clear" label="Clear" imageMso="Cancel" onAction="Preset3_Clear"/>
-            </menu>
-          </splitButton>
-        </group>
-        
-        <!-- Format Tools Group -->
-        <!--
-        <group id="FormatToolsGroup" label="Format Tools">
-          <splitButton id="UniformSizesSplit">
-            <button id="UniformSizesButton" label="Uniform Sizes" imageMso="SizeToFit" onAction="UniformSizes_Click"/>
-            <menu id="UniformSizesMenu">
-              <button id="MatchWidthButton" label="Width" imageMso="Width" onAction="MatchWidth_Click"/>
-              <button id="MatchHeightButton" label="Height" imageMso="Height" onAction="MatchHeight_Click"/>
-              <button id="MatchSizeButton" label="Size" imageMso="SizeToFit" onAction="MatchSize_Click"/>
-            </menu>
-          </splitButton>
-          <splitButton id="MatchColorsSplit">
-            <button id="MatchColorsButton" label="Match Colors" imageMso="FontColorPicker" onAction="MatchColors_Click"/>
-            <menu id="MatchColorsMenu">
-              <button id="MatchFillButton" label="Fill" imageMso="FillColor" onAction="MatchFill_Click"/>
-              <button id="MatchFontButton" label="Font" imageMso="FontColor" onAction="MatchFont_Click"/>
-              <button id="MatchOutlineButton" label="Outline" imageMso="LineColor" onAction="MatchOutline_Click"/>
-            </menu>
-          </splitButton>
-          <splitButton id="AlignFontsSplit">
-            <button id="AlignFontsButton" label="Align Fonts" imageMso="FontDialog" onAction="AlignFonts_Click"/>
-            <menu id="AlignFontsMenu">
-              <button id="MatchFontSizeButton" label="Size" imageMso="FontSize" onAction="MatchFontSize_Click"/>
-              <button id="MatchFontFamilyButton" label="Family" imageMso="FontFamily" onAction="MatchFontFamily_Click"/>
-              <button id="MatchFontColorButton" label="Color" imageMso="FontColor" onAction="MatchFontColor_Click"/>
-            </menu>
-          </splitButton>
-        </group>
-        -->
-        
-        <!-- Wizards Group -->
-        <group id="WizardsGroup" label="Wizards">
-          <button id="AgendaButton"
-                  label="Agenda"
-                  size="normal"
-                  onAction="Agenda_Click"
-                  imageMso="OutlineDemoteToBodyText"
-                  supertip="Create an agenda slide" />
-          <button id="MasterButton"
-                  label="Master"
-                  size="normal"
-                  onAction="Master_Click"
-                  imageMso="SlideMasterView"
-                  supertip="Access slide master" />
-          <button id="ElementButton"
-                  label="Element"
-                  size="normal"
-                  onAction="Element_Click"
-                  imageMso="DesignTemplate"
-                  supertip="Insert design elements" />
-          <button id="TextWizardButton"
-                  label="Text"
-                  size="normal"
-                  onAction="TextWizard_Click"
-                  imageMso="FontDialog"
-                  supertip="Text formatting wizard" />
-          <button id="FormatButton"
-                  label="Format"
-                  size="normal"
-                  onAction="Format_Click"
-                  imageMso="FormatPainter"
-                  supertip="Format shapes and objects" />
-          <button id="MapButton"
-                  label="Map"
-                  size="normal"
-                  onAction="Map_Click"
-                  imageMso="DiagramTargetDiagram"
-                  supertip="Insert maps and diagrams" />
-        </group>
-        
-        <!-- Smart Elements Group -->
-        <group id="SmartElementsGroup" label="Smart Elements">
-          <button id="ChartButton"
-                  label="Chart"
-                  size="normal"
-                  onAction="Chart_Click"
-                  imageMso="ChartInsert"
-                  supertip="Insert charts and graphs" />
-          <button id="DiagramButton"
-                  label="Diagram"
-                  size="normal"
-                  onAction="Diagram_Click"
-                  imageMso="DiagramInsert"
-                  supertip="Insert diagrams and flowcharts" />
-          <button id="TableButton"
-                  label="Table"
-                  size="normal"
-                  onAction="Table_Click"
-                  imageMso="TableInsertDialog"
-                  supertip="Insert tables" />
-          <button id="MatrixTableButton"
-                  label="Matrix Table"
-                  size="normal"
-                  onAction="MatrixTable_Click"
-                  imageMso="TableInsertDialog"
-                  supertip="Insert matrix tables" />
-          <button id="StickyNoteButton"
-                  label="Sticky Note"
-                  size="normal"
-                  onAction="StickyNote_Click"
-                  imageMso="ReviewNewComment"
-                  supertip="Add sticky notes" />
-          <button id="CitationButton"
-                  label="Citation"
-                  size="normal"
-                  onAction="Citation_Click"
-                  imageMso="SourceManager"
-                  supertip="Insert citations" />
-          <button id="StandardObjectsButton"
-                  label="Objects"
-                  size="normal"
-                  onAction="StandardObjects_Click"
-                  imageMso="ObjectsSelect"
-                  supertip="Insert standard objects" />
-        </group>
-        
-        <!-- Position Group -->
-        <group id="PositionGroup" label="Position">
-          <button id="AlignLeftButton"
-                  label="Align Left"
-                  size="normal"
-                  onAction="AlignLeft_Click"
-                  imageMso="ObjectsAlignLeft"
-                  supertip="Align objects to the left" />
-          <button id="AlignCenterButton"
-                  label="Align Center"
-                  size="normal"
-                  onAction="AlignCenter_Click"
-                  imageMso="ObjectsAlignCenterHorizontal"
-                  supertip="Center align objects horizontally" />
-          <button id="AlignRightButton"
-                  label="Align Right"
-                  size="normal"
-                  onAction="AlignRight_Click"
-                  imageMso="ObjectsAlignRight"
-                  supertip="Align objects to the right" />
-          <button id="DistributeButton"
-                  label="Distribute"
-                  size="normal"
-                  onAction="Distribute_Click"
-                  imageMso="ObjectsDistributeHorizontally"
-                  supertip="Distribute objects evenly" />
-          <button id="MatchBothButton"
-                  label="Match Both"
-                  size="normal"
-                  onAction="MatchBoth_Click"
-                  imageMso="ObjectsUngroup"
-                  supertip="Match width and height" />
-          <button id="MatchHeightButton"
-                  label="Match Height"
-                  size="normal"
-                  onAction="MatchHeight_Click"
-                  imageMso="ObjectsAlignMiddle"
-                  supertip="Match object heights" />
-          <button id="MatchWidthButton"
-                  label="Match Width"
-                  size="normal"
-                  onAction="MatchWidth_Click"
-                  imageMso="ObjectsAlignCenterVertical"
-                  supertip="Match object widths" />
-        </group>
-        
-        <!-- Transform Group -->
-        <group id="TransformGroup" label="Transform">
-          <button id="MakeVerticalButton"
-                  label="Make Vertical"
-                  size="normal"
-                  onAction="MakeVertical_Click"
-                  imageMso="RotateRight90"
-                  supertip="Rotate objects to vertical" />
-          <button id="MakeHorizontalButton"
-                  label="Make Horizontal"
-                  size="normal"
-                  onAction="MakeHorizontal_Click"
-                  imageMso="RotateLeft90"
-                  supertip="Rotate objects to horizontal" />
-          <button id="SwapLocationsButton"
-                  label="Swap"
-                  size="normal"
-                  onAction="SwapLocations_Click"
-                  imageMso="ObjectBringToFront"
-                  supertip="Swap object locations" />
-        </group>
-        
-        <!-- Size Group -->
-        <group id="SizeGroup" label="Size">
-          <comboBox id="SlideSizeCombo"
-                    label="Slide Size:"
-                    onAction="SlideSize_Change"
-                    getText="GetSlideSizeText"
-                    getItemCount="GetSlideSizeItemCount"
-                    getItemLabel="GetSlideSizeItemLabel"
-                    supertip="Select slide size" />
-          <button id="ApplySizeButton"
-                  label="Apply Size"
-                  size="normal"
-                  onAction="ApplySize_Click"
-                  imageMso="SlideSize"
-                  supertip="Apply the selected slide size" />
-        </group>
-        
-        <!-- Shapes Group -->
-        <group id="ShapesGroup" label="Shapes">
-          <button id="RectangleButton"
-                  label="Rectangle"
-                  size="normal"
-                  onAction="Rectangle_Click"
-                  imageMso="ShapeRectangle"
-                  supertip="Insert rectangle shape" />
-          <button id="CircleButton"
-                  label="Circle"
-                  size="normal"
-                  onAction="Circle_Click"
-                  imageMso="ShapeOval"
-                  supertip="Insert circle shape" />
-          <button id="ArrowButton"
-                  label="Arrow"
-                  size="normal"
-                  onAction="Arrow_Click"
-                  imageMso="ShapeRightArrow"
-                  supertip="Insert arrow shape" />
-          <button id="LineButton"
-                  label="Line"
-                  size="normal"
-                  onAction="Line_Click"
-                  imageMso="DrawLine"
-                  supertip="Insert line shape" />
-        </group>
-        
-        <!-- Shape Alignment Group -->
-        <group id="ShapeAlignmentGroup" label="Shape">
-          <button id="AlignProcessChainButton"
-                  label="Align Process Chain"
-                  size="normal"
-                  onAction="AlignProcessChain_Click"
-                  getImage="GetApplyIcon"
-                  supertip="Align the selected block arrows to form a process chain. The block arrow selected last will define the angle, position and sizing for all other block arrows in the process chain. The gaps between block arrows are filled from left to right and from top to bottom." />
-          <button id="AlignAnglesButton"
-                  label="Align Angles"
-                  size="normal"
-                  onAction="AlignAngles_Click"
-                  getImage="GetApplyIcon"
-                  supertip="Align the angles of all selected block arrows to the Master. The Master is always the object that you selected last. You can select multiple objects by holding down the Shift key and clicking on the objects to be selected." />
-          <button id="AlignToProcessArrowButton"
-                  label="Align to Process Arrow"
-                  size="normal"
-                  onAction="AlignToProcessArrow_Click"
-                  getImage="GetApplyIcon"
-                  supertip="Align the selected objects to the process arrow in the selection leaving out the arrow tip." />
-          <button id="AdjustPentagonHeaderButton"
-                  label="Adjust Pentagon Header"
-                  size="normal"
-                  onAction="AdjustPentagonHeader_Click"
-                  getImage="GetApplyIcon"
-                  supertip="Adjust the header boxes of headed Conclusion boxes (standard elements in the Element Wizard). Select a pentagon (block arrow) and the corresponding header box before using this feature." />
-          <button id="AlignBlockArrowsButton"
-                  label="Align Block Arrows"
-                  size="normal"
-                  onAction="AlignBlockArrows_Click"
-                  getImage="GetApplyIcon"
-                  supertip="Apply a standard style to all selected block arrows or define your own metrics based on the Master. The Master is always the object that you selected last." />
-          <button id="AlignRoundedRectangleRadiusButton"
-                  label="Align Rounded Rectangle Radius"
-                  size="normal"
-                  onAction="AlignRoundedRectangleRadius_Click"
-                  getImage="GetApplyIcon"
-                  supertip="Define the radius for the selected rounded rectangles or use the Master object's value. The Master is always the object that you selected last." />
-        </group>
-        
-        <!-- Colors Group -->
-        <group id="ColorsGroup" label="Colors">
-          <button id="FillColorButton"
-                  label="Fill Color"
-                  size="normal"
-                  onAction="FillColor_Click"
-                  imageMso="ShapeFillColorPicker"
-                  supertip="Change fill color" />
-          <button id="TextColorButton"
-                  label="Text Color"
-                  size="normal"
-                  onAction="TextColor_Click"
-                  imageMso="FontColorPicker"
-                  supertip="Change text color" />
-          <button id="OutlineColorButton"
-                  label="Outline Color"
-                  size="normal"
-                  onAction="OutlineColor_Click"
-                  imageMso="ShapeOutlineColorPicker"
-                  supertip="Change outline color" />
-        </group>
-        
-        <!-- Text Formatting Group -->
-        <group id="TextGroup" label="Text">
-          <button id="BoldButton"
-                  label="Bold"
-                  size="normal"
-                  onAction="Bold_Click"
-                  imageMso="Bold"
-                  supertip="Make text bold" />
-          <button id="ItalicButton"
-                  label="Italic"
-                  size="normal"
-                  onAction="Italic_Click"
-                  imageMso="Italic"
-                  supertip="Make text italic" />
-          <button id="UnderlineButton"
-                  label="Underline"
-                  size="normal"
-                  onAction="Underline_Click"
-                  imageMso="Underline"
-                  supertip="Underline text" />
-          <button id="BulletsButton"
-                  label="Bullets"
-                  size="normal"
-                  onAction="Bullets_Click"
-                  imageMso="BulletsList"
-                  supertip="Add bullet points" />
-          <button id="WrapTextButton"
-                  label="Wrap Toggle"
-                  size="normal"
-                  onAction="WrapToggle_Click"
-                  imageMso="WrapText"
-                  supertip="Toggle text wrapping" />
-        </group>
-        
-        <!-- Navigation Group -->
-        <group id="NavigationGroup" label="Navigation">
-          <button id="ZoomInButton"
-                  label="Zoom In"
-                  size="normal"
-                  onAction="ZoomIn_Click"
-                  imageMso="ZoomIn"
-                  supertip="Zoom in on the slide" />
-          <button id="ZoomOutButton"
-                  label="Zoom Out"
-                  size="normal"
-                  onAction="ZoomOut_Click"
-                  imageMso="ZoomOut"
-                  supertip="Zoom out on the slide" />
-          <button id="FitToWindowButton"
-                  label="Fit to Window"
-                  size="normal"
-                  onAction="FitToWindow_Click"
-                  imageMso="ZoomFitToWindow"
-                  supertip="Fit slide to window" />
-        </group>
-        
-        <!-- Expert Tools Group -->
-        <group id="ExpertToolsGroup" label="Expert Tools">
-          <button id="FreeWebinarButton"
-                  label="Free Webinar"
-                  size="large"
-                  onAction="FreeWebinar_Click"
-                  imageMso="WebPagePreview"
-                  supertip="Access free webinar resources" />
-        </group>
-        
-      </tab>
-    </tabs>
-  </ribbon>
-</customUI> 
+    <ribbon>
+        <tabs>
+            <tab id="PowerPointToolsTab" label="PowerPoint Add-in Tools">
+                <!-- File Group -->
+                <group id="FileGroup" label="File">
+                        <button id="File_New"
+                                size="normal"
+                                onAction="New_Click"
+                                imageMso="FileNew"
+                                screentip="New File"/>
+                        <button id="File_Open"
+                                size="normal"
+                                onAction="Open_Click"
+                                imageMso="FileOpen"
+                                screentip="Open File"/>
+                        <button id="File_Save"
+                                onAction="Save_Click"
+                                imageMso="FileSave"
+                                screentip="Save File"/>
+                        <button id="File_Email"
+                                onAction="Email_Click"
+                                imageMso="FileNewEmail"
+                                screentip="File New Email"/>
+                        <button id="File_Print"
+                                onAction="Print_Click"
+                                imageMso="FilePrint"
+                                screentip="Print Priview (Ctrl+P)"/>
+                        <button id="File_SaveAs"
+                                onAction="SaveAs_Click"
+                                imageMso="FileSaveAs"
+                                screentip="Save as"/>
+                </group>
+
+                <!-- Express Group -->
+                <group id="ExpressGroup" label="Express">
+                        <toggleButton id="Express_Ruler"
+                                label="ruler"
+                                size="normal"
+                                imageMso="ViewRulerPowerPoint"
+                                getPressed="GetEnableFeatureState"
+                                screentip="Ruler"/>
+                        <toggleButton id="Express_Guide"
+                                label="guide"
+                                size="normal"
+                                imageMso=""
+                                screentip="Guide"/>
+                        <splitButton id="Express_GridLines"
+                                label="grid lines"
+                                size="normal"
+                                imageMso="FileSave"
+                                screentip="Save Presentation"
+                                supertip="Save the current presentation" />
+                        <button id="SaveAsButton"
+                                label="Save As"
+                                size="normal"
+                                onAction="SaveAs_Click"
+                                imageMso="FileSaveAs"
+                                screentip="Save As"
+                                supertip="Save the presentation with a new name" />
+                        <button id="PrintButton"
+                                label="Print"
+                                size="normal"
+                                onAction="Print_Click"
+                                imageMso="FilePrint"
+                                screentip="Print Presentation"
+                                supertip="Print the presentation" />
+                        <button id="ShareButton"
+                                label="Share"
+                                size="normal"
+                                onAction="Share_Click"
+                                imageMso="ShareWorkspace"
+                                screentip="Share Presentation"
+                                supertip="Share the presentation" />
+                </group>
+
+                <!-- Presets Group -->
+                <group id="PresetsGroup" label="Presets">
+                    <splitButton id="Preset1Split">
+                        <button id="Preset1Apply"
+                                label="Preset 1"
+                                imageMso="StyleGallery"
+                                onAction="Preset1_Apply"
+                                screentip="Apply Preset 1"
+                                supertip="Apply Preset 1 to the presentation" />
+                        <menu id="Preset1Menu">
+                            <button id="Preset1Save"
+                                    label="Save from Selection"
+                                    imageMso="Save"
+                                    onAction="Preset1_Save"
+                                    screentip="Save Preset 1"
+                                    supertip="Save current selection as Preset 1" />
+                            <button id="Preset1Clear"
+                                    label="Clear"
+                                    imageMso="Cancel"
+                                    onAction="Preset1_Clear"
+                                    screentip="Clear Preset 1"
+                                    supertip="Clear Preset 1 settings" />
+                        </menu>
+                    </splitButton>
+                    <splitButton id="Preset2Split">
+                        <button id="Preset2Apply"
+                                label="Preset 2"
+                                imageMso="StyleGallery"
+                                onAction="Preset2_Apply"
+                                screentip="Apply Preset 2"
+                                supertip="Apply Preset 2 to the presentation" />
+                        <menu id="Preset2Menu">
+                            <button id="Preset2Save"
+                                    label="Save from Selection"
+                                    imageMso="Save"
+                                    onAction="Preset2_Save"
+                                    screentip="Save Preset 2"
+                                    supertip="Save current selection as Preset 2" />
+                            <button id="Preset2Clear"
+                                    label="Clear"
+                                    imageMso="Cancel"
+                                    onAction="Preset2_Clear"
+                                    screentip="Clear Preset 2"
+                                    supertip="Clear Preset 2 settings" />
+                        </menu>
+                    </splitButton>
+                    <splitButton id="Preset3Split">
+                        <button id="Preset3Apply"
+                                label="Preset 3"
+                                imageMso="StyleGallery"
+                                onAction="Preset3_Apply"
+                                screentip="Apply Preset 3"
+                                supertip="Apply Preset 3 to the presentation" />
+                        <menu id="Preset3Menu">
+                            <button id="Preset3Save"
+                                    label="Save from Selection"
+                                    imageMso="Save"
+                                    onAction="Preset3_Save"
+                                    screentip="Save Preset 3"
+                                    supertip="Save current selection as Preset 3" />
+                            <button id="Preset3Clear"
+                                    label="Clear"
+                                    imageMso="Cancel"
+                                    onAction="Preset3_Clear"
+                                    screentip="Clear Preset 3"
+                                    supertip="Clear Preset 3 settings" />
+                        </menu>
+                    </splitButton>
+                </group>
+            </tab>
+            <tab id="PowerPointToolsTab1" label="PowerPoint Tools">
+                <group id="FallbackGroup" label="Fallback">
+                    <button id="TestRibbonButtonFallback"
+                            label="Test Ribbon"
+                            size="large"
+                            onAction="TestRibbon_Click"
+                            imageMso="HappyFace"
+                            screentip="Fallback Ribbon"
+                            supertip="Fallback ribbon loaded" />
+                </group>
+            </tab>
+        </tabs>
+    </ribbon>
+</customUI>

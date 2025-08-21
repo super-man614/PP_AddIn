@@ -8,6 +8,163 @@ using Office = Microsoft.Office.Core;
 
 namespace my_addin
 {
+    /// <summary>
+    /// Custom FlowLayoutPanel that enforces fixed width and scroll bar behavior
+    /// </summary>
+    public class CustomFlowLayoutPanel : FlowLayoutPanel
+    {
+        public CustomFlowLayoutPanel()
+        {
+            // Set initial properties
+            this.MinimumSize = new Size(128, 0);
+            this.MaximumSize = new Size(128, 0);
+        }
+        
+        protected override void OnLayout(LayoutEventArgs levent)
+        {
+            base.OnLayout(levent);
+            
+            // Force fixed width to prevent scroll bar width changes
+            if (this.Width != 128)
+            {
+                this.Width = 128;
+            }
+            
+            // Ensure horizontal scroll is disabled
+            this.HorizontalScroll.Visible = false;
+            this.HorizontalScroll.Enabled = false;
+            this.HorizontalScroll.Maximum = 0;
+            this.HorizontalScroll.Minimum = 0;
+            this.HorizontalScroll.Value = 0;
+            
+            // Set minimum size to prevent layout changes
+            if (this.MinimumSize.Width != 128)
+            {
+                this.MinimumSize = new Size(128, this.MinimumSize.Height);
+            }
+        }
+        
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            
+            // Re-enforce width if it changes
+            if (this.Width != 128)
+            {
+                this.Width = 128;
+            }
+        }
+        
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            
+            // Force width to 128 pixels on any resize
+            if (this.Width != 128)
+            {
+                this.Width = 128;
+            }
+        }
+        
+        // Note: SetBounds cannot be overridden as it's not virtual in Control class
+        // Instead, we use event handlers and properties to enforce width
+        
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            
+            // Ensure scroll bar settings are applied after handle creation
+            this.HorizontalScroll.Visible = false;
+            this.HorizontalScroll.Enabled = false;
+            this.VerticalScroll.Visible = true;
+            
+            // Completely disable horizontal scrolling
+            this.HorizontalScroll.Maximum = 0;
+            this.HorizontalScroll.Minimum = 0;
+            this.HorizontalScroll.Value = 0;
+            
+            // Start timer to enforce width
+            StartWidthEnforcementTimer();
+        }
+        
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                // Disable horizontal scroll bar completely
+                cp.Style &= ~0x00100000; // WS_HSCROLL
+                return cp;
+            }
+        }
+        
+        protected override void OnScroll(ScrollEventArgs se)
+        {
+            // Always allow vertical scrolling, horizontal is disabled by other means
+            base.OnScroll(se);
+        }
+        
+        // Add a timer to continuously enforce width
+        private Timer widthEnforcementTimer;
+        
+        private void StartWidthEnforcementTimer()
+        {
+            if (widthEnforcementTimer == null)
+            {
+                widthEnforcementTimer = new Timer();
+                widthEnforcementTimer.Interval = 100; // Check every 100ms
+                widthEnforcementTimer.Tick += (s, e) => 
+                {
+                    if (this.Width != 128)
+                    {
+                        this.Width = 128;
+                    }
+                    
+                    // Ensure horizontal scroll remains disabled
+                    this.HorizontalScroll.Visible = false;
+                    this.HorizontalScroll.Enabled = false;
+                    this.HorizontalScroll.Maximum = 0;
+                    this.HorizontalScroll.Minimum = 0;
+                    this.HorizontalScroll.Value = 0;
+                };
+                widthEnforcementTimer.Start();
+            }
+        }
+        
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && widthEnforcementTimer != null)
+            {
+                widthEnforcementTimer.Stop();
+                widthEnforcementTimer.Dispose();
+                widthEnforcementTimer = null;
+            }
+            base.Dispose(disposing);
+        }
+        
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+            
+            // Ensure width is maintained when parent changes
+            if (this.Width != 128)
+            {
+                this.Width = 128;
+            }
+        }
+        
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+            
+            // Ensure width is maintained when visibility changes
+            if (this.Width != 128)
+            {
+                this.Width = 128;
+            }
+        }
+    }
+
     public partial class ColorPaletteControl : UserControl
     {
         private FlowLayoutPanel palettePanel;
@@ -29,15 +186,34 @@ namespace my_addin
             this.Name = "ColorPaletteControl";
             this.Dock = DockStyle.Fill;
 
-            // Edit button at top-left
-            btnEdit = new Button { Text = "Edit", Location = new Point(6, 6), Size = new Size(50, 22), FlatStyle = FlatStyle.Standard };
+            // Edit button at top-left - Ensure text is visible
+            btnEdit = new Button 
+            { 
+                Text = "Edit", 
+                Location = new Point(6, 6), 
+                Size = new Size(50, 22), 
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.White,
+                ForeColor = Color.Black,
+                Font = new Font("Segoe UI", 9F, FontStyle.Regular),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            
+            // Add border to make button more visible
+            btnEdit.FlatAppearance.BorderSize = 1;
+            btnEdit.FlatAppearance.BorderColor = Color.Gray;
+            
+            // Add hover effects to make button more interactive
+            btnEdit.MouseEnter += (s, e) => btnEdit.BackColor = Color.FromArgb(240, 240, 240);
+            btnEdit.MouseLeave += (s, e) => btnEdit.BackColor = Color.White;
+            
             btnEdit.Click += (s, e) => EditPalette();
             Controls.Add(btnEdit);
             
             // Removed hue slider from the task pane per request
 
-            // Palette panel for color rows
-            palettePanel = new FlowLayoutPanel
+            // Create custom palette panel with fixed scroll bar behavior
+            palettePanel = new CustomFlowLayoutPanel
             {
                 Location = new Point(6, 34),
                 Size = new Size(128, 560),
@@ -47,11 +223,157 @@ namespace my_addin
                 Padding = new Padding(0),
                 BackColor = Color.White
             };
+            
+            // Disable horizontal scroll bar completely
+            palettePanel.HorizontalScroll.Visible = false;
+            palettePanel.HorizontalScroll.Enabled = false;
+            
             Controls.Add(palettePanel);
 
             // Responsive layout hooks
             this.SizeChanged += (s, e) => LayoutControls();
-            palettePanel.SizeChanged += (s, e) => ResizeRowWidths();
+            palettePanel.SizeChanged += (s, e) => 
+            {
+                ResizeRowWidths();
+                // Ensure horizontal scroll is disabled when panel is resized
+                palettePanel.HorizontalScroll.Visible = false;
+                palettePanel.HorizontalScroll.Enabled = false;
+                palettePanel.HorizontalScroll.Maximum = 0;
+                palettePanel.HorizontalScroll.Minimum = 0;
+                palettePanel.HorizontalScroll.Value = 0;
+            };
+            
+            // Ensure horizontal scroll is disabled when control becomes visible
+            this.VisibleChanged += (s, e) => 
+            {
+                if (palettePanel != null)
+                {
+                    palettePanel.HorizontalScroll.Visible = false;
+                    palettePanel.HorizontalScroll.Enabled = false;
+                    palettePanel.HorizontalScroll.Maximum = 0;
+                    palettePanel.HorizontalScroll.Minimum = 0;
+                    palettePanel.HorizontalScroll.Value = 0;
+                }
+            };
+            
+            // Ensure horizontal scroll is disabled after adding to controls
+            palettePanel.HorizontalScroll.Visible = false;
+            palettePanel.HorizontalScroll.Enabled = false;
+            palettePanel.HorizontalScroll.Maximum = 0;
+            palettePanel.HorizontalScroll.Minimum = 0;
+            palettePanel.HorizontalScroll.Value = 0;
+            
+            // Ensure horizontal scroll is disabled when parent changes
+            palettePanel.ParentChanged += (s, e) => 
+            {
+                palettePanel.HorizontalScroll.Visible = false;
+                palettePanel.HorizontalScroll.Enabled = false;
+                palettePanel.HorizontalScroll.Maximum = 0;
+                palettePanel.HorizontalScroll.Minimum = 0;
+                palettePanel.HorizontalScroll.Value = 0;
+            };
+            
+            // Ensure horizontal scroll is disabled when handle is created
+            palettePanel.HandleCreated += (s, e) => 
+            {
+                palettePanel.HorizontalScroll.Visible = false;
+                palettePanel.HorizontalScroll.Enabled = false;
+                palettePanel.HorizontalScroll.Maximum = 0;
+                palettePanel.HorizontalScroll.Minimum = 0;
+                palettePanel.HorizontalScroll.Value = 0;
+            };
+            
+            // Ensure horizontal scroll is disabled when layout changes
+            palettePanel.Layout += (s, e) => 
+            {
+                palettePanel.HorizontalScroll.Visible = false;
+                palettePanel.HorizontalScroll.Minimum = 0;
+                palettePanel.HorizontalScroll.Maximum = 0;
+                palettePanel.HorizontalScroll.Value = 0;
+            };
+            
+            // Ensure horizontal scroll is disabled when scroll event occurs
+            palettePanel.Scroll += (s, e) => 
+            {
+                if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll)
+                {
+                    palettePanel.HorizontalScroll.Visible = false;
+                    palettePanel.HorizontalScroll.Enabled = false;
+                    palettePanel.HorizontalScroll.Maximum = 0;
+                    palettePanel.HorizontalScroll.Minimum = 0;
+                    palettePanel.HorizontalScroll.Value = 0;
+                }
+            };
+            
+            // Ensure horizontal scroll is disabled when paint event occurs
+            palettePanel.Paint += (s, e) => 
+            {
+                palettePanel.HorizontalScroll.Visible = false;
+                palettePanel.HorizontalScroll.Enabled = false;
+                palettePanel.HorizontalScroll.Maximum = 0;
+                palettePanel.HorizontalScroll.Minimum = 0;
+                palettePanel.HorizontalScroll.Value = 0;
+            };
+            
+            // Ensure horizontal scroll is disabled when control collection changes
+            palettePanel.ControlAdded += (s, e) => 
+            {
+                palettePanel.HorizontalScroll.Visible = false;
+                palettePanel.HorizontalScroll.Enabled = false;
+                palettePanel.HorizontalScroll.Maximum = 0;
+                palettePanel.HorizontalScroll.Minimum = 0;
+                palettePanel.HorizontalScroll.Value = 0;
+            };
+            
+            // Ensure horizontal scroll is disabled when control is removed
+            palettePanel.ControlRemoved += (s, e) => 
+            {
+                palettePanel.HorizontalScroll.Visible = false;
+                palettePanel.HorizontalScroll.Enabled = false;
+                palettePanel.HorizontalScroll.Maximum = 0;
+                palettePanel.HorizontalScroll.Minimum = 0;
+                palettePanel.HorizontalScroll.Value = 0;
+            };
+            
+            // Ensure horizontal scroll is disabled when client size changes
+            palettePanel.ClientSizeChanged += (s, e) => 
+            {
+                palettePanel.HorizontalScroll.Visible = false;
+                palettePanel.HorizontalScroll.Enabled = false;
+                palettePanel.HorizontalScroll.Maximum = 0;
+                palettePanel.HorizontalScroll.Minimum = 0;
+                palettePanel.HorizontalScroll.Value = 0;
+            };
+            
+            // Ensure horizontal scroll is disabled when region changes
+            palettePanel.RegionChanged += (s, e) => 
+            {
+                palettePanel.HorizontalScroll.Visible = false;
+                palettePanel.HorizontalScroll.Enabled = false;
+                palettePanel.HorizontalScroll.Maximum = 0;
+                palettePanel.HorizontalScroll.Minimum = 0;
+                palettePanel.HorizontalScroll.Value = 0;
+            };
+            
+            // Ensure horizontal scroll is disabled when style changes
+            palettePanel.StyleChanged += (s, e) => 
+            {
+                palettePanel.HorizontalScroll.Visible = false;
+                palettePanel.HorizontalScroll.Enabled = false;
+                palettePanel.HorizontalScroll.Maximum = 0;
+                palettePanel.HorizontalScroll.Minimum = 0;
+                palettePanel.HorizontalScroll.Value = 0;
+            };
+            
+            // Ensure horizontal scroll is disabled when system colors change
+            palettePanel.SystemColorsChanged += (s, e) => 
+            {
+                palettePanel.HorizontalScroll.Visible = false;
+                palettePanel.HorizontalScroll.Enabled = false;
+                palettePanel.HorizontalScroll.Maximum = 0;
+                palettePanel.HorizontalScroll.Minimum = 0;
+                palettePanel.HorizontalScroll.Value = 0;
+            };
 
             // Load palette
             palette = Core.ColorPaletteStorage.LoadOrDefault();
@@ -65,6 +387,13 @@ namespace my_addin
         {
             palettePanel.SuspendLayout();
             palettePanel.Controls.Clear();
+            
+            // Ensure horizontal scroll is disabled after clearing controls
+            palettePanel.HorizontalScroll.Visible = false;
+            palettePanel.HorizontalScroll.Enabled = false;
+            palettePanel.HorizontalScroll.Maximum = 0;
+            palettePanel.HorizontalScroll.Minimum = 0;
+            palettePanel.HorizontalScroll.Value = 0;
 
             // First special row: Clear Fill, Clear Outline (square + X)
             var firstRow = new Panel { Width = palettePanel.ClientSize.Width, Height = 22, Margin = new Padding(0, 0, 0, 4) };
@@ -136,6 +465,13 @@ namespace my_addin
                 palettePanel.Controls.Add(row);
             }
             palettePanel.ResumeLayout(true);
+            
+            // Ensure horizontal scroll is disabled after resuming layout
+            palettePanel.HorizontalScroll.Visible = false;
+            palettePanel.HorizontalScroll.Enabled = false;
+            palettePanel.HorizontalScroll.Maximum = 0;
+            palettePanel.HorizontalScroll.Minimum = 0;
+            palettePanel.HorizontalScroll.Value = 0;
         }
 
         private void ApplyBorder(Color color)
@@ -360,9 +696,19 @@ namespace my_addin
             if (palettePanel != null)
             {
                 int top = (btnEdit?.Bottom ?? padding) + padding;
-                int width = Math.Max(60, this.Width - (padding * 2));
+                // Fixed width to prevent scroll bar width changes
+                int width = 128; // Fixed width instead of dynamic calculation
                 int height = Math.Max(50, this.Height - top - padding);
                 palettePanel.SetBounds(padding, top, width, height);
+                
+                // The custom panel will handle its own width enforcement
+                
+                // Ensure horizontal scroll is disabled after layout
+                palettePanel.HorizontalScroll.Visible = false;
+                palettePanel.HorizontalScroll.Enabled = false;
+                palettePanel.HorizontalScroll.Maximum = 0;
+                palettePanel.HorizontalScroll.Minimum = 0;
+                palettePanel.HorizontalScroll.Value = 0;
             }
             ResizeRowWidths();
         }
@@ -370,14 +716,8 @@ namespace my_addin
         private void ResizeRowWidths()
         {
             if (palettePanel == null) return;
-            int w = palettePanel.ClientSize.Width;
+            // Use fixed width to prevent scroll bar width changes
+            int w = 128;
             foreach (Control c in palettePanel.Controls)
             {
-                if (c is Panel row)
-                {
-                    row.Width = w;
-                }
-            }
-        }
-    }
-}
+                if (c is 

@@ -108,6 +108,161 @@ namespace my_addin
             BtnStandardObjects_Click(this, EventArgs.Empty);
         }
 
+        public void ExecuteExcelPaste()
+        {
+            ExecuteExcelPasteOperation();
+        }
+
+        private void ExecuteExcelPasteOperation()
+        {
+            try
+            {
+                if (!Clipboard.ContainsText())
+                {
+                    MessageBox.Show("Clipboard does not contain text data. Please copy data from Excel first.", 
+                        "Excel Paste", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string text = Clipboard.GetText();
+                if (string.IsNullOrWhiteSpace(text))
+                {
+                    MessageBox.Show("Clipboard text is empty. Please copy data from Excel first.", 
+                        "Excel Paste", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Parse clipboard data as TSV/CSV
+                string[] rows = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                if (rows.Length == 0)
+                {
+                    MessageBox.Show("No data found in clipboard. Please copy data from Excel first.", 
+                        "Excel Paste", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                var data = new List<string[]>();
+                int maxColumns = 0;
+                
+                foreach (var row in rows)
+                {
+                    var parts = row.Split('\t');
+                    data.Add(parts);
+                    if (parts.Length > maxColumns)
+                        maxColumns = parts.Length;
+                }
+
+                if (maxColumns == 0)
+                {
+                    MessageBox.Show("Invalid data format. Please copy data from Excel first.", 
+                        "Excel Paste", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Get active slide
+                var slide = GetActiveSlideOrNull();
+                if (slide == null)
+                {
+                    MessageBox.Show("No active slide found. Please select a slide first.", 
+                        "Excel Paste", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Create table from Excel data
+                CreateTableFromExcelData(slide, data, maxColumns);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in ExecuteExcelPasteOperation: {ex.Message}");
+                MessageBox.Show($"Error pasting Excel data: {ex.Message}", 
+                    "Excel Paste Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CreateTableFromExcelData(PowerPoint.Slide slide, List<string[]> data, int maxColumns)
+        {
+            try
+            {
+                // Calculate table dimensions and position
+                int rows = data.Count;
+                int cols = maxColumns;
+                
+                // Table dimensions (adjust as needed)
+                float cellWidth = 80.0f;
+                float cellHeight = 25.0f;
+                float tableWidth = cols * cellWidth;
+                float tableHeight = rows * cellHeight;
+                
+                // Center the table on the slide
+                float left = (slide.CustomLayout.Width - tableWidth) / 2;
+                float top = (slide.CustomLayout.Height - tableHeight) / 2;
+                
+                // Create table shape
+                var table = slide.Shapes.AddTable(rows, cols, left, top, tableWidth, tableHeight);
+                table.Name = "ExcelPastedTable";
+                
+                // Fill table with data
+                for (int r = 0; r < rows; r++)
+                {
+                    for (int c = 0; c < cols; c++)
+                    {
+                        try
+                        {
+                            string cellText = "";
+                            if (c < data[r].Length)
+                                cellText = data[r][c];
+                            
+                            var cell = table.Table.Cell(r + 1, c + 1);
+                            if (cell != null && cell.Shape != null)
+                            {
+                                cell.Shape.TextFrame.TextRange.Text = cellText;
+                                
+                                // Apply basic formatting
+                                cell.Shape.TextFrame.TextRange.Font.Size = 10;
+                                cell.Shape.TextFrame.TextRange.Font.Name = "Calibri";
+                                
+                                // Add borders
+                                cell.Shape.Line.Visible = Office.MsoTriState.msoTrue;
+                                cell.Shape.Line.ForeColor.RGB = ColorTranslator.ToOle(Color.LightGray);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error setting cell ({r},{c}): {ex.Message}");
+                        }
+                    }
+                }
+                
+                // Apply table styling
+                try
+                {
+                    // Header row styling
+                    for (int c = 1; c <= cols; c++)
+                    {
+                        var headerCell = table.Table.Cell(1, c);
+                        if (headerCell?.Shape != null)
+                        {
+                            headerCell.Shape.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.LightBlue);
+                            headerCell.Shape.TextFrame.TextRange.Font.Bold = Office.MsoTriState.msoTrue;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error applying table styling: {ex.Message}");
+                }
+                
+                MessageBox.Show($"Successfully created table with {rows} rows and {cols} columns from Excel data.", 
+                    "Excel Paste Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error creating table from Excel data: {ex.Message}");
+                MessageBox.Show($"Error creating table: {ex.Message}", 
+                    "Table Creation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         public TaskPaneControl()
         {
             try
