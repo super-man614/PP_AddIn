@@ -7,6 +7,8 @@ using Office = Microsoft.Office.Core;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 using my_addin.Core;
 using System.Reflection; // For Missing.Value
+using System.Collections.Generic;
+using System.Linq;
 
 namespace my_addin
 {
@@ -692,5 +694,141 @@ namespace my_addin
             System.Diagnostics.Debug.WriteLine($"Error in StandardObjects_Click: {ex.Message}");
         }
     }
+
+        public void Matrix_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var pptApp = Globals.ThisAddIn.Application;
+                var activePresentation = pptApp.ActivePresentation;
+                var activeSlide = activePresentation.Slides[pptApp.ActiveWindow.Selection.SlideRange.SlideIndex];
+
+                // Create a default 3x3 matrix
+                CreateMatrixTable(activeSlide, 3, 3, false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error creating matrix: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CreateMatrixTable(PowerPoint.Slide slide, int rows, int columns, bool hasHeader)
+        {
+            try
+            {
+                CreateCustomMatrix(slide, rows, columns);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error creating matrix table: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public void CreateCustomMatrix(PowerPoint.Slide slide, int rows, int columns)
+        {
+            try
+            {
+                // Slide size
+                float slideWidth = slide.Master.Width;
+                float slideHeight = slide.Master.Height;
+
+                // Define consistent spacing between cells
+                float cellSpacing = 8f;
+
+                // Grid size with margin
+                float availableWidth = slideWidth * 0.85f;
+                float availableHeight = slideHeight * 0.75f;
+
+                // Total spacing needed
+                float totalHorizontalSpacing = (columns - 1) * cellSpacing;
+                float totalVerticalSpacing = (rows - 1) * cellSpacing;
+
+                // Available space for actual cells
+                float cellAreaWidth = availableWidth - totalHorizontalSpacing;
+                float cellAreaHeight = availableHeight - totalVerticalSpacing;
+
+                // Cell size
+                float maxCellWidth = cellAreaWidth / columns;
+                float maxCellHeight = cellAreaHeight / rows;
+                float cellSize = Math.Min(maxCellWidth, maxCellHeight);
+                cellSize = Math.Max(cellSize, 30f); // Enforce minimum readable size
+
+                // Actual grid size
+                float actualGridWidth = (columns * cellSize) + totalHorizontalSpacing;
+                float actualGridHeight = (rows * cellSize) + totalVerticalSpacing;
+
+                // Grid start position
+                float startLeft = (slideWidth - actualGridWidth) / 2;
+                float startTop = (slideHeight - actualGridHeight) / 2;
+
+                // Track all cells in row-major order for later selection
+                List<PowerPoint.Shape> allCells = new List<PowerPoint.Shape>();
+
+                for (int row = 0; row < rows; row++)
+                {
+                    for (int col = 0; col < columns; col++)
+                    {
+                        float left = startLeft + (col * (cellSize + cellSpacing));
+                        float top = startTop + (row * (cellSize + cellSpacing));
+
+                        // Create individual shape (text-enabled rectangle)
+                        PowerPoint.Shape cell = slide.Shapes.AddShape(
+                            Type: Office.MsoAutoShapeType.msoShapeRectangle,
+                            Left: left,
+                            Top: top,
+                            Width: cellSize,
+                            Height: cellSize);
+
+                        // Default text
+                        cell.TextFrame.TextRange.Text = "XXXX";
+                        cell.TextFrame.TextRange.Font.Size = Math.Max(8f, cellSize / 4f);
+                        cell.TextFrame.TextRange.Font.Color.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Black);
+                        cell.TextFrame.TextRange.Font.Name = "Segoe UI";
+
+                        // Align text
+                        cell.TextFrame.HorizontalAnchor = Office.MsoHorizontalAnchor.msoAnchorCenter;
+                        cell.TextFrame.VerticalAnchor = Office.MsoVerticalAnchor.msoAnchorMiddle;
+                        cell.TextFrame.TextRange.ParagraphFormat.Alignment = PowerPoint.PpParagraphAlignment.ppAlignCenter;
+
+                        // Remove text margins for tight layout
+                        cell.TextFrame.MarginBottom = 0f;
+                        cell.TextFrame.MarginTop = 0f;
+                        cell.TextFrame.MarginLeft = 0f;
+                        cell.TextFrame.MarginRight = 0f;
+
+                        // Border
+                        cell.Line.Visible = Office.MsoTriState.msoTrue;
+                        cell.Line.Weight = 1.0f;
+                        cell.Line.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Gray);
+
+                        // Background
+                        cell.Fill.Visible = Office.MsoTriState.msoTrue;
+                        cell.Fill.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.White);
+
+                        // Track cell
+                        allCells.Add(cell);
+
+                        try
+                        {
+                            // Tag as matrix cell with row/col for paste handling
+                            cell.Tags.Add("MATRIX", "1");
+                            cell.Tags.Add("MATRIX_ROW", row.ToString());
+                            cell.Tags.Add("MATRIX_COL", col.ToString());
+                        }
+                        catch { /* ignore tag failures */ }
+                    }
+                }
+
+                // Select all shapes in row-major order (important for Excel paste)
+                string[] shapeNames = allCells.Select(s => s.Name).ToArray();
+                PowerPoint.ShapeRange shapeRange = slide.Shapes.Range(shapeNames);
+                shapeRange.Select();
+            }
+
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create matrix table: {ex.Message}");
+            }
+        }
     }
 }
