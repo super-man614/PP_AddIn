@@ -124,6 +124,9 @@ namespace my_addin
         private class HueSlider : Control
         {
             private int value; // 0..359
+            private Bitmap _cachedGradient;
+            private GraphicsPath _cachedPath;
+            
             public int Value
             {
                 get => value;
@@ -133,7 +136,7 @@ namespace my_addin
 
             public HueSlider()
             {
-                SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
+                SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.ResizeRedraw, true);
                 this.Height = 24; this.Width = 320;
             }
 
@@ -153,35 +156,41 @@ namespace my_addin
                 var g = e.Graphics; g.SmoothingMode = SmoothingMode.AntiAlias;
                 var rect = new Rectangle(0, 0, Width - 1, Height - 1);
 
-                using (var gp = new GraphicsPath())
+                // Cache the gradient bitmap and path
+                if (_cachedGradient == null || _cachedGradient.Width != rect.Width || _cachedGradient.Height != rect.Height)
                 {
+                    _cachedGradient?.Dispose();
+                    _cachedPath?.Dispose();
+                    
+                    _cachedGradient = new Bitmap(rect.Width, rect.Height);
+                    _cachedPath = new GraphicsPath();
+                    
                     int r = rect.Height; // full rounded ends
-                    gp.AddArc(rect.X, rect.Y, r, r, 90, 180);
-                    gp.AddArc(rect.Right - r, rect.Y, r, r, 270, 180);
-                    gp.CloseFigure();
-
-                    using (var bmp = new Bitmap(rect.Width, rect.Height))
+                    _cachedPath.AddArc(rect.X, rect.Y, r, r, 90, 180);
+                    _cachedPath.AddArc(rect.Right - r, rect.Y, r, r, 270, 180);
+                    _cachedPath.CloseFigure();
+                    
+                    using (var gBmp = Graphics.FromImage(_cachedGradient))
                     {
-                        using (var gBmp = Graphics.FromImage(bmp))
+                        double widthMinus1 = _cachedGradient.Width - 1;
+                        for (int x = 0; x < _cachedGradient.Width; x++)
                         {
-                            for (int x = 0; x < bmp.Width; x++)
+                            int h = (int)Math.Round((x / widthMinus1) * 359);
+                            var c = HslToColor(h, 100, 50);
+                            using (var pen = new Pen(c))
                             {
-                                int h = (int)Math.Round((x / (double)(bmp.Width - 1)) * 359);
-                                var c = HslToColor(h, 100, 50);
-                                using (var pen = new Pen(c))
-                                {
-                                    gBmp.DrawLine(pen, x, 0, x, bmp.Height);
-                                }
+                                gBmp.DrawLine(pen, x, 0, x, _cachedGradient.Height);
                             }
                         }
-                        g.SetClip(gp);
-                        g.DrawImageUnscaled(bmp, rect.X, rect.Y);
-                        g.ResetClip();
                     }
-
-                    using (var penShadow = new Pen(Color.FromArgb(60, 0, 0, 0))) g.DrawPath(penShadow, gp);
-                    using (var penBorder = new Pen(Color.FromArgb(160, 160, 160))) g.DrawPath(penBorder, gp);
                 }
+
+                g.SetClip(_cachedPath);
+                g.DrawImageUnscaled(_cachedGradient, rect.X, rect.Y);
+                g.ResetClip();
+
+                using (var penShadow = new Pen(Color.FromArgb(60, 0, 0, 0))) g.DrawPath(penShadow, _cachedPath);
+                using (var penBorder = new Pen(Color.FromArgb(160, 160, 160))) g.DrawPath(penBorder, _cachedPath);
 
                 int cx = (int)Math.Round((value / 359.0) * (rect.Width - 1)) + rect.X;
                 int radius = rect.Height + 6;
@@ -190,46 +199,107 @@ namespace my_addin
                 using (var br = new SolidBrush(Color.White)) g.FillEllipse(br, thumbRect);
                 using (var pen = new Pen(Color.FromArgb(140, 140, 140))) g.DrawEllipse(pen, thumbRect);
             }
+            
+            protected override void Dispose(bool disposing)
+            {
+                if (disposing)
+                {
+                    _cachedGradient?.Dispose();
+                    _cachedPath?.Dispose();
+                }
+                base.Dispose(disposing);
+            }
         }
 
         // 2D color canvas for saturation/lightness selection
         private class ColorCanvas : Control
         {
-            public int Hue { get; set; } = 0;        // 0..359
+            private int _hue = 0;
+            private Bitmap _cachedBitmap;
+            private int _cachedHue = -1;
+            
+            public int Hue 
+            { 
+                get => _hue;
+                set 
+                { 
+                    if (_hue != value)
+                    {
+                        _hue = value;
+                        Invalidate();
+                    }
+                }
+            }
             public int Saturation { get; set; } = 100; // 0..100
             public int Lightness { get; set; } = 50;   // 0..100
             public event EventHandler SelectionChanged;
 
             public ColorCanvas()
             {
-                SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
+                SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.ResizeRedraw, true);
                 Cursor = Cursors.Cross;
             }
 
             protected override void OnPaint(PaintEventArgs e)
             {
                 base.OnPaint(e);
-                using (var bmp = new Bitmap(Width, Height))
-                using (var gBmp = Graphics.FromImage(bmp))
+                
+                // Cache the bitmap for the current hue
+                if (_cachedBitmap == null || _cachedBitmap.Width != Width || _cachedBitmap.Height != Height || _cachedHue != Hue)
                 {
-                    for (int y = 0; y < bmp.Height; y++)
+                    _cachedBitmap?.Dispose();
+                    _cachedBitmap = new Bitmap(Width, Height);
+                    _cachedHue = Hue;
+                    
+                    var rect = new Rectangle(0, 0, Width, Height);
+                    var bitmapData = _cachedBitmap.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                    
+                    unsafe
                     {
-                        for (int x = 0; x < bmp.Width; x++)
+                        byte* ptr = (byte*)bitmapData.Scan0;
+                        int stride = bitmapData.Stride;
+                        
+                        double widthMinus1 = Width - 1;
+                        double heightMinus1 = Height - 1;
+                        
+                        for (int y = 0; y < Height; y++)
                         {
-                            int s = (int)Math.Round((x / (double)(bmp.Width - 1)) * 100);
-                            int l = (int)Math.Round((1 - y / (double)(bmp.Height - 1)) * 100);
-                            var col = HslToColor(Hue, s, l);
-                            bmp.SetPixel(x, y, col);
+                            byte* row = ptr + (y * stride);
+                            double lightness = (1 - y / heightMinus1) * 100;
+                            
+                            for (int x = 0; x < Width; x++)
+                            {
+                                double saturation = (x / widthMinus1) * 100;
+                                var col = HslToColor(Hue, (int)Math.Round(saturation), (int)Math.Round(lightness));
+                                
+                                int offset = x * 4;
+                                row[offset] = col.B;
+                                row[offset + 1] = col.G;
+                                row[offset + 2] = col.R;
+                                row[offset + 3] = col.A;
+                            }
                         }
                     }
-                    e.Graphics.DrawImageUnscaled(bmp, 0, 0);
+                    
+                    _cachedBitmap.UnlockBits(bitmapData);
                 }
+                
+                e.Graphics.DrawImageUnscaled(_cachedBitmap, 0, 0);
 
                 // Draw indicator
                 int ix = (int)Math.Round((Saturation / 100.0) * (Width - 1));
                 int iy = (int)Math.Round((1 - Lightness / 100.0) * (Height - 1));
                 Rectangle r = new Rectangle(ix - 6, iy - 6, 12, 12);
                 using (var pen = new Pen(Color.White, 2)) e.Graphics.DrawEllipse(pen, r);
+            }
+            
+            protected override void Dispose(bool disposing)
+            {
+                if (disposing)
+                {
+                    _cachedBitmap?.Dispose();
+                }
+                base.Dispose(disposing);
             }
 
             protected override void OnMouseDown(MouseEventArgs e) { base.OnMouseDown(e); UpdateFromMouse(e); }
@@ -383,6 +453,13 @@ namespace my_addin
         private int insertionIndex = -1;
         private Point mouseDown;
         private bool dragging = false;
+        
+        // Cached drawing objects
+        private static readonly Pen RedPen = new Pen(Color.Red, 2);
+        private static readonly SolidBrush GrayBrush = new SolidBrush(Color.Gray);
+        private static readonly Pen DarkGrayPen = new Pen(Color.DarkGray);
+        private static readonly Pen InsertionPen = new Pen(Color.DeepSkyBlue, 2);
+        private readonly SolidBrush _colorBrush = new SolidBrush(Color.White);
 
         public ReorderableColorList()
         {
@@ -407,21 +484,20 @@ namespace my_addin
 
             // Delete icon area
             Rectangle del = new Rectangle(bounds.X + 6, bounds.Y + 5, 12, 12);
-            using (var penX = new Pen(Color.Red, 2)) { e.Graphics.DrawLine(penX, del.Left, del.Top, del.Right, del.Bottom); e.Graphics.DrawLine(penX, del.Right, del.Top, del.Left, del.Bottom); }
+            e.Graphics.DrawLine(RedPen, del.Left, del.Top, del.Right, del.Bottom);
+            e.Graphics.DrawLine(RedPen, del.Right, del.Top, del.Left, del.Bottom);
 
             // Handle dots area
             Rectangle grip = new Rectangle(del.Right + 6, bounds.Y + 4, 10, bounds.Height - 8);
-            using (var brush = new SolidBrush(Color.Gray))
-            {
-                for (int y = grip.Top; y < grip.Bottom; y += 4)
-                    for (int x = grip.Left; x < grip.Right; x += 4)
-                        e.Graphics.FillEllipse(brush, x, y, 2, 2);
-            }
+            for (int y = grip.Top; y < grip.Bottom; y += 4)
+                for (int x = grip.Left; x < grip.Right; x += 4)
+                    e.Graphics.FillEllipse(GrayBrush, x, y, 2, 2);
 
             // Swatch area fills remainder
             Rectangle swatch = new Rectangle(grip.Right + 6, bounds.Y + 2, bounds.Right - (grip.Right + 12), bounds.Height - 4);
-            using (var br = new SolidBrush(c)) e.Graphics.FillRectangle(br, swatch);
-            using (var pen = new Pen(Color.DarkGray)) e.Graphics.DrawRectangle(pen, swatch);
+            _colorBrush.Color = c;
+            e.Graphics.FillRectangle(_colorBrush, swatch);
+            e.Graphics.DrawRectangle(DarkGrayPen, swatch);
 
             // Hex text with contrast color
             double luminance = 0.2126 * c.R + 0.7152 * c.G + 0.0722 * c.B;
@@ -436,9 +512,24 @@ namespace my_addin
             if (dragging && insertionIndex >= 0)
             {
                 int y = e.Bounds.Top - 1;
-                if (e.Index == insertionIndex) { using (var penIns = new Pen(Color.DeepSkyBlue, 2)) e.Graphics.DrawLine(penIns, bounds.Left + 2, y, bounds.Right - 2, y); }
-                if (insertionIndex == Items.Count && e.Index == Items.Count - 1) { using (var penIns = new Pen(Color.DeepSkyBlue, 2)) e.Graphics.DrawLine(penIns, bounds.Left + 2, bounds.Bottom - 1, bounds.Right - 2, bounds.Bottom - 1); }
+                if (e.Index == insertionIndex) 
+                { 
+                    e.Graphics.DrawLine(InsertionPen, bounds.Left + 2, y, bounds.Right - 2, y); 
+                }
+                if (insertionIndex == Items.Count && e.Index == Items.Count - 1) 
+                { 
+                    e.Graphics.DrawLine(InsertionPen, bounds.Left + 2, bounds.Bottom - 1, bounds.Right - 2, bounds.Bottom - 1); 
+                }
             }
+        }
+        
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _colorBrush?.Dispose();
+            }
+            base.Dispose(disposing);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)

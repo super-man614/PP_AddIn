@@ -1,14 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Office = Microsoft.Office.Core;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 using my_addin.Core;
 using System.Reflection; // For Missing.Value
-using System.Collections.Generic;
-using System.Linq;
 
 namespace my_addin
 {
@@ -18,6 +18,7 @@ namespace my_addin
         private Office.IRibbonUI ribbon;
         private static CustomTaskPane _taskPaneInstance;
         private static ColorPaletteTaskPane _colorPaletteInstance;
+        private static Ribbon _current;
 
         public static CustomTaskPane TaskPaneInstance
         {
@@ -31,8 +32,15 @@ namespace my_addin
             set { _colorPaletteInstance = value; }
         }
 
+        public static Ribbon Current
+        {
+            get { return _current; }
+            set { _current = value; }
+        }
+
         public Ribbon()
         {
+            _current = this;
             System.Diagnostics.Debug.WriteLine("Ribbon constructor called - Ribbon instance created");
         }
 
@@ -615,20 +623,283 @@ namespace my_addin
         {
             try
             {
-                // Delegate to task pane implementation
-                if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
+                // Get the active slide
+                var app = Globals.ThisAddIn.Application;
+                var slide = GetActiveSlideOrNull();
+                if (slide == null)
                 {
-                    _taskPaneInstance.ExecuteExcelPaste();
-                }
-                else
-                {
-                    MessageBox.Show("Task pane is not available. Please open the task pane first.", "Excel Paste",
+                    MessageBox.Show("Please select a slide to paste Excel data.", "Excel Paste", 
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Find the Matrix table (table with cells as objects) in the main layout
+                PowerPoint.Shape matrixTableShape = null;
+                foreach (PowerPoint.Shape shape in slide.Shapes)
+                {
+                    if (shape.HasTable == Microsoft.Office.Core.MsoTriState.msoTrue)
+                    {
+                        // You may want to add more checks here to identify your specific Matrix table
+                        // For example, by name, tag, or size
+                        if (shape.Name.Contains("Matrix") || shape.Tags["MatrixTable"] == "1")
+                        {
+                            matrixTableShape = shape;
+                            break;
+                        }
+                    }
+                }
+
+                if (matrixTableShape == null)
+                {
+                    MessageBox.Show("No Matrix table found on the current slide.", "Excel Paste", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Get clipboard data (CSV or Text)
+                string clipboardText = "";
+                if (System.Windows.Forms.Clipboard.ContainsData(DataFormats.CommaSeparatedValue))
+                {
+                    clipboardText = System.Windows.Forms.Clipboard.GetData(DataFormats.CommaSeparatedValue)?.ToString();
+                }
+                else if (System.Windows.Forms.Clipboard.ContainsData(DataFormats.Text))
+                {
+                    clipboardText = System.Windows.Forms.Clipboard.GetText();
+                }
+
+                if (string.IsNullOrWhiteSpace(clipboardText))
+                {
+                    MessageBox.Show("No valid data found in clipboard.", "Excel Paste", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Parse clipboard text into rows and columns
+                var rows = clipboardText.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                var data = rows.Select(r => r.Split('\t', ',', ';')).ToArray();
+
+                var table = matrixTableShape.Table;
+                int rowCount = Math.Min(table.Rows.Count, data.Length);
+
+                for (int i = 1; i <= rowCount; i++)
+                {
+                    var rowData = data[i - 1];
+                    int colCount = Math.Min(table.Columns.Count, rowData.Length);
+                    for (int j = 1; j <= colCount; j++)
+                    {
+                        // Place the correct cell value into the corresponding cell
+                        table.Cell(i, j).Shape.TextFrame.TextRange.Text = rowData[j - 1];
+                    }
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error in ExcelPaste_Click: {ex.Message}");
+                MessageBox.Show($"Error executing Excel Paste: {ex.Message}", "Excel Paste Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Executes Excel Paste functionality directly from Ribbon without requiring task pane
+        /// </summary>
+        private void ExecuteExcelPasteDirectly()
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                var slide = GetActiveSlideOrNull();
+                if (slide == null)
+                {
+                    MessageBox.Show("Please select a slide to paste Excel data.", "Excel Paste", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Check if PowerPoint can access clipboard
+                if (!System.Windows.Forms.Clipboard.ContainsData(DataFormats.CommaSeparatedValue) && 
+                    !System.Windows.Forms.Clipboard.ContainsData(DataFormats.Text))
+                {
+                    MessageBox.Show("No Excel data found in clipboard. Please copy data from Excel first.", "Excel Paste", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Get clipboard data
+                string clipboardText = "";
+                if (System.Windows.Forms.Clipboard.ContainsData(DataFormats.CommaSeparatedValue))
+                {
+                    clipboardText = System.Windows.Forms.Clipboard.GetData(DataFormats.CommaSeparatedValue).ToString();
+                }
+                else if (System.Windows.Forms.Clipboard.ContainsData(DataFormats.Text))
+                {
+                    clipboardText = System.Windows.Forms.Clipboard.GetText();
+                }
+
+                if (string.IsNullOrWhiteSpace(clipboardText))
+                {
+                    MessageBox.Show("No valid data found in clipboard.", "Excel Paste", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Parse the clipboard data
+                var rows = ParseClipboardData(clipboardText);
+                if (rows == null || rows.Count == 0)
+                {
+                    MessageBox.Show("Could not parse clipboard data. Please ensure data is properly formatted.", "Excel Paste", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Create table on the slide
+                CreateTableFromData(slide, rows);
+
+                MessageBox.Show($"Successfully created table with {rows.Count} rows and {rows.Max(row => row.Count)} columns from Excel data.", 
+                    "Excel Paste Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to execute Excel Paste: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Parses clipboard data into rows and columns
+        /// </summary>
+        private List<List<string>> ParseClipboardData(string clipboardText)
+        {
+            try
+            {
+                var rows = new List<List<string>>();
+                var lines = clipboardText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var line in lines)
+                {
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+
+                    var columns = new List<string>();
+                    var cells = line.Split('\t'); // Tab-separated values
+
+                    foreach (var cell in cells)
+                    {
+                        // Remove quotes if present
+                        var cleanCell = cell.Trim('"', ' ');
+                        columns.Add(cleanCell);
+                    }
+
+                    if (columns.Count > 0)
+                    {
+                        rows.Add(columns);
+                    }
+                }
+
+                return rows;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error parsing clipboard data: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Creates a table on the slide from the parsed data
+        /// </summary>
+        private void CreateTableFromData(PowerPoint.Slide slide, List<List<string>> rows)
+        {
+            try
+            {
+                if (rows == null || rows.Count == 0) return;
+
+                // Determine table dimensions
+                int rowCount = rows.Count;
+                int colCount = rows.Max(row => row.Count);
+
+                if (colCount == 0) return;
+
+                // Table dimensions (matching existing implementation)
+                float cellWidth = 80.0f;
+                float cellHeight = 25.0f;
+                float tableWidth = colCount * cellWidth;
+                float tableHeight = rowCount * cellHeight;
+                
+                // Center the table on the slide (using CustomLayout like existing implementation)
+                float left = (slide.CustomLayout.Width - tableWidth) / 2;
+                float top = (slide.CustomLayout.Height - tableHeight) / 2;
+
+                // Create the table
+                PowerPoint.Shape tableShape = slide.Shapes.AddTable(
+                    rowCount,
+                    colCount,
+                    left,
+                    top,
+                    tableWidth,
+                    tableHeight);
+
+                // Name the table like existing implementation
+                tableShape.Name = "ExcelPastedTable";
+
+                // Get the table object
+                PowerPoint.Table table = tableShape.Table;
+
+                // Populate the table with data
+                for (int row = 0; row < rowCount; row++)
+                {
+                    var rowData = rows[row];
+                    for (int col = 0; col < colCount; col++)
+                    {
+                        string cellText = (col < rowData.Count) ? rowData[col] : "";
+                        
+                        try
+                        {
+                            var cell = table.Cell(row + 1, col + 1);
+                            if (cell != null && cell.Shape != null)
+                            {
+                                // Set cell text
+                                cell.Shape.TextFrame.TextRange.Text = cellText;
+                                
+                                // Apply basic formatting (matching existing implementation)
+                                cell.Shape.TextFrame.TextRange.Font.Size = 10;
+                                cell.Shape.TextFrame.TextRange.Font.Name = "Calibri";
+                                
+                                // Add borders (matching existing implementation)
+                                cell.Shape.Line.Visible = Office.MsoTriState.msoTrue;
+                                cell.Shape.Line.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LightGray);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error setting cell ({row},{col}): {ex.Message}");
+                        }
+                    }
+                }
+
+                // Apply table styling (matching existing implementation)
+                try
+                {
+                    // Header row styling
+                    for (int col = 1; col <= colCount; col++)
+                    {
+                        var headerCell = table.Cell(1, col);
+                        if (headerCell?.Shape != null)
+                        {
+                            headerCell.Shape.Fill.ForeColor.RGB = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LightBlue);
+                            headerCell.Shape.TextFrame.TextRange.Font.Bold = Office.MsoTriState.msoTrue;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error applying table styling: {ex.Message}");
+                }
+
+                // Select the table
+                tableShape.Select();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create table from data: {ex.Message}");
             }
         }
 
@@ -699,24 +970,25 @@ namespace my_addin
         {
             try
             {
-                var pptApp = Globals.ThisAddIn.Application;
-                var activePresentation = pptApp.ActivePresentation;
-                var activeSlide = activePresentation.Slides[pptApp.ActiveWindow.Selection.SlideRange.SlideIndex];
-
-                // Create a default 3x3 matrix
-                CreateMatrixTable(activeSlide, 3, 3, false);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error creating matrix: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void CreateMatrixTable(PowerPoint.Slide slide, int rows, int columns, bool hasHeader)
-        {
-            try
-            {
-                CreateCustomMatrix(slide, rows, columns);
+                var app = Globals.ThisAddIn.Application;
+                var slide = GetActiveSlideOrNull();
+                if (slide != null)
+                {
+                    // Get user input for rows and columns
+                    var matrixDialog = new MatrixTableDialog();
+                    if (matrixDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        int rows = matrixDialog.Rows;
+                        int columns = matrixDialog.Columns;
+                        bool hasHeader = matrixDialog.HasHeader;
+                        
+                        var targetSlide = GetActiveSlideOrNull();
+                        if (targetSlide != null)
+                        {
+                            CreateCustomMatrix(targetSlide, rows, columns);
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -724,7 +996,24 @@ namespace my_addin
             }
         }
 
-        public void CreateCustomMatrix(PowerPoint.Slide slide, int rows, int columns)
+        private PowerPoint.Slide GetActiveSlideOrNull()
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActivePresentation != null && app.ActiveWindow != null && app.ActiveWindow.Selection != null)
+                {
+                    return app.ActiveWindow.View.Slide;
+                }
+            }
+            catch
+            {
+                // Ignore errors
+            }
+            return null;
+        }
+
+        private void CreateCustomMatrix(PowerPoint.Slide slide, int rows, int columns)
         {
             try
             {
@@ -824,7 +1113,6 @@ namespace my_addin
                 PowerPoint.ShapeRange shapeRange = slide.Shapes.Range(shapeNames);
                 shapeRange.Select();
             }
-
             catch (Exception ex)
             {
                 throw new Exception($"Failed to create matrix table: {ex.Message}");
