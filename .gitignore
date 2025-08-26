@@ -1,0 +1,29 @@
+# Visual Studio files
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build outputs
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# VSTO files
+*.vsto
+*.manifest
+*.dll.config
+*.pdb
+*.cache
+
+# Office/Add-in specific
+_ReSharper.*
+*.ncrunchproject
+*.dotCover

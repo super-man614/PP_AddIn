@@ -39,7 +39,7 @@ namespace my_addin
                 Core.PaneManager.Register(_taskPane);
                 
                 // Set task pane properties
-                _taskPane.Width = 132; // Adjusted width to accommodate the 120px control + padding
+                _taskPane.Width = 100; // Adjusted width to accommodate the 120px control + padding
                 _taskPane.DockPosition = Microsoft.Office.Core.MsoCTPDockPosition.msoCTPDockPositionRight;
                 _taskPane.Visible = true; // Auto-show Color Palette on startup
                 System.Diagnostics.Debug.WriteLine($"Color Palette properties set - Width: {_taskPane.Width}, Dock: {_taskPane.DockPosition}, Visible: {_taskPane.Visible}");

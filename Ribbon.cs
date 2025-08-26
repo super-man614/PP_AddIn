@@ -598,105 +598,125 @@ namespace my_addin
         }
     }
 
-        public void MatrixTable_Click(Office.IRibbonControl control)
-    {
-        try
-        {
-            // Delegate to task pane implementation
-            if (_taskPaneInstance != null && !_taskPaneInstance.IsDisposed)
-            {
-                _taskPaneInstance.ExecuteMatrixTableWizard();
-            }
-            else
-            {
-                MessageBox.Show("Task pane is not available. Please open the task pane first.", "Matrix Table Wizard",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Error in MatrixTable_Click: {ex.Message}");
-        }
-    }
-
-        public void ExcelPaste_Click(Office.IRibbonControl control)
+        public void Matrix_Click(Office.IRibbonControl control)
         {
             try
             {
-                // Get the active slide
-                var app = Globals.ThisAddIn.Application;
-                var slide = GetActiveSlideOrNull();
-                if (slide == null)
+                using (var dialog = new MatrixTableDialog())
                 {
-                    MessageBox.Show("Please select a slide to paste Excel data.", "Excel Paste", 
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                // Find the Matrix table (table with cells as objects) in the main layout
-                PowerPoint.Shape matrixTableShape = null;
-                foreach (PowerPoint.Shape shape in slide.Shapes)
-                {
-                    if (shape.HasTable == Microsoft.Office.Core.MsoTriState.msoTrue)
+                    if (dialog.ShowDialog() == DialogResult.OK)
                     {
-                        // You may want to add more checks here to identify your specific Matrix table
-                        // For example, by name, tag, or size
-                        if (shape.Name.Contains("Matrix") || shape.Tags["MatrixTable"] == "1")
+                        int rows = dialog.Rows;
+                        int columns = dialog.Columns;
+                        
+                        // Create matrix table in PowerPoint
+                        PowerPoint.Application app = Globals.ThisAddIn.Application;
+                        PowerPoint.Slide slide = app.ActiveWindow.View.Slide;
+                        
+                        // Add a table to the slide
+                        PowerPoint.Shape tableShape = slide.Shapes.AddTable(rows, columns, 100, 100, 400, 200);
+                        PowerPoint.Table table = tableShape.Table;
+                        
+                        // Configure the matrix table based on the dialog image pattern
+                        for (int row = 1; row <= rows; row++)
                         {
-                            matrixTableShape = shape;
-                            break;
+                            for (int col = 1; col <= columns; col++)
+                            {
+                                PowerPoint.Cell cell = table.Cell(row, col);
+                                
+                                // Apply blue fill to the top-left 3x3 matrix as shown in the image
+                                if (row <= 3 && col <= 3)
+                                {
+                                    cell.Shape.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.FromArgb(70, 130, 180)); // Steel blue
+                                    cell.Shape.Fill.Solid();
+                                }
+                                else
+                                {
+                                    // Keep other cells with default white background
+                                    cell.Shape.Fill.ForeColor.RGB = ColorTranslator.ToOle(Color.White);
+                                    cell.Shape.Fill.Solid();
+                                }
+                                
+                                // Add border to all cells
+                                cell.Shape.Line.Weight = 1;
+                                cell.Shape.Line.ForeColor.RGB = ColorTranslator.ToOle(Color.Black);
+                            }
                         }
-                    }
-                }
-
-                if (matrixTableShape == null)
-                {
-                    MessageBox.Show("No Matrix table found on the current slide.", "Excel Paste", 
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                // Get clipboard data (CSV or Text)
-                string clipboardText = "";
-                if (System.Windows.Forms.Clipboard.ContainsData(DataFormats.CommaSeparatedValue))
-                {
-                    clipboardText = System.Windows.Forms.Clipboard.GetData(DataFormats.CommaSeparatedValue)?.ToString();
-                }
-                else if (System.Windows.Forms.Clipboard.ContainsData(DataFormats.Text))
-                {
-                    clipboardText = System.Windows.Forms.Clipboard.GetText();
-                }
-
-                if (string.IsNullOrWhiteSpace(clipboardText))
-                {
-                    MessageBox.Show("No valid data found in clipboard.", "Excel Paste", 
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                // Parse clipboard text into rows and columns
-                var rows = clipboardText.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                var data = rows.Select(r => r.Split('\t', ',', ';')).ToArray();
-
-                var table = matrixTableShape.Table;
-                int rowCount = Math.Min(table.Rows.Count, data.Length);
-
-                for (int i = 1; i <= rowCount; i++)
-                {
-                    var rowData = data[i - 1];
-                    int colCount = Math.Min(table.Columns.Count, rowData.Length);
-                    for (int j = 1; j <= colCount; j++)
-                    {
-                        // Place the correct cell value into the corresponding cell
-                        table.Cell(i, j).Shape.TextFrame.TextRange.Text = rowData[j - 1];
                     }
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error in ExcelPaste_Click: {ex.Message}");
-                MessageBox.Show($"Error executing Excel Paste: {ex.Message}", "Excel Paste Error", 
+                System.Diagnostics.Debug.WriteLine($"Error in Matrix_Click: {ex.Message}");
+                MessageBox.Show($"Error creating matrix table: {ex.Message}", "Matrix Table Error", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public void ExcelPaste_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                // Get data from clipboard
+                IDataObject dataObj = Clipboard.GetDataObject();
+                if (dataObj != null && dataObj.GetDataPresent(DataFormats.Text))
+                {
+                    string clipboardText = (string)dataObj.GetData(DataFormats.Text);
+                    // Split clipboard into rows and then into cells
+                    string[] rows = clipboardText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    List<string> cellsList = new List<string>();
+                    foreach (string row in rows)
+                    {
+                        if (string.IsNullOrWhiteSpace(row)) continue;
+                        string[] cells = row.Split('\t');
+                        foreach (string cell in cells)
+                        {
+                            cellsList.Add(cell);
+                        }
+                    }
+
+                    // Get selected shapes in PowerPoint
+                    PowerPoint.Selection selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                    if (selection != null && selection.ShapeRange != null && selection.ShapeRange.Count > 0)
+                    {
+                        int shapeCount = selection.ShapeRange.Count;
+                        int cellCount = cellsList.Count;
+                        int minCount = Math.Min(shapeCount, cellCount);
+
+                        for (int i = 0; i < minCount; i++)
+                        {
+                            PowerPoint.Shape currentShape = selection.ShapeRange[i + 1];
+                            if (currentShape.HasTextFrame == Microsoft.Office.Core.MsoTriState.msoTrue)
+                            {
+                                currentShape.TextFrame.TextRange.Text = cellsList[i].Trim();
+                            }
+                        }
+                        if (cellCount < shapeCount)
+                        {
+                            // Optionally clear remaining shapes if there are more shapes than cells
+                            for (int i = cellCount; i < shapeCount; i++)
+                            {
+                                PowerPoint.Shape currentShape = selection.ShapeRange[i + 1];
+                                if (currentShape.HasTextFrame == Microsoft.Office.Core.MsoTriState.msoTrue)
+                                {
+                                    currentShape.TextFrame.TextRange.Text = "";
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select at least one shape in PowerPoint.", "Excel Paste", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Clipboard doesn't contain text data. Please copy from Excel first.", "Excel Paste", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error pasting data: " + ex.Message, "Excel Paste Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

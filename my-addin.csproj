@@ -240,9 +240,9 @@
     <EmbeddedResource Include="TaskPaneControl.resx">
       <DependentUpon>TaskPaneControl.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="my-addin_1_TemporaryKey.pfx" />
-    <None Include="my-addin_2_TemporaryKey.pfx" />
     <None Include="my-addin_TemporaryKey.pfx" />
+    <!-- Temporarily removed missing certificate file -->
+    <!-- <None Include="my-addin-key.snk.pfx" /> -->
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -363,21 +363,29 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
-  <PropertyGroup>
+  <!-- Temporarily disabled signing for development -->
+  <!-- <PropertyGroup>
     <ManifestKeyFile>my-addin_2_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>B7892F6A6A8959CA7F35C711B52A39D85095CC49</ManifestCertificateThumbprint>
+  </PropertyGroup> -->
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <ManifestKeyFile>my-addin_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>my-addin_2_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
+    <ManifestCertificateThumbprint>C8C97CE93F657DA5500F6A4DAC6BA7BDA24F193D</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <!-- Temporarily disabled assembly signing for development -->
+  <!-- <PropertyGroup>
+    <AssemblyOriginatorKeyFile>my-addin-key.snk.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <DelaySign>false</DelaySign>
-  </PropertyGroup>
+  </PropertyGroup> -->
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- Include additional build rules for an Office application add-in. -->

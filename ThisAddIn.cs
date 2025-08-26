@@ -8,7 +8,8 @@ namespace my_addin
 {
     public partial class ThisAddIn
     {
-        private PowerPoint.EApplication_WindowSelectionChangeEventHandler selectionChangedHandler;
+        // Removed unused field to fix CS0169 warning
+        // private PowerPoint.EApplication_WindowSelectionChangeEventHandler selectionChangedHandler;
         private IErrorHandlerService _errorHandler;
         private CustomTaskPane _taskPaneInstance;
         private ColorPaletteTaskPane _colorPaletteInstance;

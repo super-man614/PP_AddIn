@@ -26,3 +26,17 @@ C:\Users\Administrator\Music\Projects\PP_AddIn\bin\Debug\my-addin.dll.manifest
 C:\Users\Administrator\Music\Projects\PP_AddIn\bin\Debug\my-addin.vsto
 C:\Users\Administrator\Music\Projects\PP_AddIn\bin\Debug\Microsoft.Office.Tools.Common.v4.0.Utilities.dll
 C:\Users\Administrator\Music\Projects\PP_AddIn\obj\Debug\my-addin.csproj.CopyComplete
+D:\Sinbad\WorkSpace\PP_AddIn\obj\Debug\my-addin.csproj.AssemblyReference.cache
+D:\Sinbad\WorkSpace\PP_AddIn\obj\Debug\my_addin.Properties.Resources.resources
+D:\Sinbad\WorkSpace\PP_AddIn\obj\Debug\my_addin.TaskPaneControl.resources
+D:\Sinbad\WorkSpace\PP_AddIn\obj\Debug\my-addin.csproj.GenerateResource.cache
+D:\Sinbad\WorkSpace\PP_AddIn\obj\Debug\my-addin.dll
+D:\Sinbad\WorkSpace\PP_AddIn\obj\Debug\my-addin.pdb
+D:\Sinbad\WorkSpace\PP_AddIn\bin\Debug\Config\appsettings.json
+D:\Sinbad\WorkSpace\PP_AddIn\bin\Debug\my-addin.dll
+D:\Sinbad\WorkSpace\PP_AddIn\bin\Debug\my-addin.pdb
+D:\Sinbad\WorkSpace\PP_AddIn\bin\Debug\my-addin.dll.manifest
+D:\Sinbad\WorkSpace\PP_AddIn\bin\Debug\my-addin.vsto
+D:\Sinbad\WorkSpace\PP_AddIn\bin\Debug\Microsoft.Office.Tools.Common.v4.0.Utilities.dll
+D:\Sinbad\WorkSpace\PP_AddIn\obj\Debug\my-addin.csproj.CoreCompileInputs.cache
+D:\Sinbad\WorkSpace\PP_AddIn\obj\Debug\my-addin.csproj.Up2Date
