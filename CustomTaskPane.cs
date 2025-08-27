@@ -58,9 +58,6 @@ namespace my_addin
         public void ExecuteCitationWizard() => ExecuteIfAvailable(c => c.ExecuteCitationWizard());
         public void ExecuteStandardObjectsWizard() => ExecuteIfAvailable(c => c.ExecuteStandardObjectsWizard());
 
-        // Matrix table methods
-        public void InsertMatrixTable(int rows, int cols) => ExecuteIfAvailable(c => c.ExecuteMatrixTableWizard());
-
         public bool Visible
         {
             get => _taskPane != null && _taskPane.Visible;

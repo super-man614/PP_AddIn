@@ -598,7 +598,7 @@ namespace my_addin
         }
     }
 
-        public void Matrix_Click(Office.IRibbonControl control)
+        public void Matrix_Click_TableVersion(Office.IRibbonControl control)
         {
             try
             {
