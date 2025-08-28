@@ -84,6 +84,7 @@
                                 label="Object Template" 
                                 size="large" 
                                 imageMso="DiagramVennDiagramInsertClassic" 
+                                onAction="ObjectTemplate_Click"
                                 screentip="Object Template"/>
                         <button id="Element_SlideTemplate" 
                                 label="Slide Template" 
@@ -94,6 +95,7 @@
                                 label="Color Palette" 
                                 size="large" 
                                 imageMso="ThemeColorsGallery" 
+                                onAction="ColorPaletteToggle_Click"
                                 screentip="Color Palette"/>
                         <button id="Element_Matrix" 
                                 label="Matrix"

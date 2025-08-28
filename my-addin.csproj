@@ -351,6 +351,9 @@
     <Compile Include="ColorPaletteEditorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ObjectTemplateDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <!-- <EmbeddedResource Include="Ribbon.xml" /> -->
     <!-- Icon files are loaded from the output directory at runtime -->
     <!-- Removed icon content references to prevent build errors -->

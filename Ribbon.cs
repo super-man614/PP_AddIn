@@ -577,6 +577,32 @@ namespace my_addin
             }
         }
 
+        // Element: Object Template
+        public void ObjectTemplate_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var slide = GetActiveSlideOrNull();
+                if (slide == null)
+                {
+                    MessageBox.Show("Please select a slide.", "Object Template", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                using (var dialog = new ObjectTemplateDialog())
+                {
+                    if (dialog.ShowDialog() == DialogResult.OK && dialog.SelectedItem != null)
+                    {
+                        dialog.SelectedItem.InsertAction(slide);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to insert object template: {ex.Message}", "Object Template", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         public void Table_Click(Office.IRibbonControl control)
     {
         try
