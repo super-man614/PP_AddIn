@@ -603,6 +603,32 @@ namespace my_addin
             }
         }
 
+        // Element: Slide Template
+        public void SlideTemplate_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var presentation = GetActivePresentationOrNull();
+                if (presentation == null)
+                {
+                    MessageBox.Show("Please open a presentation.", "Slide Template", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                using (var dialog = new SlideTemplateDialog())
+                {
+                    if (dialog.ShowDialog() == DialogResult.OK && dialog.SelectedItem != null)
+                    {
+                        dialog.SelectedItem.InsertAction(presentation);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to insert slide template: {ex.Message}", "Slide Template", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         public void Table_Click(Office.IRibbonControl control)
     {
         try
@@ -1059,6 +1085,23 @@ namespace my_addin
             return null;
         }
 
+        private PowerPoint.Presentation GetActivePresentationOrNull()
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                if (app.ActivePresentation != null)
+                {
+                    return app.ActivePresentation;
+                }
+            }
+            catch
+            {
+                // Ignore errors
+            }
+            return null;
+        }
+
         private void CreateCustomMatrix(PowerPoint.Slide slide, int rows, int columns)
         {
             try
@@ -1164,5 +1207,1091 @@ namespace my_addin
                 throw new Exception($"Failed to create matrix table: {ex.Message}");
             }
         }
+
+        public void AlignLeft_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                
+                if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    MessageBox.Show("Please select objects to align.", "Align Left", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                var shapes = selection.ShapeRange;
+                
+                if (shapes.Count < 2)
+                {
+                    MessageBox.Show("Please select at least 2 objects to align.", "Align Left", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // The last selected object is the master object (reference)
+                float masterLeft = shapes[shapes.Count].Left;
+
+                                 // Align all other objects to the left edge of the master object
+                 for (int i = 1; i < shapes.Count; i++)
+                 {
+                     shapes[i].Left = masterLeft;
+                 }
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show($"Error aligning objects: {ex.Message}", "Align Left", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }
+         }
+
+         public void AlignRight_Click(Office.IRibbonControl control)
+         {
+             try
+             {
+                 var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                 
+                 if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                 {
+                     MessageBox.Show("Please select objects to align.", "Align Right", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 var shapes = selection.ShapeRange;
+                 
+                 if (shapes.Count < 2)
+                 {
+                     MessageBox.Show("Please select at least 2 objects to align.", "Align Right", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 // The last selected object is the master object (reference)
+                 float masterRight = shapes[shapes.Count].Left + shapes[shapes.Count].Width;
+
+                 // Align all other objects to the right edge of the master object
+                 for (int i = 1; i < shapes.Count; i++)
+                 {
+                     shapes[i].Left = masterRight - shapes[i].Width;
+                 }
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show($"Error aligning objects: {ex.Message}", "Align Right", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }
+         }
+
+         public void AlignCenter_Click(Office.IRibbonControl control)
+         {
+             try
+             {
+                 var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                 
+                 if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                 {
+                     MessageBox.Show("Please select objects to align.", "Align Center", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 var shapes = selection.ShapeRange;
+                 
+                 if (shapes.Count < 2)
+                 {
+                     MessageBox.Show("Please select at least 2 objects to align.", "Align Center", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 // The last selected object is the master object (reference)
+                 var masterShape = shapes[shapes.Count];
+                 float masterCenterX = masterShape.Left + (masterShape.Width / 2);
+
+                 // Align all other objects to the horizontal center of the master object
+                 for (int i = 1; i < shapes.Count; i++)
+                 {
+                     shapes[i].Left = masterCenterX - (shapes[i].Width / 2);
+                 }
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show($"Error aligning objects: {ex.Message}", "Align Center", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }
+         }
+
+         public void AlignTop_Click(Office.IRibbonControl control)
+         {
+             try
+             {
+                 var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                 
+                 if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                 {
+                     MessageBox.Show("Please select objects to align.", "Align Top", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 var shapes = selection.ShapeRange;
+                 
+                 if (shapes.Count < 2)
+                 {
+                     MessageBox.Show("Please select at least 2 objects to align.", "Align Top", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 // The last selected object is the master object (reference)
+                 float masterTop = shapes[shapes.Count].Top;
+
+                 // Align all other objects to the top edge of the master object
+                 for (int i = 1; i < shapes.Count; i++)
+                 {
+                     shapes[i].Top = masterTop;
+                 }
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show($"Error aligning objects: {ex.Message}", "Align Top", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }
+         }
+
+         public void AlignBottom_Click(Office.IRibbonControl control)
+         {
+             try
+             {
+                 var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                 
+                 if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                 {
+                     MessageBox.Show("Please select objects to align.", "Align Bottom", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 var shapes = selection.ShapeRange;
+                 
+                 if (shapes.Count < 2)
+                 {
+                     MessageBox.Show("Please select at least 2 objects to align.", "Align Bottom", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 // The last selected object is the master object (reference)
+                 float masterBottom = shapes[shapes.Count].Top + shapes[shapes.Count].Height;
+
+                 // Align all other objects to the bottom edge of the master object
+                 for (int i = 1; i < shapes.Count; i++)
+                 {
+                     shapes[i].Top = masterBottom - shapes[i].Height;
+                 }
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show($"Error aligning objects: {ex.Message}", "Align Bottom", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }
+         }
+
+         public void AlignMiddle_Click(Office.IRibbonControl control)
+         {
+             try
+             {
+                 var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                 
+                 if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                 {
+                     MessageBox.Show("Please select objects to align.", "Align Middle", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 var shapes = selection.ShapeRange;
+                 
+                 if (shapes.Count < 2)
+                 {
+                     MessageBox.Show("Please select at least 2 objects to align.", "Align Middle", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 // The last selected object is the master object (reference)
+                 var masterShape = shapes[shapes.Count];
+                 float masterCenterY = masterShape.Top + (masterShape.Height / 2);
+
+                 // Align all other objects to the vertical center of the master object
+                 for (int i = 1; i < shapes.Count; i++)
+                 {
+                     shapes[i].Top = masterCenterY - (shapes[i].Height / 2);
+                 }
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show($"Error aligning objects: {ex.Message}", "Align Middle", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }
+         }
+
+         public void RotateLeft_Click(Office.IRibbonControl control)
+         {
+             try
+             {
+                 var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                 
+                 if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                 {
+                     MessageBox.Show("Please select objects to rotate.", "Rotate Left", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 var shapes = selection.ShapeRange;
+                 
+                 if (shapes.Count < 1)
+                 {
+                     MessageBox.Show("Please select at least 1 object to rotate.", "Rotate Left", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 // Rotate all selected objects by -90 degrees (counter-clockwise)
+                 for (int i = 1; i <= shapes.Count; i++)
+                 {
+                     shapes[i].Rotation = shapes[i].Rotation - 90;
+                 }
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show($"Error rotating objects: {ex.Message}", "Rotate Left", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }
+         }
+
+         public void RotateRight_Click(Office.IRibbonControl control)
+         {
+             try
+             {
+                 var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                 
+                 if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                 {
+                     MessageBox.Show("Please select objects to rotate.", "Rotate Right", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 var shapes = selection.ShapeRange;
+                 
+                 if (shapes.Count < 1)
+                 {
+                     MessageBox.Show("Please select at least 1 object to rotate.", "Rotate Right", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 // Rotate all selected objects by +90 degrees (clockwise)
+                 for (int i = 1; i <= shapes.Count; i++)
+                 {
+                     shapes[i].Rotation = shapes[i].Rotation + 90;
+                 }
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show($"Error rotating objects: {ex.Message}", "Rotate Right", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }
+         }
+
+         public void FlipHorizontal_Click(Office.IRibbonControl control)
+         {
+             try
+             {
+                 var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                 
+                 if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                 {
+                     MessageBox.Show("Please select objects to flip.", "Flip Horizontal", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 var shapes = selection.ShapeRange;
+                 
+                 if (shapes.Count < 1)
+                 {
+                     MessageBox.Show("Please select at least 1 object to flip.", "Flip Horizontal", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 // Flip all selected objects horizontally
+                 for (int i = 1; i <= shapes.Count; i++)
+                 {
+                     shapes[i].Flip(Microsoft.Office.Core.MsoFlipCmd.msoFlipHorizontal);
+                 }
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show($"Error flipping objects horizontally: {ex.Message}", "Flip Horizontal", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }
+         }
+
+         public void FlipVertical_Click(Office.IRibbonControl control)
+         {
+             try
+             {
+                 var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                 
+                 if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                 {
+                     MessageBox.Show("Please select objects to flip.", "Flip Vertical", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 var shapes = selection.ShapeRange;
+                 
+                 if (shapes.Count < 1)
+                 {
+                     MessageBox.Show("Please select at least 1 object to flip.", "Flip Vertical", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 // Flip all selected objects vertically
+                 for (int i = 1; i <= shapes.Count; i++)
+                 {
+                     shapes[i].Flip(Microsoft.Office.Core.MsoFlipCmd.msoFlipVertical);
+                 }
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show($"Error flipping objects vertically: {ex.Message}", "Flip Vertical", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }
+         }
+
+         public void BringForward_Click(Office.IRibbonControl control)
+         {
+             try
+             {
+                 var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                 
+                 if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                 {
+                     MessageBox.Show("Please select objects to bring forward.", "Bring Forward", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 var shapes = selection.ShapeRange;
+                 
+                 if (shapes.Count < 1)
+                 {
+                     MessageBox.Show("Please select at least 1 object to bring forward.", "Bring Forward", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 // Bring all selected objects forward one layer
+                 for (int i = 1; i <= shapes.Count; i++)
+                 {
+                     shapes[i].ZOrder(Microsoft.Office.Core.MsoZOrderCmd.msoBringForward);
+                 }
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show($"Error bringing objects forward: {ex.Message}", "Bring Forward", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }
+         }
+
+         public void SendBackward_Click(Office.IRibbonControl control)
+         {
+             try
+             {
+                 var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                 
+                 if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                 {
+                     MessageBox.Show("Please select objects to send backward.", "Send Backward", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 var shapes = selection.ShapeRange;
+                 
+                 if (shapes.Count < 1)
+                 {
+                     MessageBox.Show("Please select at least 1 object to send backward.", "Send Backward", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 // Send all selected objects backward one layer
+                 for (int i = 1; i <= shapes.Count; i++)
+                 {
+                     shapes[i].ZOrder(Microsoft.Office.Core.MsoZOrderCmd.msoSendBackward);
+                 }
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show($"Error sending objects backward: {ex.Message}", "Send Backward", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }
+         }
+
+         public void BringToFront_Click(Office.IRibbonControl control)
+         {
+             try
+             {
+                 var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                 
+                 if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                 {
+                     MessageBox.Show("Please select objects to bring to front.", "Bring to Front", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 var shapes = selection.ShapeRange;
+                 
+                 if (shapes.Count < 1)
+                 {
+                     MessageBox.Show("Please select at least 1 object to bring to front.", "Bring to Front", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 // Bring all selected objects to the very front
+                 for (int i = 1; i <= shapes.Count; i++)
+                 {
+                     shapes[i].ZOrder(Microsoft.Office.Core.MsoZOrderCmd.msoBringToFront);
+                 }
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show($"Error bringing objects to front: {ex.Message}", "Bring to Front", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }
+         }
+
+         public void SendToBack_Click(Office.IRibbonControl control)
+         {
+             try
+             {
+                 var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                 
+                 if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                 {
+                     MessageBox.Show("Please select objects to send to back.", "Send to Back", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 var shapes = selection.ShapeRange;
+                 
+                 if (shapes.Count < 1)
+                 {
+                     MessageBox.Show("Please select at least 1 object to send to back.", "Send to Back", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     return;
+                 }
+
+                 // Send all selected objects to the very back
+                 for (int i = 1; i <= shapes.Count; i++)
+                 {
+                     shapes[i].ZOrder(Microsoft.Office.Core.MsoZOrderCmd.msoSendToBack);
+                 }
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show($"Error sending objects to back: {ex.Message}", "Send to Back", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }
+                 }
+
+        public void SwapPosition_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                
+                if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    MessageBox.Show("Please select objects to swap positions.", "Swap Position", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                var shapes = selection.ShapeRange;
+                
+                if (shapes.Count != 2)
+                {
+                    MessageBox.Show("Please select exactly 2 objects to swap their positions.", "Swap Position", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                // Get the two shapes
+                var shape1 = shapes[1];
+                var shape2 = shapes[2];
+                
+                // Calculate center positions of both shapes
+                float shape1CenterX = shape1.Left + (shape1.Width / 2);
+                float shape1CenterY = shape1.Top + (shape1.Height / 2);
+                
+                float shape2CenterX = shape2.Left + (shape2.Width / 2);
+                float shape2CenterY = shape2.Top + (shape2.Height / 2);
+                
+                // Calculate new positions to center each shape at the other's center
+                float newShape1Left = shape2CenterX - (shape1.Width / 2);
+                float newShape1Top = shape2CenterY - (shape1.Height / 2);
+                
+                float newShape2Left = shape1CenterX - (shape2.Width / 2);
+                float newShape2Top = shape1CenterY - (shape2.Height / 2);
+                
+                // Swap the positions
+                shape1.Left = newShape1Left;
+                shape1.Top = newShape1Top;
+                
+                shape2.Left = newShape2Left;
+                shape2.Top = newShape2Top;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error swapping positions: {ex.Message}", "Swap Position", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public void RemoveMarginObjects_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                var slide = GetActiveSlideOrNull();
+                
+                if (slide == null)
+                {
+                    MessageBox.Show("Please select a slide.", "Remove Margin Objects", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                // Get slide dimensions
+                float slideWidth = app.ActivePresentation.PageSetup.SlideWidth;
+                float slideHeight = app.ActivePresentation.PageSetup.SlideHeight;
+                
+                var shapesToRemove = new List<PowerPoint.Shape>();
+                
+                // Check all shapes on the slide
+                for (int i = 1; i <= slide.Shapes.Count; i++)
+                {
+                    var shape = slide.Shapes[i];
+                    
+                    // Check if shape is completely outside slide boundaries
+                    bool isOutsideLeft = shape.Left + shape.Width < 0;
+                    bool isOutsideRight = shape.Left > slideWidth;
+                    bool isOutsideTop = shape.Top + shape.Height < 0;
+                    bool isOutsideBottom = shape.Top > slideHeight;
+                    
+                    // If shape is completely outside any boundary, mark for removal
+                    if (isOutsideLeft || isOutsideRight || isOutsideTop || isOutsideBottom)
+                    {
+                        shapesToRemove.Add(shape);
+                    }
+                }
+                
+                // Remove the shapes (in reverse order to avoid index issues)
+                for (int i = shapesToRemove.Count - 1; i >= 0; i--)
+                {
+                    try
+                    {
+                        shapesToRemove[i].Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Failed to delete shape: {ex.Message}");
+                    }
+                }
+                
+                // Objects removed silently - user can see the result directly
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error removing margin objects: {ex.Message}", "Remove Margin Objects", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public void Group_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                var selection = app.ActiveWindow.Selection;
+                
+                if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    MessageBox.Show("Please select objects to group.", "Group", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                var shapes = selection.ShapeRange;
+                
+                if (shapes.Count < 2)
+                {
+                    MessageBox.Show("Please select at least 2 objects to group.", "Group", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Check for shapes that cannot be grouped
+                for (int i = 1; i <= shapes.Count; i++)
+                {
+                    var shape = shapes[i];
+                    
+                    // Check if shape is locked
+                    try
+                    {
+                        if (shape.LockAspectRatio == Microsoft.Office.Core.MsoTriState.msoTrue)
+                        {
+                            // This is just a test to see if we can access shape properties
+                        }
+                    }
+                    catch
+                    {
+                        MessageBox.Show($"One or more shapes cannot be grouped. They may be locked, protected, or part of the slide master.", "Group", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    
+                    // Skip certain shape types that cannot be grouped
+                    if (shape.Type == Microsoft.Office.Core.MsoShapeType.msoPlaceholder ||
+                        shape.Type == Microsoft.Office.Core.MsoShapeType.msoComment)
+                    {
+                        MessageBox.Show($"Cannot group placeholder or comment shapes. Please select only regular shapes.", "Group", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                }
+
+                // Group the selected shapes - this creates a new grouped shape
+                var groupedShape = shapes.Group();
+                
+                // Select the newly created group
+                groupedShape.Select();
+                
+                MessageBox.Show($"Successfully grouped {shapes.Count} objects.", "Group", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error grouping objects: {ex.Message}\n\nThis may occur if shapes are locked, protected, or incompatible for grouping.", "Group", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Group error: {ex}");
+            }
+        }
+
+        public void Ungroup_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var app = Globals.ThisAddIn.Application;
+                var selection = app.ActiveWindow.Selection;
+                
+                if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    MessageBox.Show("Please select grouped objects to ungroup.", "Ungroup", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                var shapes = selection.ShapeRange;
+                
+                if (shapes.Count < 1)
+                {
+                    MessageBox.Show("Please select at least 1 grouped object to ungroup.", "Ungroup", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                int ungroupedCount = 0;
+                
+                // Ungroup each selected shape if it's a group
+                for (int i = 1; i <= shapes.Count; i++)
+                {
+                    try
+                    {
+                        var shape = shapes[i];
+                        
+                        // Check if the shape is a group before trying to ungroup
+                        if (shape.Type == Microsoft.Office.Core.MsoShapeType.msoGroup)
+                        {
+                            var ungroupedShapes = shape.Ungroup();
+                            ungroupedCount += ungroupedShapes.Count;
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Shape {i} is not a group (Type: {shape.Type})");
+                        }
+                    }
+                    catch (Exception innerEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Failed to ungroup shape {i}: {innerEx.Message}");
+                    }
+                }
+                
+                if (ungroupedCount > 0)
+                {
+                    MessageBox.Show($"Successfully ungrouped {ungroupedCount} objects.", "Ungroup", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("No grouped objects found to ungroup.", "Ungroup", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error ungrouping objects: {ex.Message}", "Ungroup", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Ungroup error: {ex}");
+            }
+        }
+
+        // =================== FORMAT FUNCTIONS ===================
+        
+        #region Resize Functions
+        
+        public void Format_Resize_Click(Office.IRibbonControl control)
+        {
+            Format_ResizeSize_Click(control);
+        }
+        
+        public void Format_ResizeWidth_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                
+                if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    MessageBox.Show("Please select objects to resize.", "Match Width", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                var shapes = selection.ShapeRange;
+                
+                if (shapes.Count < 2)
+                {
+                    MessageBox.Show("Please select at least 2 objects to match width.", "Match Width", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                // The last selected object is the master object (reference)
+                float masterWidth = shapes[shapes.Count].Width;
+                
+                // Apply width to all other objects
+                for (int i = 1; i < shapes.Count; i++)
+                {
+                    shapes[i].Width = masterWidth;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error matching width: {ex.Message}", "Match Width", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        public void Format_ResizeHeight_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                
+                if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    MessageBox.Show("Please select objects to resize.", "Match Height", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                var shapes = selection.ShapeRange;
+                
+                if (shapes.Count < 2)
+                {
+                    MessageBox.Show("Please select at least 2 objects to match height.", "Match Height", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                // The last selected object is the master object (reference)
+                float masterHeight = shapes[shapes.Count].Height;
+                
+                // Apply height to all other objects
+                for (int i = 1; i < shapes.Count; i++)
+                {
+                    shapes[i].Height = masterHeight;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error matching height: {ex.Message}", "Match Height", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        public void Format_ResizeSize_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                
+                if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    MessageBox.Show("Please select objects to resize.", "Match Size", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                var shapes = selection.ShapeRange;
+                
+                if (shapes.Count < 2)
+                {
+                    MessageBox.Show("Please select at least 2 objects to match size.", "Match Size", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                // The last selected object is the master object (reference)
+                float masterWidth = shapes[shapes.Count].Width;
+                float masterHeight = shapes[shapes.Count].Height;
+                
+                // Apply both width and height to all other objects
+                for (int i = 1; i < shapes.Count; i++)
+                {
+                    shapes[i].Width = masterWidth;
+                    shapes[i].Height = masterHeight;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error matching size: {ex.Message}", "Match Size", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        #endregion
+        
+        #region Color Matching Functions
+        
+        public void Format_MatchColors_Click(Office.IRibbonControl control)
+        {
+            Format_MatchFill_Click(control);
+        }
+        
+        public void Format_MatchFill_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                
+                if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    MessageBox.Show("Please select objects to match fill color.", "Match Fill", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                var shapes = selection.ShapeRange;
+                
+                if (shapes.Count < 2)
+                {
+                    MessageBox.Show("Please select at least 2 objects to match fill color.", "Match Fill", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                // The last selected object is the master object (reference)
+                var masterShape = shapes[shapes.Count];
+                var masterFill = masterShape.Fill;
+                
+                // Apply fill to all other objects
+                for (int i = 1; i < shapes.Count; i++)
+                {
+                    var targetShape = shapes[i];
+                    
+                    // Copy fill properties
+                    targetShape.Fill.ForeColor.RGB = masterFill.ForeColor.RGB;
+                    targetShape.Fill.Visible = masterFill.Visible;
+                    targetShape.Fill.Transparency = masterFill.Transparency;
+                    
+                    if (masterFill.Type == Microsoft.Office.Core.MsoFillType.msoFillSolid)
+                    {
+                        targetShape.Fill.Solid();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error matching fill color: {ex.Message}", "Match Fill", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        public void Format_MatchOutline_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                
+                if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    MessageBox.Show("Please select objects to match outline color.", "Match Outline", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                var shapes = selection.ShapeRange;
+                
+                if (shapes.Count < 2)
+                {
+                    MessageBox.Show("Please select at least 2 objects to match outline color.", "Match Outline", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                // The last selected object is the master object (reference)
+                var masterShape = shapes[shapes.Count];
+                var masterLine = masterShape.Line;
+                
+                // Apply outline to all other objects
+                for (int i = 1; i < shapes.Count; i++)
+                {
+                    var targetShape = shapes[i];
+                    
+                    // Copy line properties
+                    targetShape.Line.ForeColor.RGB = masterLine.ForeColor.RGB;
+                    targetShape.Line.Visible = masterLine.Visible;
+                    targetShape.Line.Weight = masterLine.Weight;
+                    targetShape.Line.Transparency = masterLine.Transparency;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error matching outline color: {ex.Message}", "Match Outline", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        public void Format_MatchFont_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                
+                if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    MessageBox.Show("Please select text objects to match font color.", "Match Font Color", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                var shapes = selection.ShapeRange;
+                
+                if (shapes.Count < 2)
+                {
+                    MessageBox.Show("Please select at least 2 text objects to match font color.", "Match Font Color", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                // The last selected object is the master object (reference)
+                var masterShape = shapes[shapes.Count];
+                
+                if (masterShape.HasTextFrame != Microsoft.Office.Core.MsoTriState.msoTrue || masterShape.TextFrame.TextRange.Text.Trim() == "")
+                {
+                    MessageBox.Show("Master object must contain text.", "Match Font Color", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                
+                var masterFont = masterShape.TextFrame.TextRange.Font;
+                
+                // Apply font color to all other objects
+                for (int i = 1; i < shapes.Count; i++)
+                {
+                    var targetShape = shapes[i];
+                    
+                    if (targetShape.HasTextFrame == Microsoft.Office.Core.MsoTriState.msoTrue && targetShape.TextFrame.TextRange.Text.Trim() != "")
+                    {
+                        targetShape.TextFrame.TextRange.Font.Color.RGB = masterFont.Color.RGB;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error matching font color: {ex.Message}", "Match Font Color", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        #endregion
+        
+        #region Font Matching Functions
+        
+        public void Format_AlignFonts_Click(Office.IRibbonControl control)
+        {
+            Format_MatchFontFamily_Click(control);
+        }
+        
+        public void Format_MatchFontColor_Click(Office.IRibbonControl control)
+        {
+            Format_MatchFont_Click(control);
+        }
+        
+        public void Format_MatchFontSize_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                
+                if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    MessageBox.Show("Please select text objects to match font size.", "Match Font Size", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                var shapes = selection.ShapeRange;
+                
+                if (shapes.Count < 2)
+                {
+                    MessageBox.Show("Please select at least 2 text objects to match font size.", "Match Font Size", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                // The last selected object is the master object (reference)
+                var masterShape = shapes[shapes.Count];
+                
+                if (masterShape.HasTextFrame != Microsoft.Office.Core.MsoTriState.msoTrue || masterShape.TextFrame.TextRange.Text.Trim() == "")
+                {
+                    MessageBox.Show("Master object must contain text.", "Match Font Size", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                
+                var masterFontSize = masterShape.TextFrame.TextRange.Font.Size;
+                
+                // Apply font size to all other objects
+                for (int i = 1; i < shapes.Count; i++)
+                {
+                    var targetShape = shapes[i];
+                    
+                    if (targetShape.HasTextFrame == Microsoft.Office.Core.MsoTriState.msoTrue && targetShape.TextFrame.TextRange.Text.Trim() != "")
+                    {
+                        targetShape.TextFrame.TextRange.Font.Size = masterFontSize;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error matching font size: {ex.Message}", "Match Font Size", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        public void Format_MatchFontFamily_Click(Office.IRibbonControl control)
+        {
+            try
+            {
+                var selection = Globals.ThisAddIn.Application.ActiveWindow.Selection;
+                
+                if (selection.Type != PowerPoint.PpSelectionType.ppSelectionShapes)
+                {
+                    MessageBox.Show("Please select text objects to match font family.", "Match Font Family", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                var shapes = selection.ShapeRange;
+                
+                if (shapes.Count < 2)
+                {
+                    MessageBox.Show("Please select at least 2 text objects to match font family.", "Match Font Family", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                // The last selected object is the master object (reference)
+                var masterShape = shapes[shapes.Count];
+                
+                if (masterShape.HasTextFrame != Microsoft.Office.Core.MsoTriState.msoTrue || masterShape.TextFrame.TextRange.Text.Trim() == "")
+                {
+                    MessageBox.Show("Master object must contain text.", "Match Font Family", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                
+                var masterFontName = masterShape.TextFrame.TextRange.Font.Name;
+                
+                // Apply font family to all other objects
+                for (int i = 1; i < shapes.Count; i++)
+                {
+                    var targetShape = shapes[i];
+                    
+                    if (targetShape.HasTextFrame == Microsoft.Office.Core.MsoTriState.msoTrue && targetShape.TextFrame.TextRange.Text.Trim() != "")
+                    {
+                        targetShape.TextFrame.TextRange.Font.Name = masterFontName;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error matching font family: {ex.Message}", "Match Font Family", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        #endregion
+        
     }
 }
